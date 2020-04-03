@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "Archia";
+    src: url("/assets/fonts/Archia/Archia-Light.otf") format("opentype");
+}
+
+html {
+  font-family: Archia !important;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+  padding-bottom: 10vh;
+}
+
+.page-footer {
+  padding-top: 0;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
