@@ -1,6 +1,8 @@
 const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
 const lastUpdate = new Date(2020, 3, 4,12,9,0)
+const DOWN = 'down'
+const UP = 'up'
 
 const palette = [
     'rgb(80,198,229)',

@@ -3,8 +3,8 @@ const initialize = async _ => {
 
     d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
 
-    var width = 400,
-        height = 500,
+    var width = 600,
+        height = 600,
         centered;
 
     // Define color scale
@@ -13,8 +13,8 @@ const initialize = async _ => {
         .clamp(true)
         .range(['#fff', '#409A99']);
 
-    var projection = d3.geoEqualEarth()
-        .scale(1500)
+    var projection = d3.geoMercator()
+        .scale(1600)
         // Center the Map in Colombia
         .center([-74, 4.5])
         .translate([width / 2, height / 2]);
@@ -38,21 +38,46 @@ const initialize = async _ => {
     // color.domain([0, d3.max(features, 10)]);
 
     // Draw each province as a path
-    mapLayer.selectAll('path')
+    let paths = mapLayer.selectAll('path')
         .data(features)
         .enter().append('path')
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
-        .style('fill', 'red')
+        .style('fill', 'white')
+        .style('stroke', 'gray')
 
     let data = await d3.csv(testData)
 
-    var waypoint = new Waypoint({
+    var waypointMap = new Waypoint({
         element: document.getElementById('map'),
         handler: function (direction) {
-            console.log('Scrolled to waypoint!')
+            if (direction === DOWN)
+                d3.select('#map').style('position', 'fixed').style('top', '10%')
+            else if (direction === UP)
+                d3.select('#map').style('position', '').style('top', '')
         },
-        offset: '40%'
+        offset: '10%'
+    })
+
+    var waypointText1 = new Waypoint({
+        element: document.getElementById('text_1'),
+        handler: function (direction) {
+            if (direction === DOWN) {
+                mapLayer.selectAll('circle')
+                    .data(features)
+                    .enter().append('circle')
+                    .attr('class', 'text_1')
+                    .attr('r', 5)
+                    .attr("transform", d =>
+                        "translate(" + path.centroid(d) + ")"
+                    )
+                    .style('fill', '#047ab3')
+            }
+            else if (direction === UP) 
+                mapLayer.selectAll('.text_1')
+                    .remove()
+        },
+        offset: '10%'
     })
 }
 
