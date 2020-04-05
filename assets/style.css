@@ -1,6 +1,6 @@
 @font-face {
     font-family: "Archia";
-    src: url("https://github.com/ideascol/covid19/blob/master/assets/Archia-Light.otf") format("opentype");
+    src: url("./Archia-Light.otf") format("opentype");
 }
 
 html {
