@@ -1,4 +1,6 @@
 const initialize = async _ => {
+    M.AutoInit();
+
     d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
 
     let width = d3.select(`#${SVG}`).node().parentNode.getBoundingClientRect().width * 0.9
