@@ -15,15 +15,24 @@ body {
 
 main {
   flex: 1 0 auto;
-  padding-bottom: 10vh;
-}
-
-.page-footer {
-  padding-top: 0;
+  padding-bottom: 5vh;
 }
 
 footer {
   position: fixed;
   bottom: 0;
   width: 100%;
+}
+
+text {
+  font-family: Archia !important;
+  color: #757575;
+}
+
+.page-footer {
+  padding-top: 0;
+}
+
+.material-tooltip {
+  max-width: 35%;
 }

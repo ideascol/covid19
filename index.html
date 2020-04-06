@@ -14,6 +14,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <!-- d3.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.1/d3.min.js"></script>
+    <!-- dc.js -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/3.2.1/dc.min.js"></script> 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dc/3.2.1/dc.min.css" rel="stylesheet">     -->
     <!-- jQuery -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- Waypoints -->
@@ -30,34 +33,41 @@
         <div class="row center-align">
             <h3 class="orange-text darken-1">Covid-19: Seguimiento del caso en Colombia</h3>
             <h6 class="grey-text darken-3">¿Cómo estamos actuando y qué deberíamos considerar?</h6>
-            <h7 class="grey-text darken-3">Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL<i class="material-icons tiny">lightbulb_outline</i></a>. Última actualización: </h7>
+            <h7 class="grey-text darken-3">Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas
+                    COL<i class="material-icons tiny">lightbulb_outline</i></a>. Última actualización: </h7>
             <h7 id="date">lunes 21 de marzo</h7>
         </div>
         <div class="row">
-            <p>La evidencia internacional ha mostrado que realizar pruebas masivas de Covid-19 es vital para darle una
-                respuesta
+            <p id="intro">La evidencia internacional ha mostrado que realizar <a class="tooltipped" data-position="bottom"
+                    data-tooltip="President Trump has boasted that more people have been tested in the United States than any other country, though on a per-capita basis, many developed countries have done more. But it matters not only how many people are tested, but also when, and who they are. Once again, countries differ, shaping what the numbers mean. A few countries, like South Korea, Australia and Singapore, got serious about mass testing early on. They used the information to do ambitious contact-tracing — finding and testing those who had recently been near infected people, even if they had no symptoms. That provided a pretty full picture of the outbreak while the numbers were still manageable, and made it possible to slow it down. Though it did not act on the same scale as those countries, Germany did more testing and contact-tracing in the early going than most of Europe.">pruebas
+                    masivas</a> de Covid-19 es vital para darle una respuesta
                 oportuna y efectiva a la pandemia. El virus tiene un período medio de incubación de alrededor de 5 días,
                 periodo durante
-                el cual el virus es muy transmisible, y en el cual cerca del 50% de los infectados pueden ser
-                asintomáticos. Esta
+                el cual el virus es muy transmisible, y en el cual cerca del 50% de los infectados pueden ser <a
+                    class="tooltipped" data-position="bottom"
+                    data-tooltip="Se considera asintomático el paciente que es portador de una enfermedad o infección pero no experimenta síntomas.">asintomáticos</a>.
+                Esta
                 combinación de características hace que el virus sea particularmente peligroso porque los portadores de
                 la enfermedad
                 pueden infectar a otros sin siquiera darse cuenta de que están infectados. Esto pone a prueba la
                 eficacia de las medidas
-                de aislamiento, ya que, en caso de ser levantadas, los portadores asintomáticos pueden estar
-                transmitiendo el virus a
-                sus comunidades creyéndose sanos. Las pruebas masivas ayudan a combatir
-                este problema. Es el diagnóstico mediante pruebas, no la presencia o ausencia de síntomas, la única
-                forma de
-                verdaderamente saber quiénes tienen o han tenido el virus. De esta forma las pruebas permiten
-                identificar los portadores
-                del virus y así evaluar quienes deben permanecer aislados y quienes pueden retornar a sus actividades
-                sin ser un peligro
-                potencial. Así mismo, las pruebas masivas facilitan reconstruir las redes y rastrear los movimientos
-                recientes de los
-                portadores del virus para así evaluar y aislar, según se considere necesario, a las personas con quienes
-                han entrado en
-                contacto y así evitar la propagación.</p>
+                de aislamiento, ya que, en caso de ser levantadas, los portadores asintomáticos e incluso los portadores
+                con <a class="tooltipped" data-position="bottom"
+                    data-tooltip="Se considera asintomático el paciente que es portador de una enfermedad o infección pero no experimenta síntomas.">síntomas
+                    leves</a> pueden estar transmitiendo el virus a sus comunidades creyéndose sanos. Las pruebas
+                masivas ayudan a combatir este
+                problema. El diagnóstico mediante pruebas, no la presencia o ausencia de síntomas, es la única forma de
+                verdaderamente
+                saber quiénes tienen o han tenido el virus. De esta forma las pruebas permiten identificar los
+                portadores del virus y
+                así evaluar quiénes deben permanecer aislados y quiénes pueden retornar a sus actividades sin ser un
+                peligro potencial.
+                Así mismo, las pruebas masivas facilitan reconstruir las redes y rastrear los movimientos recientes de
+                los portadores
+                del virus para así evaluar y aislar, según se considere necesario, a las personas con quienes han
+                entrado en contacto y
+                así romper cadenas de contagio.
+            </p>
             <p>
                 Hasta el momento, a pesar de los intentos de toda la comunidad científica internacional, el Covid-19 no
                 tiene una vacuna
@@ -65,176 +75,206 @@
                 de que mantener
                 una medida de aislamiento de forma indefinida es insostenible, la experiencia internacional parece
                 mostrar que realizar
-                pruebas masivas es de los mejores métodos que tenemos a disposición para contener la propagación del
-                Covid-19.
-                Identificando correctamente a las personas que portan o fueron portadores del virus, permite diseñar
-                mejores políticas
-                que disminuyan la interrupción de la sociedad y todos los costos humanos, sociales y económicos
-                asociados.
+                pruebas masivas es de los mejores métodos que tenemos a disposición para diseñar mejores políticas que
+                disminuyan la
+                interrupción de la sociedad y todos los costos humanos, sociales y económicos asociados.
             </p>
-            <p>
-                Sabemos que Covid-19 tiene un período medio de incubación de alrededor de 5 días, periodo durante el
-                cual el virus es
-                muy transmisible, y en el cual cerca del 50% de los infectados pueden ser <a class="tooltipped"
-                    data-position="bottom"
-                    data-tooltip="Se considera asintomático el paciente que es portador de una enfermedad o infección pero no experimenta síntomas.">asintomáticos</a>.
-                Esta combinación de
-                características hacen que el virus sea particularmente peligroso porque los portadores de la enfermedad
-                pueden infectar
-                a otros sin siquiera darse cuenta de que están infectados. Esto pone a prueba la eficacia de las medidas
-                de aislamiento,
-                ya que en caso de ser levantadas, los portadores asintomáticos pueden estar transmitiendo el virus a sus
-                comunidades
-                creyéndose sanos. Las pruebas masivas ayudan a combatir este problema de varias maneras. Es el
-                diagnóstico mediante
-                pruebas, no la presencia o ausencia de síntomas, la única forma de verdaderamente saber si uno ha
-                contraído el virus.
-                Las pruebas pueden permitir a los oficiales de salud rastrear los movimientos recientes de los
-                portadores del virus para
-                así evaluar y aislar, según sea necesario, a las personas con quienes han entrado en contacto. De esta
-                manera, las
-                pruebas masivas son el mejor método para detener estratégicamente la propagación de Covid-19 al tratar
-                sólo aquellas
-                personas realmente y potencialmente infectadas, con la menor interrupción a la sociedad.</p>
         </div>
+        <h5 class="orange-text darken-3 center-align">¿Cómo estamos en la administración de pruebas de Covid-19 en
+            Colombia?
+        </h5>
         <div class="row">
             <div class="col m5">
-                <h6 class="orange-text darken-3">EXPERIENCIAS INTERNACIONALES</h6>
-                <p id="text_0">Experiencias internacionales han mostrado que realizar pruebas masivas ha funcionado en
-                    la lucha contra el Coronavirus.
-                    En Vò Euganeo, una ciudad italiana de 3.341 personas, los casos activos se redujeron de 89 a solo 6
-                    después de la
-                    implementación de las pruebas masivas, un número que pronto cayó a 0. La ciudad evaluó a cada
-                    residente y puso bajo
-                    cuarentena la ciudad durante dos semanas y después de este tiempo volvió a evaluar a cada residente.
-                    Los infectados
-                    permanecieron aislados hasta que se recuperaron, y la ciudad reabrió sin experimentar casos nuevos.
-                    La tasa de
-                    mortalidad entre quienes contrajeron la enfermedad fue del 1%, muy inferior al promedio. En el caso
-                    de Vò Euganeo, la
-                    combinación de cuarentena y el uso masivo de pruebas fue la clave para superar el brote de la
-                    epidemia en el menor
-                    tiempo posible mitigando las consecuencias económicas y humanas. Corea del Sur es otro ejemplo de
-                    éxito en la
-                    implementación de pruebas masivas para aplanar la curva de contagios, incluso después de que su país
-                    tuviera una
-                    población infectada significativa. Estos ejemplos tienen implicaciones importantes para el mundo.
-                </p>
-
-                <p id="text_1">Further, the data that comes from testing is the most accurate and valuable information
-                    for the
-                    public
-                    health bodies,
-                    medical research groups, and governments we are counting on to combat this pandemic. A former
-                    director at
-                    the WHO writes
-                    that:
-                    Large-scale testing is about more than identifying and isolating cases. Information about the virus
-                    is
-                    power. Testing
-                    can help protect health workers and measure the progression of an epidemic. It can also provide
-                    evidence
-                    about regional
-                    variation and how the virus affects people of different ages and genders. Virologists can use
-                    information
-                    about cases to
-                    monitor the nature of the virus and any mutations. And data can show social and behavioural
-                    scientists
-                    whether their
-                    physical-distancing measures are working.
-                    Accurate virus models and statistics built from testing data are critical tools to inform other
-                    antiviral
-                    measures. In
-                    order to understand the scope of the virus, and to learn what works to slow its spread and eliminate
-                    cases,
-                    public
-                    health officials must have reliable information off which to base their decisions. Mass testing is
-                    the basis
-                    of all of
-                    this.
-                </p>
-                <p id="text_2">Mass testing has already worked against the novel Coronavirus. In Vò Euganeo, an Italian
-                    town of
-                    3,341
-                    people, active
-                    cases dropped from 89 to just 6 after the implementation of mass testing, a number which
-                    subsequently fell
-                    to 0. The
-                    town tested every single one of its residents and quarantined the town for two weeks, at which point
-                    they
-                    retested every
-                    resident. Those who were infected remained in isolation until they recovered, and the town reopened
-                    and
-                    experienced no
-                    new cases. The death rate among those who contracted the disease was 1%, much lower than average.
-                    South
-                    Korea has also
-                    been extremely successful in implementing mass testing to flatten their curve, even after their
-                    country had
-                    a
-                    significant infected population, to begin with. These examples have valuable implications for the
-                    world.
-                    Some say that
-                    mass testing is simply not viable on a large scale due to the resources it requires. South Korea has
-                    shown
-                    that with
-                    inexpensive and widely-available tests, efficient and safe testing centers, and rapid results
-                    turn-around,
-                    mass testing
-                    is worthwhile even without testing every resident. Others argue that it is too late to start mass
-                    testing in
-                    countries
-                    with high infection rates. The experiment in Vò does speak to the importance of testing as soon as
-                    possible,
-                    but South
-                    Korea again shows that even without the ability to contact-trace every infected individual,
-                    resources like
-                    live online
-                    maps and timelines give their non-infected citizens critical information on how to stay safe.</p>
-
-                <p id="text_3">Further, the data that comes from testing is the most accurate and valuable information
-                    for the
-                    public
-                    health bodies,
-                    medical research groups, and governments we are counting on to combat this pandemic. A former
-                    director at
-                    the WHO writes
-                    that:
-                    Large-scale testing is about more than identifying and isolating cases. Information about the virus
-                    is
-                    power. Testing
-                    can help protect health workers and measure the progression of an epidemic. It can also provide
-                    evidence
-                    about regional
-                    variation and how the virus affects people of different ages and genders. Virologists can use
-                    information
-                    about cases to
-                    monitor the nature of the virus and any mutations. And data can show social and behavioural
-                    scientists
-                    whether their
-                    physical-distancing measures are working.
-                    Accurate virus models and statistics built from testing data are critical tools to inform other
-                    antiviral
-                    measures. In
-                    order to understand the scope of the virus, and to learn what works to slow its spread and eliminate
-                    cases,
-                    public
-                    health officials must have reliable information off which to base their decisions. Mass testing is
-                    the basis
-                    of all of
-                    this.
-                </p>
+                <p id="text_0">
+                    Si bien el gobierno está haciendo esfuerzos para aumentar el número de pruebas realizadas
+                    diariamente, aún estamos
+                    lejos
+                    de un testeo masivo.</p>
+                <p id="text_1">
+                    Esta combinación de
+                    características hacen que el virus sea particularmente peligroso porque los portadores de la
+                    enfermedad
+                    pueden infectar
+                    a otros sin siquiera darse cuenta de que están infectados. Esto pone a prueba la eficacia de las
+                    medidas
+                    de aislamiento,
+                    ya que en caso de ser levantadas, los portadores asintomáticos pueden estar transmitiendo el virus a
+                    sus
+                    comunidades
+                    creyéndose sanos. </p>
+                    <p>Las pruebas masivas ayudan a combatir este problema de varias maneras. Es el
+                    diagnóstico mediante
+                    pruebas, no la presencia o ausencia de síntomas, la única forma de verdaderamente saber si uno ha
+                    contraído el virus.
+                    Las pruebas pueden permitir a los oficiales de salud rastrear los movimientos recientes de los
+                    portadores del virus para
+                    así evaluar y aislar, según sea necesario, a las personas con quienes han entrado en contacto. De
+                    esta
+                    manera, las
+                    pruebas masivas son el mejor método para detener estratégicamente la propagación de Covid-19 al
+                    tratar
+                    sólo aquellas
+                    personas realmente y potencialmente infectadas, con la menor interrupción a la sociedad.</p>
+                <p id="text_2">A pesar de que el crecimiento de <a class="tooltipped" data-position="bottom"
+                        data-tooltip="The United States recently hit an attention-getting milestone, passing China as the country with the most reported infections. But there is deep uncertainty about whether there really are more American cases, and about how well the figures reflect reality. Countries vary wildly in testing for the virus and how they report the numbers, and experts say most infections are going undetected. So the publicized national tallies are rough, incomplete pictures that may not be all that comparable. And that’s if countries are forthcoming about their data. Officials in the United States say that China, which has reported more than 82,000 infections, has understated its epidemic. Until this week, the Chinese government excluded those patients who tested positive for the virus but had no symptoms. China also doesn’t say how many tests it has conducted, and doubts have been raised about whether it has tested extensively in Xinjiang, the province where it holds hundreds of thousands of Muslims in indoctrination camps. Few countries have done aggressive testing. And of course, the more testing there is, the more cases are found.">casos
+                        confirmados</a> en Colombia parece no ser tan rápido como el de otros países que han
+                    sido golpeados por la pandemia como Italia, España o Estados Unidos, no podemos concluir que estamos
+                    <a class="tooltipped" data-position="bottom"
+                        data-tooltip="Se considera asintomático el paciente que es portador de una enfermedad o infección pero no experimenta síntomas.">aplanando
+                        la curva</a>
+                    si no tenemos un panorama claro de cómo vamos en la administración de pruebas. El número de casos
+                    confirmados
+                    probablemente es menor al número verdadero de enfermos si no se hacen pruebas suficientes.</p>
+                <p>Este proyecto surge con el propósito de dar una imagen más completa sobre la información de pruebas
+                    de Covid-19 en
+                    Colombia ya que creemos que además de una vacuna, más pruebas, ventiladores y camas, la información
+                    es nuestra mejor
+                    arma para afrontar la pandemia. Ha sido difícil recopilar información precisa sobre las pruebas
+                    realizadas en el
+                    país.
+                    El Instituto Nacional de Salud (INS) reporta diariamente en su página web el número de casos
+                    confirmados, casos
+                    recuperados, casos descartados y muertes. Es importante resaltar el valioso nivel de detalle -fecha
+                    de diagnóstico,
+                    ubicación, departamento, edad- de los datos sobre casos confirmados, recuperados y muertes.
+                    Desafortunadamente, este
+                    nivel de detalle no sucede con los casos descartados, que se reportan diariamente pero solo a nivel
+                    nacional, ni con
+                    el
+                    número de pruebas, que se reportan semanalmente y también a nivel nacional. Esto hace difícil hacer
+                    un seguimiento
+                    preciso del crecimiento del número de pruebas en el país y por regiones. Además, no es claro si el
+                    número de casos
+                    descartados es el número de pruebas negativas o el número de personas que han resultado negativas ya
+                    que una misma
+                    persona puede ser testeada múltiples veces.</p>
+                <p>El 28 de marzo, el INS publicó en su página de Twitter el número de muestras procesadas diariamente
+                    desde el 3 de
+                    marzo
+                    hasta el 27 de marzo. Sin embargo, a la fecha no se conoce un nuevo informe actualizando la
+                    información diaria. En
+                    nuestro intento por tener una idea del número de pruebas que se están realizando diariamente en el
+                    país, sumamos el
+                    número de casos confirmados y casos descartados diariamente y tomamos esta cifra como una
+                    aproximación del número de
+                    pruebas realizadas diariamente. Sabemos que esta cifra puede ser menor que el número total de
+                    pruebas realizadas
+                    pues no
+                    comprende el número de casos que están en observación, pero nos da al menos el mínimo el número de
+                    pruebas que se
+                    están
+                    procesando diariamente y de cómo el testeo está creciendo.</p>
             </div>
             <div class="col m7">
-                <svg id="chart"></svg>
+                <svg id="chartTestCol"></svg>
+            </div>
+        </div>
+        <h5 class="orange-text darken-3 center-align">Experiencias internacionales</h5>
+        <div class="row">
+            <div class="col m6">
+                <h6 class="orange-text darken-3">Vò Euganeo, Italia</h6>
+                <p>Los casos activos se redujeron de 89 a solo 6 después de la implementación de las pruebas masivas, un
+                    número que pronto
+                    cayó a 0. La ciudad evaluó a cada residente
+                    y puso bajo
+                    cuarentena la ciudad durante dos semanas y después de este tiempo volvió a evaluar a cada residente.
+                </p>
+                <p><a class="modal-trigger" href="#italia">Ver más . . .</a>
+                </p>
+            </div>
+            <div class="col m6">
+                <svg id="chartInternational"></svg>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col m6">
+                <svg id="chartInternational"></svg>
+            </div>
+            <div class="col m6">
+                <h6 class="orange-text darken-3">Corea del Sur</h6>
+                <p>En este caso se ha demostrado que incluso sin la capacidad de tracear los contactos de cada individuo
+                    infectado, el uso masivo de pruebas permite
+                    generar recursos como mapas en línea en vivo y líneas de tiempo que brindan a sus ciudadanos
+                    información crítica sobre
+                    cómo mantenerse a salvo.
+                </p>
+                <p><a class="modal-trigger" href="#corea">Ver más . . .</a>
+                </p>
             </div>
         </div>
     </div>
+
+    <!-- MODALS -->
+
+    <div id="italia" class="modal">
+        <div class="modal-content">
+            <h4 class="orange-text darken-3">Vò Euganeo, Italia</h4>
+            <div class="row">
+                <div class="col m8">
+                    <p>En Vò Euganeo, una ciudad italiana de 3.341 personas, los casos activos se redujeron de 89 a solo
+                        6
+                        después de la
+                        implementación de las pruebas masivas, un número que pronto cayó a 0. La ciudad evaluó a cada
+                        residente
+                        y puso bajo
+                        cuarentena la ciudad durante dos semanas y después de este tiempo volvió a evaluar a cada
+                        residente. Los
+                        infectados
+                        permanecieron aislados hasta que se recuperaron, y la ciudad reabrió sin experimentar casos
+                        nuevos. La
+                        tasa de
+                        mortalidad entre quienes contrajeron la enfermedad fue del 1%, muy inferior al promedio. En el
+                        caso de
+                        Vò Euganeo, la
+                        combinación de cuarentena y el uso masivo de pruebas fue la clave para superar el brote de la
+                        epidemia
+                        en el menor
+                        tiempo posible mitigando las consecuencias económicas y humanas.</p>
+                </div>
+                <div class="col m4"><img
+                        src="https://medias.liberation.fr/photo/1300915-infographie-coronavirus-mesures-italie-france-espagne.png"
+                        width="100%"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close orange darken-3 waves-effect waves-green btn-flat white-text">Cerrar</a>
+        </div>
+    </div>
+
+    <div id="corea" class="modal">
+        <div class="modal-content">
+            <h4 class="orange-text darken-3">Corea del Sur</h4>
+            <div class="row">
+                <div class="col m8">
+                    <p>Corea del Sur ha demostrado que con pruebas económicas y ampliamente disponibles, centros de
+                        pruebas eficientes y
+                        seguros, y resultados rápidos, las pruebas en masa son posibles y valiosas, incluso si no es
+                        posible evaluar a todos los
+                        residentes como en Vò Euganeo. Entre más temprano se empiece con las pruebas masivas más rápido
+                        se le puede hacer frente
+                        al contagio. El experimento en Vò Euganeo muestra la importancia de usar las pruebas lo antes
+                        posible, pero la evidencia
+                        de Corea del Sur muestra que incluso sin la capacidad de tracear los contactos de cada individuo
+                        infectado, el uso
+                        masivo de pruebas permite generar recursos como mapas en línea en vivo y líneas de tiempo que
+                        brindan a sus ciudadanos
+                        información crítica sobre cómo mantenerse a salvo.</p>
+                </div>
+                <div class="col m4"><img
+                        src="https://medias.liberation.fr/photo/1300915-infographie-coronavirus-mesures-italie-france-espagne.png"
+                        width="100%"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close orange darken-3 waves-effect waves-green btn-flat white-text">Cerrar</a>
+        </div>
+    </div>
+
 </main>
 <footer class="page-footer orange darken-1">
     <div class="footer-copyright">
         <div class="container center-align">
-            <div class="row">
+            <div class="row" style="margin-bottom: 0px;">
                 <div class="col m4">
                     Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL<i
                             class="material-icons tiny">lightbulb_outline</i></a>
