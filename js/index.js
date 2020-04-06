@@ -41,7 +41,7 @@ const createChart = async (w, h) => {
         .attr('transform',
             `translate(${margin.left}, ${margin.top})`)
 
-    let data = await d3.csv('../data/Datos a nivel nacional.xlsx - Pruebas Nacional.csv')
+    let data = await d3.csv('../data/datos_nal.csv')
     data = await data.map(d => {
         d[date] = new Date(d[date])
         d[offTests] = +d[offTests]
