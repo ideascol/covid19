@@ -1,9 +1,15 @@
 const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
 const lastUpdate = new Date(document.lastModified)
+const ORANGE = '#ff9800'
 const SVG = 'chart'
 const DOWN = 'down'
 const UP = 'up'
+
+// Data columns
+const date = 'Fecha'
+const offTests = 'Pruebas realizadas'
+const cases = 'Casos Confirmados Totales'
 
 const palette = [
     'rgb(80,198,229)',

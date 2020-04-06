@@ -9,6 +9,26 @@ const initialize = async _ => {
     // await createMap(width, height)    
 }
 
+const createEmpty = (svg, x, width, height) => {
+    svg.append('rect')
+        .attr('class', '_blanksT')
+        .attr('x', x)
+        .attr('y', 20)
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', '#fff3e0')
+        .style('opacity', '0.6')
+    svg.append('foreignObject')
+        .attr('class', '_blanks')
+        .attr('x', x + 20)
+        .attr('y', 20)
+        .attr('width', width)
+        .attr('height', height)
+        .append('xhtml:p')
+        .attr('class', '_blanks grey-text darken-1')
+        .html(['No hay', 'datos', 'a la', 'fecha'].join(`</br>`))
+}
+
 const createChart = async (w, h) => {
     let margin = { top: 20, right: 5, bottom: 10, left: 50 }
 
@@ -23,34 +43,47 @@ const createChart = async (w, h) => {
 
     let data = await d3.csv('../data/Datos a nivel nacional.xlsx - Pruebas Nacional.csv')
     data = await data.map(d => {
-        d['Fecha'] = new Date(d['Fecha'])
-        d['Pruebas realizadas'] = +d['Pruebas realizadas']
+        d[date] = new Date(d[date])
+        d[offTests] = +d[offTests]
+        d[cases] = +d[cases]
         return d
     })
-    data = data.sort((a, b) => new Date(a['Fecha']) - new Date(b['Fecha']))
+    data = data.sort((a, b) => new Date(a[date]) - new Date(b[date]))
     console.log(data)
     let svg = d3.select('#chartTestCol')
 
     var x = d3.scaleTime().range([margin.left, width])
-        .domain(d3.extent(data, d => d['Fecha']))
+        .domain(d3.extent(data, d => d[date]))
 
     let y = d3.scaleLinear()
         .range([height, margin.top])
-        .domain(d3.extent(data, d => d['Pruebas realizadas']))
+        .domain(d3.extent(data, d => d[offTests]))
+
+    let line = d3.line()
+        .x((_, i) => x(i))
+        .y(d => y(d[offTests]))
 
     let xAxis = d3.axisBottom(x)
     let yAxis = d3.axisLeft(y)
 
+    svg.append('text')
+        .attr('id', 'chartTitle')
+        .attr('x', 10)
+        .attr('y', 15)
+        .style('fill', ORANGE)
+        .text('Número de pruebas hechas')
+
     svg.selectAll('rect')
         .data(data)
         .enter().append('rect')
-        .attr('x', d => x(d['Fecha']))
-        .attr('y', d => y(d['Pruebas realizadas']))
-        .attr('width', 10)
-        .attr('height', d => height - y(d['Pruebas realizadas']))
-        .style('fill', '#ff9800')
+        .attr('class', '_offTests')
+        .attr('x', d => x(d[date]))
+        .attr('y', d => y(d[offTests]))
+        .attr('width', 7)
+        .attr('height', d => height - y(d[offTests]))
+        .style('fill', ORANGE)
         .append('title')
-        .html(d => `${d['Fecha'].toLocaleDateString()}: ${d3.format(',d')(d['Pruebas realizadas'])} pruebas`)
+        .html(d => `${d[date].toLocaleDateString()}: ${d3.format(',d')(d[offTests])} pruebas`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -61,6 +94,34 @@ const createChart = async (w, h) => {
     svg.append('g')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    svg.append('path')
+        .data([data]) // 10. Binds data to the line 
+        .attr('class', 'line') // Assign a class for styling 
+        .attr('d', line)
+
+    const addCases = _ => {
+        svg.selectAll('rect._cases')
+            .data(data)
+            .enter().append('rect')
+            .attr('class', '_cases')
+            .attr('x', d => x(d[date]) + 7)
+            .attr('y', d => y(d[cases]))
+            .attr('width', 7)
+            .attr('height', 0)
+            .style('fill', palette[0])
+            .append('title')
+            .html(d => `${d[date].toLocaleDateString()}: ${d3.format(',d')(d[cases])} casos confirmados`)
+
+        svg.selectAll('rect._cases')
+            .transition()
+            .duration(1000)
+            .attr('y', d => y(d[cases]))
+            .attr('height', d => height - y(d[cases]))
+
+        d3.select('#chartTitle')
+            .text('Número de pruebas hechas + casos confirmados')
+    }
 
     // Fix/unfix chart
     new Waypoint({
@@ -78,28 +139,29 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('text_1'),
         handler: direction => {
-            if (direction === DOWN) {
-                svg.append('rect')
-                    .attr('class', '_blanks')
-                    .attr('x', x(data[22]['Fecha']))
-                    .attr('y', 5)
-                    .attr('width', x(data[data.length - 1]['Fecha']) - x(data[22]['Fecha']))
-                    .attr('height', height * 0.95)
-                    .style('fill', '#fff3e0')
-                    .style('opacity', '0.6')
-                svg.append('foreignObject')
-                    .attr('class', '_blanks')
-                    .attr('x', x(data[22]['Fecha']) + 20)
-                    .attr('y', 10)
-                    .attr('width', x(data[data.length - 1]['Fecha']) - x(data[22]['Fecha']))
-                    .attr('height', height * 0.95)
-                    .append('xhtml:p')
-                    .attr('class', '_blanks grey-text darken-1')
-                    .html(['No hay', 'datos', 'a la', 'fecha'].join(`</br>`))
-            }
+            if (direction === DOWN)
+                createEmpty(svg, x(data[22][date]), x(data[data.length - 1][date]) - x(data[22][date]), height - margin.top)
             else if (direction === UP)
                 svg.selectAll('._blanks')
                     .remove()
+        },
+        offset: '40%'
+    })
+
+    // Add/remove cases
+    new Waypoint({
+        element: document.getElementById('text_2'),
+        handler: direction => {
+            if (direction === DOWN) {
+                d3.selectAll('._blanks').remove()
+                addCases()
+            }
+            else if (direction === UP) {
+                createEmpty(svg, x(data[22][date]), x(data[data.length - 1][date]) - x(data[22][date]), height - margin.top)
+                d3.selectAll('._cases').remove()
+                d3.select('#chartTitle')
+                    .text('Número de pruebas hechas')
+            }
         },
         offset: '40%'
     })
