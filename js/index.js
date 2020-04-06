@@ -59,10 +59,6 @@ const createChart = async (w, h) => {
         .range([height, margin.top])
         .domain(d3.extent(data, d => d[offTests]))
 
-    let line = d3.line()
-        .x((_, i) => x(i))
-        .y(d => y(d[offTests]))
-
     let xAxis = d3.axisBottom(x)
     let yAxis = d3.axisLeft(y)
 
@@ -70,8 +66,7 @@ const createChart = async (w, h) => {
         .attr('id', 'chartTitle')
         .attr('x', 10)
         .attr('y', 15)
-        .style('fill', ORANGE)
-        .text('Número de pruebas hechas')
+        .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan>`)
 
     svg.selectAll('rect')
         .data(data)
@@ -95,11 +90,6 @@ const createChart = async (w, h) => {
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
 
-    svg.append('path')
-        .data([data]) // 10. Binds data to the line 
-        .attr('class', 'line') // Assign a class for styling 
-        .attr('d', line)
-
     const addCases = _ => {
         svg.selectAll('rect._cases')
             .data(data)
@@ -120,7 +110,7 @@ const createChart = async (w, h) => {
             .attr('height', d => height - y(d[cases]))
 
         d3.select('#chartTitle')
-            .text('Número de pruebas hechas + casos confirmados')
+            .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan> + <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
     }
 
     // Fix/unfix chart
@@ -160,7 +150,7 @@ const createChart = async (w, h) => {
                 createEmpty(svg, x(data[22][date]), x(data[data.length - 1][date]) - x(data[22][date]), height - margin.top)
                 d3.selectAll('._cases').remove()
                 d3.select('#chartTitle')
-                    .text('Número de pruebas hechas')
+                    .html(`Número de <tspan style="fill: ${ORANGE}">pruebas hechas</tspan>`)
             }
         },
         offset: '40%'
