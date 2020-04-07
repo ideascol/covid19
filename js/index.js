@@ -326,8 +326,6 @@ const createComparisonChart = async (w, h) => {
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
         .call(xAxis).selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('transform', 'rotate(320)')
 
     svg.append('g')
         .attr('class', 'y-axis')
