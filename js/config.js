@@ -1,6 +1,7 @@
 const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
 const lastUpdate = new Date(document.lastModified)
+const firstDay = new Date(2020, 02, 05)
 const ORANGE = '#ff9800'
 const SVG = 'chart'
 const DOWN = 'down'
