@@ -47,6 +47,7 @@ const createChart = async (w, h) => {
             `translate(${margin.left}, ${margin.top})`)
 
     let data = await d3.csv('data/datos_nal.csv')
+    console.log(data)
     data = await data.map(d => {
         d[COLUMNS['date']] = new Date(d[COLUMNS['date']])
         d[COLUMNS['offTests']] = +d[COLUMNS['offTests']]
@@ -57,8 +58,8 @@ const createChart = async (w, h) => {
     data = data.sort((a, b) => new Date(a[COLUMNS['date']]) - new Date(b[COLUMNS['date']]))
     console.log(data)
     let svg = d3.select('#chartTestCol')
-    let lastDay = d3.max(await data.map(d => d[COLUMNS['date']]))
-    lastDay.setDate(lastDay.getDate() + 3)
+    let lastDay = new Date(d3.max(await data.map(d => d[COLUMNS['date']])).getTime())
+    lastDay.setDate(lastDay.getDate() + 2)
 
     var x = d3.scaleTime().range([margin.left, width])
         .domain([firstDay, lastDay])
