@@ -306,17 +306,29 @@ const createComparisonChart = async (w, h) => {
         .attr('y', 30)
         .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">España</tspan>, <tspan style="fill: ${palette[4]}">EE.UU</tspan> y <tspan style="fill: ${palette[5]}">Colombia</tspan>`)
 
-    Object.keys(COLS_INTNAL).filter(d => d !== 'day').map((col, i) => {
-        let line = d3.line()
-            .x(d => x(d[COLS_INTNAL['day']]))
-            .y(d => d[COLS_INTNAL[col]] === 0 ? 1 : y(d[COLS_INTNAL[col]]))
+    svg.append('text')
+        .attr('id', 'chart2Title_a')
+        .attr('x', margin.left + 10)
+        .attr('y', h - 10)
+        .style('font-size', 13)
+        .style('color', 'grey')
+        .html(`Días a partir del día con 200 casos acumulados confirmados`)        
 
-        svg.append('path')
-            .data([data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0)])
-            .attr('class', 'line')
-            .style('stroke', palette[i + 2])
-            .attr('d', line)
-    })
+    let lineCols = Object.keys(COLS_INTNAL).filter(d => d !== 'day')
+    for (let i = 0; i < lineCols.length; i++) {
+        setTimeout(_ => {
+            let col = lineCols[i]
+            let line = d3.line()
+                .x(d => x(d[COLS_INTNAL['day']]))
+                .y(d => d[COLS_INTNAL[col]] === 0 ? 1 : y(d[COLS_INTNAL[col]]))
+
+            svg.append('path')
+                .data([data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0)])
+                .attr('class', 'line')
+                .style('stroke', palette[i + 2])
+                .attr('d', line)
+        }, i * 500)
+    }
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
