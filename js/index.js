@@ -8,7 +8,7 @@ function initialize() {
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)    
 
     let width = d3.select('#chapter_0').node().getBoundingClientRect().width
-    let height = vh * 0.35 > width / 2 ? width / 2 : vh * 0.35
+    let height = vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35
 
     createChart(width * 0.55, height)
     // createMap(width, height)    
