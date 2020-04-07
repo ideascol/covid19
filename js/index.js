@@ -11,7 +11,7 @@ const initialize = async _ => {
 
 const createEmpty = (svg, x, width, height) => {
     svg.append('rect')
-        .attr('class', '_blanksT')
+        .attr('class', '_blanks')
         .attr('x', x)
         .attr('y', 20)
         .attr('width', width)
@@ -26,7 +26,7 @@ const createEmpty = (svg, x, width, height) => {
         .attr('height', height)
         .append('xhtml:p')
         .attr('class', '_blanks grey-text darken-1')
-        .html(['No hay', 'datos', 'a la', 'fecha'].join(`</br>`))
+        .html(['No hay', 'datos', 'de pruebas', 'a la', 'fecha'].join(`</br>`))
 }
 
 const createChart = async (w, h) => {
@@ -43,21 +43,22 @@ const createChart = async (w, h) => {
 
     let data = await d3.csv('data/datos_nal.csv')
     data = await data.map(d => {
-        d[date] = new Date(d[date])
-        d[offTests] = +d[offTests]
-        d[cases] = +d[cases]
+        d[COLUMNS['date']] = new Date(d[COLUMNS['date']])
+        d[COLUMNS['offTests']] = +d[COLUMNS['offTests']]
+        d[COLUMNS['cases']] = +d[COLUMNS['cases']]
+        d[COLUMNS['discarded']] = +d[COLUMNS['discarded']]
         return d
     })
-    data = data.sort((a, b) => new Date(a[date]) - new Date(b[date]))
+    data = data.sort((a, b) => new Date(a[COLUMNS['date']]) - new Date(b[COLUMNS['date']]))
     console.log(data)
     let svg = d3.select('#chartTestCol')
 
     var x = d3.scaleTime().range([margin.left, width])
-        .domain(d3.extent(data, d => d[date]))
+        .domain(d3.extent(data, d => d[COLUMNS['date']]))
 
     let y = d3.scaleLinear()
         .range([height, margin.top])
-        .domain(d3.extent(data, d => d[offTests]))
+        .domain(d3.extent(data, d => d[COLUMNS['offTests']]))
 
     let xAxis = d3.axisBottom(x)
     let yAxis = d3.axisLeft(y)
@@ -72,13 +73,13 @@ const createChart = async (w, h) => {
         .data(data)
         .enter().append('rect')
         .attr('class', '_offTests')
-        .attr('x', d => x(d[date]))
-        .attr('y', d => y(d[offTests]))
+        .attr('x', d => x(d[COLUMNS['date']]))
+        .attr('y', d => y(d[COLUMNS['offTests']]))
         .attr('width', 7)
-        .attr('height', d => height - y(d[offTests]))
+        .attr('height', d => height - y(d[COLUMNS['offTests']]))
         .style('fill', ORANGE)
         .append('title')
-        .html(d => `${d[date].toLocaleDateString()}: ${d3.format(',d')(d[offTests])} pruebas`)
+        .html(d => `${d[COLUMNS['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLUMNS['offTests']])} pruebas`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -87,30 +88,70 @@ const createChart = async (w, h) => {
         .attr('transform', 'rotate(320)')
 
     svg.append('g')
+        .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    createEmpty(svg, x(data[22][COLUMNS['date']]), x(data[data.length - 1][COLUMNS['date']]) - x(data[22][COLUMNS['date']]), height - margin.top)
+
+    svg.selectAll('._blanks')
+        .style('visibility', 'hidden')
+
+    const reDimension = col => {
+        svg.selectAll(`rect._${col}`)
+            .transition().duration(1000)
+            .attr('y', d => y(d[COLUMNS[col]]))
+            .attr('height', d => height - y(d[COLUMNS[col]]))
+    }        
 
     const addCases = _ => {
         svg.selectAll('rect._cases')
             .data(data)
             .enter().append('rect')
             .attr('class', '_cases')
-            .attr('x', d => x(d[date]) + 7)
-            .attr('y', d => y(d[cases]))
+            .attr('x', d => x(d[COLUMNS['date']]) + 7)
+            .attr('y', height)
             .attr('width', 7)
             .attr('height', 0)
             .style('fill', palette[0])
             .append('title')
-            .html(d => `${d[date].toLocaleDateString()}: ${d3.format(',d')(d[cases])} casos confirmados`)
+            .html(d => `${d[COLUMNS['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLUMNS['cases']])} casos confirmados`)
 
-        svg.selectAll('rect._cases')
-            .transition()
-            .duration(1000)
-            .attr('y', d => y(d[cases]))
-            .attr('height', d => height - y(d[cases]))
+        reDimension('cases')
 
         d3.select('#chartTitle')
-            .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan> + <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+            .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+    }
+
+    const addDiscarded = _ => {
+        y.domain(d3.extent(data, d => d[COLUMNS['cases']] + d[COLUMNS['discarded']]))
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis) 
+
+        reDimension('offTests')
+        reDimension('cases')            
+
+        svg.selectAll('rect._discarded')
+            .data(data)
+            .enter().append('rect')
+            .attr('class', '_discarded')
+            .attr('x', d => x(d[COLUMNS['date']]) + 7)
+            .attr('y', d => y(d[COLUMNS['cases']]))
+            .attr('width', 7)
+            .attr('height', 0)
+            .style('fill', palette[1])
+            .append('title')
+            .html(d => `${d[COLUMNS['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLUMNS['discarded']])} casos confirmados`)
+
+        svg.selectAll('rect._discarded')
+            .transition()
+            .duration(1000)
+            .attr('y', d => y(d[COLUMNS['cases']] + d[COLUMNS['discarded']]))
+            .attr('height', d => height - y(d[COLUMNS['discarded']]))
+
+        d3.select('#chartTitle')
+            .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)                
     }
 
     // Fix/unfix chart
@@ -125,32 +166,62 @@ const createChart = async (w, h) => {
         offset: '10%'
     })
 
-    // Add/remove empty
-    new Waypoint({
-        element: document.getElementById('text_1'),
-        handler: direction => {
-            if (direction === DOWN)
-                createEmpty(svg, x(data[22][date]), x(data[data.length - 1][date]) - x(data[22][date]), height - margin.top)
-            else if (direction === UP)
-                svg.selectAll('._blanks')
-                    .remove()
-        },
-        offset: '40%'
-    })
-
     // Add/remove cases
     new Waypoint({
         element: document.getElementById('text_2'),
         handler: direction => {
             if (direction === DOWN) {
-                d3.selectAll('._blanks').remove()
+                d3.selectAll('._blanks').style('visibility', 'hidden')
                 addCases()
             }
             else if (direction === UP) {
-                createEmpty(svg, x(data[22][date]), x(data[data.length - 1][date]) - x(data[22][date]), height - margin.top)
                 d3.selectAll('._cases').remove()
                 d3.select('#chartTitle')
                     .html(`Número de <tspan style="fill: ${ORANGE}">pruebas hechas</tspan>`)
+            }
+        },
+        offset: '40%'
+    })
+
+    // Add/remove empty
+    new Waypoint({
+        element: document.getElementById('text_3'),
+        handler: direction => {
+            if (direction === DOWN)
+                svg.selectAll('._blanks')
+                    .style('visibility', 'inherit')
+            else if (direction === UP)
+                svg.selectAll('._blanks')
+                    .style('visibility', 'hidden')
+        },
+        offset: '40%'
+    })
+
+    // Add/remove discarded
+    new Waypoint({
+        element: document.getElementById('text_4'),
+        handler: direction => {
+            if (direction === DOWN) {
+                svg.selectAll('p._blanks')
+                    .style('visibility', 'hidden')
+                addDiscarded()
+            }
+            else if (direction === UP) {
+                y.domain(d3.extent(data, d => d[COLUMNS['offTests']]))
+                svg.select('.y-axis')
+                    .transition().duration(1000)
+                    .call(yAxis)      
+
+                reDimension('offTests')
+                reDimension('cases')                      
+
+                svg.selectAll('p._blanks')
+                    .style('visibility', 'inherit')
+
+                svg.selectAll('._discarded').remove()
+                
+                d3.select('#chartTitle')
+                    .html(`Número de  <tspan style="fill: ${ORANGE}">pruebas hechas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
             }
         },
         offset: '40%'

@@ -7,9 +7,12 @@ const DOWN = 'down'
 const UP = 'up'
 
 // Data columns
-const date = 'Fecha'
-const offTests = 'Pruebas realizadas'
-const cases = 'Casos Confirmados Totales'
+const COLUMNS = {
+    'date': 'Fecha',
+    'offTests': 'Pruebas realizadas',
+    'cases': 'Casos Confirmados Totales',
+    'discarded': 'Casos Descartados Totales'
+}
 
 const palette = [
     'rgb(80,198,229)',
