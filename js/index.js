@@ -287,12 +287,12 @@ const createComparisonChart = async (w, h) => {
     var x = d3.scaleLinear().range([margin.left, width])
         .domain([0, d3.max(await data.map(d => d[COLS_INTNAL['day']])) + 1])
 
-    let y = d3.scaleLinear()
+    let y = d3.scaleLog()
         .range([height, margin.top])
-        .domain([0, d3.max(data.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['spain']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
+        .domain([200, d3.max(data.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['spain']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
 
     let xAxis = d3.axisBottom(x)
-    let yAxis = d3.axisLeft(y)
+    let yAxis = d3.axisLeft(y).ticks(5).tickFormat(d => d3.format(',d')(d))
 
     svg.append('text')
         .attr('id', 'chart2Title_a')
@@ -309,10 +309,10 @@ const createComparisonChart = async (w, h) => {
     Object.keys(COLS_INTNAL).filter(d => d !== 'day').map((col, i) => {
         let line = d3.line()
             .x(d => x(d[COLS_INTNAL['day']]))
-            .y(d => y(d[COLS_INTNAL[col]]))
+            .y(d => d[COLS_INTNAL[col]] === 0 ? 1 : y(d[COLS_INTNAL[col]]))
 
         svg.append('path')
-            .data([data])
+            .data([data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0)])
             .attr('class', 'line')
             .style('stroke', palette[i + 2])
             .attr('d', line)
