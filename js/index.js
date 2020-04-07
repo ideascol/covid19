@@ -195,12 +195,16 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('text_3'),
         handler: direction => {
-            if (direction === DOWN)
+            if (direction === DOWN) {
                 svg.selectAll('._blanks')
                     .style('visibility', 'inherit')
-            else if (direction === UP)
+                d3.select('#chartCompCases').style('position', '').style('top', '')
+            }
+            else if (direction === UP) {
                 svg.selectAll('._blanks')
                     .style('visibility', 'hidden')
+                d3.select('#chartCompCases').style('position', 'fixed').style('top', `${Math.round(h * 100 / vh) + 10}%`)
+            }
         },
         offset: '40%'
     })
@@ -247,17 +251,6 @@ const createChart = async (w, h) => {
         offset: `${Math.round(h * 100 / vh) + 5}%`
     })
 
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('chapter_2'),
-        handler: direction => {
-            if (direction === DOWN)
-                d3.select('#chartCompCases').style('position', '').style('top', '')
-            else if (direction === UP)
-                d3.select('#chartCompCases').style('position', 'fixed').style('top', `${Math.round(h * 100 / vh) + 10}%`)
-        },
-        offset: `${2 * Math.round(h * 100 / vh) + 5}%`
-    })
 }
 
 const createComparisonChart = async (w, h) => {
@@ -312,7 +305,7 @@ const createComparisonChart = async (w, h) => {
         .attr('y', h - 10)
         .style('font-size', 13)
         .style('color', 'grey')
-        .html(`Días a partir del día con 200 casos acumulados confirmados`)        
+        .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
     let lineCols = Object.keys(COLS_INTNAL).filter(d => d !== 'day')
     for (let i = 0; i < lineCols.length; i++) {
