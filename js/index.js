@@ -1,12 +1,17 @@
-const initialize = async _ => {
+var vh = 0
+
+function initialize() {
     M.AutoInit();
 
     d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
+    
+    vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)    
 
     let width = d3.select('#chapter_0').node().getBoundingClientRect().width
+    let height = vh * 0.35 > 600 ? 600 : vh * 0.35
 
-    await createChart(width * 0.55, Math.max(document.documentElement.clientHeight, window.innerHeight || 0)*0.4)
-    // await createMap(width, height)    
+    createChart(width * 0.55, height)
+    // createMap(width, height)    
 }
 
 const createEmpty = (svg, x, width, height) => {
@@ -239,7 +244,7 @@ const createChart = async (w, h) => {
             else if (direction === UP)
                 svg.style('position', 'fixed').style('top', '5%')
         },
-        offset: '50%'
+        offset: `${Math.round(h*100/vh) + 5}%`
     })
 }
 
