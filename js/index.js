@@ -237,10 +237,20 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('summaryChart'),
         handler: direction => {
-            if (direction === DOWN)
+            if (direction === DOWN) {
                 svg.style('position', '').style('top', '')
-            else if (direction === UP)
+                let lineCols = Object.keys(COLS_TESTS).filter(d => d !== 'day')
+                for (let i = 0; i < lineCols.length; i++) {
+                    setTimeout(_ => {
+                        d3.selectAll(`.tests.${lineCols[i]}`)
+                        .style('visibility', 'inherit')
+                    }, i * 500)
+                }
+            }
+            else if (direction === UP) {
                 svg.style('position', 'fixed').style('top', '5%')
+                d3.selectAll('.tests').style('visibility', 'hidden')
+            }
         },
         offset: `${Math.round(h * 100 / vh) + 5}%`
     })
@@ -316,10 +326,10 @@ const createComparisonChart = async (w, h) => {
                 .style('stroke', palette[i + 2])
                 .attr('d', line)
 
-            svg.selectAll(`circle.cases_${col}`)
+            svg.selectAll(`circle.cases.${col}`)
                 .data(data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0))
                 .enter().append('circle')
-                .attr('class', `cases_${col}`)
+                .attr('class', `cases ${col}`)
                 .attr('cx', d => x(d[COLS_INTNAL['day']]))
                 .attr('cy', d => y(d[COLS_INTNAL[col]]))
                 .attr('r', 2)
@@ -388,33 +398,30 @@ const createSummaryChart = async (w, h) => {
         .style('color', 'grey')
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
-    let lineCols = Object.keys(COLS_TESTS).filter(d => d !== 'day')
-    for (let i = 0; i < lineCols.length; i++) {
-        setTimeout(_ => {
-            let col = lineCols[i]
-            let line = d3.line()
-                .x(d => x(d[COLS_TESTS['day']]))
-                .y(d => d[COLS_TESTS[col]] === 0 ? 1 : y(d[COLS_TESTS[col]]))
+    Object.keys(COLS_TESTS).filter(d => d !== 'day').map((col, i) => {
+        let line = d3.line()
+            .x(d => x(d[COLS_TESTS['day']]))
+            .y(d => d[COLS_TESTS[col]] === 0 ? 1 : y(d[COLS_TESTS[col]]))
 
-            svg.append('path')
-                .data([data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0)])
-                .attr('class', 'line')
-                .style('stroke', palette[i + 2])
-                .attr('d', line)                
+        svg.append('path')
+            .data([data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0)])
+            .attr('class', `tests ${col} line`)
+            .style('stroke', palette[i + 2])
+            .style('visibility', 'hidden')
+            .attr('d', line)
 
-            svg.selectAll(`circle.tests_${col}`)
-                .data(data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
-                .enter().append('circle')
-                .attr('class', `tests_${col}`)
-                .attr('cx', d => x(d[COLS_TESTS['day']]))
-                .attr('cy', d => y(d[COLS_TESTS[col]]))
-                .attr('r', 3)
-                .style('fill', palette[i + 2])
-                .append('title')
-                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
-            
-        }, i * 500)
-    }
+        svg.selectAll(`circle.tests.${col}`)
+            .data(data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
+            .enter().append('circle')
+            .attr('class', `tests ${col}`)
+            .attr('cx', d => x(d[COLS_TESTS['day']]))
+            .attr('cy', d => y(d[COLS_TESTS[col]]))
+            .attr('r', 3)
+            .style('fill', palette[i + 2])
+            .style('visibility', 'hidden')
+            .append('title')
+            .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
+    })
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
