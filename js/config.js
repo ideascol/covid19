@@ -1,11 +1,18 @@
 const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
 const lastUpdate = new Date(document.lastModified)
-const firstDay = new Date(2020, 02, 05)
+const firstDay = new Date(2020, 02, 06)
 const ORANGE = '#ff9800'
 const SVG = 'chart'
 const DOWN = 'down'
 const UP = 'up'
+const COUNTRIES = [
+    'Italia',
+    'EE.UU',
+    'Alemania',
+    'Corea del Sur',
+    'Colombia'
+]
 
 // National data columns
 const COLS_NAL = {
@@ -19,16 +26,28 @@ const COLS_NAL = {
 const COLS_INTNAL = {
     'day': 'Day (200 total cases)',
     'italy': 'Italy (Total confirmed cases)',
-    'spain': 'Spain (Total confirmed cases)',
     'us': 'U.S. (Total confirmed cases)',
-    'col': 'Colombia (Total confirmed cases)'
+    'col': 'Colombia (Total confirmed cases)',
+    'germany': 'Germany (Total confirmed cases)',
+    'southkorea': 'South Korea (Total confirmed cases)',
+}
+
+// Tests data columns
+const COLS_TESTS = {
+    'day': 'Day(200 confirmed cases)',
+    'italy': 'Italy',
+    'us': 'United States',
+    'col': 'Colombia',
+    'germany': 'Germany',
+    'southkorea': 'South Korea',
 }
 
 const palette = [
     'rgb(80,198,229)',
     'rgb(53,108,164)',
     'rgb(156,181,50)',
-    'rgb(211,28,35)',
     'rgb(16,50,124)',
-    '#F8AF3C'
+    '#F8AF3C',
+    'black',
+    'rgb(211,28,35)',
 ]

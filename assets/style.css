@@ -1,6 +1,18 @@
 @font-face {
-    font-family: "Archia";
-    src: url("./Archia-Light.otf") format("opentype");
+  font-family: "Archia";
+  src: url("./Archia-SemiBold.otf") format("opentype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Archia";
+  src: url("./Archia-SemiBold.otf") format("opentype");
+  font-weight: bolder;
+}
+
+@font-face {
+  font-family: "Archia";
+  src: url("./Archia-Light.otf") format("opentype");
 }
 
 html {
