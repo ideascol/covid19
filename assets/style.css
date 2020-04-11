@@ -16,7 +16,11 @@
 }
 
 html {
-  font-family: Archia !important;
+  font-family: Archia !important;  
+}
+
+p {
+  font-size: 1.18rem;
 }
 
 body {
