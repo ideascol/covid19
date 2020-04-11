@@ -19,6 +19,7 @@ async function initialize() {
     createSummaryChart(width * 0.62, vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
     createIntCharts(width * 0.60, height, 'germany')
+    createIntCharts(width * 0.60, height, 'italy')
     // createMap(width, height)    
 }
 
@@ -225,7 +226,7 @@ const createChart = async (w, h) => {
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
 
                 d3.select('#chartIntroTitle_b')
-                    .html('')  
+                    .html('')
 
                 d3.select('#chartIntroxAxis')
                     .html('')
@@ -258,7 +259,7 @@ const createChart = async (w, h) => {
 
                 svg.select('#chartIntroTitle_b')
                     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
-                    
+
                 d3.select('#chartIntroxAxis')
                     .html(`Días a partir del día con 200 casos acumulados confirmados`)
             }
@@ -347,7 +348,7 @@ const createChart = async (w, h) => {
                 addDiscarded()
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)                
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
             }
             else if (direction === UP) {
                 y.domain(d3.extent(dataCol, d => d[COLS_NAL['offTests']]))
@@ -509,10 +510,10 @@ const createSummaryChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('summaryChart'),
         handler: direction => {
-            if (direction === DOWN) 
-                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')               
-            else if (direction === UP) 
-                d3.select('#summaryChart').style('position', '').style('top', '')                
+            if (direction === DOWN)
+                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
+            else if (direction === UP)
+                d3.select('#summaryChart').style('position', '').style('top', '')
         },
         offset: `10%`
     })
@@ -577,24 +578,29 @@ const createIntCharts = async (w, h, dataset) => {
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {
+        let line
+        if (i !== 0)
+            line = d3.area()
+                .x(d => x(d[COLS_POLITIKO['day']]))
+                .y0(y(0))
+                .y1(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
 
-
-        let line = d3.area()
-            .x(d => x(d[COLS_POLITIKO['day']]))
-            .y0(y(0))
-            .y1(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+        else
+            line = d3.line()
+                .x(d => x(d[COLS_POLITIKO['day']]))
+                .y(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
 
         let paths = svg.selectAll(`.politiko.${col}`)
             .data([data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0)])
 
         paths
             .enter().append('path')
-            .attr('class', `politiko ${col}`)
+            .attr('class', (i !== 0) ? `politiko ${col}` : `politiko ${col} line`)
             .merge(paths)
             .transition().duration(1000)
             .attr('d', line)
-            .attr("fill", "#cce5df")
-            .attr("stroke", "#69b3a2")
+            .attr('fill', d3.color(palette[i+7]))
+            .attr('stroke', d3.color(palette[i+7]).darker())
 
         let circles = svg.selectAll(`circle.politiko.${col}`)
             .data(data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0))
@@ -604,11 +610,16 @@ const createIntCharts = async (w, h, dataset) => {
             .attr('cx', d => x(d[COLS_POLITIKO['day']]))
             .attr('cy', d => y(d[COLS_POLITIKO[col]]))
             .attr('r', 3)
-            .style('fill', '#69b3a2')
+            .style('fill', d3.color(palette[i+7]))
             .append('title')
             .attr('class', `politiko title ${col}`)
             .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
     })
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 15)
+        .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)    
 
     svg.append('text')
         .attr('id', 'sources_1')
