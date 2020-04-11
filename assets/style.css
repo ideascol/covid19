@@ -42,7 +42,14 @@ footer {
     stroke-width: 3;
 }
 
+text > a {
+  fill: #039be5;
+}
 
+text.sources {
+  font-size: 10px;
+  fill: grey;
+}
 
 .axis path,
 .axis line {

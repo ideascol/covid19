@@ -1,6 +1,8 @@
 var vh = 0
+var dataInt = []
+var dataCol = []
 
-function initialize() {
+async function initialize() {
     M.AutoInit();
 
     d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
@@ -10,279 +12,88 @@ function initialize() {
     let width = d3.select('#chapter_0').node().getBoundingClientRect().width
     let height = vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35
 
-    createChart(width * 0.55, height)
+    dataInt = await loadDataInt()
+    dataCol = await loadDataCol()
+
+    createChart(width * 0.62, height)
     createSummaryChart(width * 0.65, vh * 0.4)
-    createIntCharts(width * 0.48, height, 'southkorea')
-    createIntCharts(width * 0.48, height, 'germany')
+    createIntCharts(width * 0.60, height, 'southkorea')
+    createIntCharts(width * 0.60, height, 'germany')
     // createMap(width, height)    
+}
+
+const loadDataInt = _ => {
+    return new Promise(async resolve => {
+        let data = await d3.csv('data/datos_intnal.csv')
+        data = await data.map(d => {
+            d[COLS_INTNAL['day']] = +d[COLS_INTNAL['day']]
+            d[COLS_INTNAL['italy']] = +d[COLS_INTNAL['italy']]
+            d[COLS_INTNAL['germany']] = +d[COLS_INTNAL['germany']]
+            d[COLS_INTNAL['southkorea']] = +d[COLS_INTNAL['southkorea']]
+            d[COLS_INTNAL['us']] = +d[COLS_INTNAL['us']]
+            d[COLS_INTNAL['col']] = +d[COLS_INTNAL['col']]
+            return d
+        })
+        data = data.sort((a, b) => a[COLS_INTNAL['day']] - b[COLS_INTNAL['day']])
+        resolve(data)
+    })
+}
+
+const loadDataCol = _ => {
+    return new Promise(async resolve => {
+        let data = await d3.csv('data/datos_nal.csv')
+        data = await data.map(d => {
+            d[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
+            d[COLS_NAL['offTests']] = +d[COLS_NAL['offTests']]
+            d[COLS_NAL['cases']] = +d[COLS_NAL['cases']]
+            d[COLS_NAL['discarded']] = +d[COLS_NAL['discarded']]
+            return d
+        })
+        data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
+        resolve(data)
+    })
 }
 
 const createEmpty = (svg, x, width, height) => {
     svg.append('rect')
-        .attr('class', '_blanks')
+        .attr('class', '_blanks _offTests')
         .attr('x', x)
         .attr('y', 20)
         .attr('width', width)
-        .attr('height', height)
+        .attr('height', height*1.1)
         .style('fill', '#fff3e0')
         .style('opacity', '0.6')
     svg.append('foreignObject')
-        .attr('class', '_blanks')
+        .attr('class', '_blanks  _offTests')
         .attr('x', x + 1)
         .attr('y', 20)
         .attr('width', width)
-        .attr('height', height)
+        .attr('height', height*1.1)
         .append('xhtml:p')
-        .attr('class', '_blanks grey-text darken-1')
+        .attr('class', '_blanks _offTests grey-text darken-1')
         .style('font-size', '10px')
         .html(['No hay', 'datos', 'de pruebas', 'procesadas', 'a la', 'fecha'].join(`</br>`))
 }
 
 const createChart = async (w, h) => {
-    let margin = { top: 20, right: 5, bottom: 10, left: 50 }
+    let margin = { top: 40, right: 5, bottom: 5, left: 50 }
 
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select('#chartTestCol')
+    let svg = d3.select('#chartIntro').append('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
-        .attr('transform',
-            `translate(${margin.left}, ${margin.top})`)
 
-    let data = await d3.csv('data/datos_nal.csv')
-    data = await data.map(d => {
-        d[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        d[COLS_NAL['offTests']] = +d[COLS_NAL['offTests']]
-        d[COLS_NAL['cases']] = +d[COLS_NAL['cases']]
-        d[COLS_NAL['discarded']] = +d[COLS_NAL['discarded']]
-        return d
-    })
-    data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
-    let lastDay = new Date(d3.max(await data.map(d => d[COLS_NAL['date']])).getTime())
-    lastDay.setDate(lastDay.getDate() + 1)
-
-    var x = d3.scaleTime().range([margin.left, width])
-        .domain([firstDay, lastDay])
-
-    let y = d3.scaleLinear()
-        .range([height, margin.top])
-        .domain([0, d3.max(await data.map(d => d[COLS_NAL['offTests']])) + 10])
-
-
-    let xAxis = d3.axisBottom(x)
-    let yAxis = d3.axisLeft(y)
-
-    svg.append('text')
-        .attr('id', 'chartTitle')
-        .attr('x', 10)
-        .attr('y', 15)
-        .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
-
-    svg.selectAll('rect')
-        .data(data)
-        .enter().append('rect')
-        .attr('class', '_offTests')
-        .attr('x', d => x(d[COLS_NAL['date']]))
-        .attr('y', d => y(d[COLS_NAL['offTests']]))
-        .attr('width', 5)
-        .attr('height', d => height - y(d[COLS_NAL['offTests']]))
-        .style('fill', ORANGE)
-        .append('title')
-        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
-
-    svg.append('g')
-        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
-        .call(xAxis).selectAll('text')
-        .style('text-anchor', 'end')
-        .attr('transform', 'rotate(320)')
-
-    svg.append('g')
-        .attr('class', 'y-axis')
-        .attr('transform', `translate(${margin.left},0)`)
-        .call(yAxis)
-
-    createEmpty(svg, x(data[31][COLS_NAL['date']]), x(lastDay) - x(data[31][COLS_NAL['date']]), height - margin.top)
-
-    const reDimension = col => {
-        svg.selectAll(`rect._${col}`)
-            .transition().duration(1000)
-            .attr('y', d => y(d[COLS_NAL[col]]))
-            .attr('height', d => height - y(d[COLS_NAL[col]]))
-    }
-
-    const addCases = _ => {
-        svg.selectAll('rect._cases')
-            .data(data)
-            .enter().append('rect')
-            .attr('class', '_cases')
-            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
-            .attr('y', height)
-            .attr('width', 5)
-            .attr('height', 0)
-            .style('fill', palette[0])
-            .append('title')
-            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
-
-        reDimension('cases')
-
-        d3.select('#chartTitle')
-            .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
-    }
-
-    const addDiscarded = async _ => {
-        y.domain([0, d3.max(await data.map(d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])) + 100])
-        svg.select('.y-axis')
-            .transition().duration(1000)
-            .call(yAxis)
-
-        reDimension('offTests')
-        reDimension('cases')
-
-        svg.selectAll('rect._discarded')
-            .data(data)
-            .enter().append('rect')
-            .attr('class', '_discarded')
-            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
-            .attr('y', d => y(d[COLS_NAL['cases']]))
-            .attr('width', 5)
-            .attr('height', 0)
-            .style('fill', palette[1])
-            .append('title')
-            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['discarded']])} casos descartados`)
-
-        svg.selectAll('rect._discarded')
-            .transition()
-            .duration(1000)
-            .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
-            .attr('height', d => height - y(d[COLS_NAL['discarded']]))
-
-        d3.select('#chartTitle')
-            .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
-    }
-
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('chartTestCol'),
-        handler: direction => {
-            if (direction === DOWN)
-                svg.style('position', 'fixed').style('top', '5%')
-            else if (direction === UP)
-                svg.style('position', '').style('top', '')
-        },
-        offset: '10%'
-    })
-
-    // Add/remove cases
-    new Waypoint({
-        element: document.getElementById('text_2'),
-        handler: direction => {
-            if (direction === DOWN) {
-                createComparisonChart(w, h)
-                addCases()
-            }
-            else if (direction === UP) {
-                d3.select('#chartCompCases').html('')
-                d3.selectAll('._cases').remove()
-                d3.select('#chartTitle')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
-            }
-        },
-        offset: '32%'
-    })
-
-    // Add/remove empty
-    new Waypoint({
-        element: document.getElementById('text_3'),
-        handler: direction => {
-            if (direction === DOWN) {
-                d3.select('#chartCompCases').style('position', '').style('top', '')
-            }
-            else if (direction === UP) {
-                d3.select('#chartCompCases').style('position', 'fixed').style('top', `${Math.round(h * 100 / vh) + 10}%`)
-            }
-        },
-        offset: '40%'
-    })
-
-    // Add/remove discarded
-    new Waypoint({
-        element: document.getElementById('text_4'),
-        handler: direction => {
-            if (direction === DOWN) {
-                svg.selectAll('p._blanks')
-                    .style('visibility', 'hidden')
-                addDiscarded()
-            }
-            else if (direction === UP) {
-                y.domain(d3.extent(data, d => d[COLS_NAL['offTests']]))
-                svg.select('.y-axis')
-                    .transition().duration(1000)
-                    .call(yAxis)
-
-                reDimension('offTests')
-                reDimension('cases')
-
-                svg.selectAll('p._blanks')
-                    .style('visibility', 'inherit')
-
-                svg.selectAll('._discarded').remove()
-
-                d3.select('#chartTitle')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
-            }
-        },
-        offset: '40%'
-    })
-
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('chapter_2'),
-        handler: direction => {
-            if (direction === DOWN) 
-                svg.style('position', '').style('top', '')
-            else if (direction === UP) 
-                svg.style('position', 'fixed').style('top', '5%')
-        },
-        offset: `${Math.round(h * 100 / vh) + 5}%`
-    })
-
-}
-
-const createComparisonChart = async (w, h) => {
-    let margin = { top: 40, right: 5, bottom: 10, left: 50 }
-
-    let width = w - margin.left - margin.right
-    let height = h - margin.top - margin.bottom
-
-    let svg = d3.select('#chartCompCases')
-        .attr('width', w + margin.left + margin.right)
-        .attr('height', h + margin.top + margin.bottom)
-        .attr('transform',
-            `translate(${margin.left}, ${margin.top})`)
-        .style('position', 'fixed').style('top', `${Math.round(h * 100 / vh) + 10}%`)
-
-    let data = await d3.csv('data/datos_intnal.csv')
-    data = await data.map(d => {
-        d[COLS_INTNAL['day']] = +d[COLS_INTNAL['day']]
-        d[COLS_INTNAL['italy']] = +d[COLS_INTNAL['italy']]
-        d[COLS_INTNAL['germany']] = +d[COLS_INTNAL['germany']]
-        d[COLS_INTNAL['southkorea']] = +d[COLS_INTNAL['southkorea']]
-        d[COLS_INTNAL['us']] = +d[COLS_INTNAL['us']]
-        d[COLS_INTNAL['col']] = +d[COLS_INTNAL['col']]
-        return d
-    })
-    data = data.sort((a, b) => a[COLS_INTNAL['day']] - b[COLS_INTNAL['day']])
-
-    var x = d3.scaleLinear().range([margin.left, width])
-        .domain([0, d3.max(await data.map(d => d[COLS_INTNAL['day']])) + 1])
+    let x = d3.scaleLinear().range([margin.left, width])
+        .domain([0, d3.max(await dataInt.map(d => d[COLS_INTNAL['day']])) + 1])
 
     let y = d3.scaleLog()
         .range([height, margin.top])
-        .domain([200, d3.max(data.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
+        .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
 
     let xAxis = d3.axisBottom(x)
-    let yAxis = d3.axisLeft(y).ticks(5).tickFormat(d => d3.format(',d')(d))
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     svg.append('text')
         .attr('id', 'chart2Title_a')
@@ -313,15 +124,15 @@ const createComparisonChart = async (w, h) => {
                 .y(d => d[COLS_INTNAL[col]] === 0 ? 1 : y(d[COLS_INTNAL[col]]))
 
             svg.append('path')
-                .data([data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0)])
-                .attr('class', 'line')
+                .data([dataInt.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0)])
+                .attr('class', 'intcases line')
                 .style('stroke', palette[i + 2])
                 .attr('d', line)
 
             svg.selectAll(`circle.cases.${col}`)
-                .data(data.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0))
+                .data(dataInt.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0))
                 .enter().append('circle')
-                .attr('class', `cases ${col}`)
+                .attr('class', `intcases ${col}`)
                 .attr('cx', d => x(d[COLS_INTNAL['day']]))
                 .attr('cy', d => y(d[COLS_INTNAL[col]]))
                 .attr('r', 2)
@@ -330,9 +141,17 @@ const createComparisonChart = async (w, h) => {
                 .html(d => `${COUNTRIES[i]}, día ${d[COLS_INTNAL['day']]}: ${d3.format(',d')(d[COLS_INTNAL[col]])} casos confirmados`)
 
         }, i * 500)
-    }
+    }    
+
+    svg.append('text')
+        .attr('id', 'sources_1')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
 
     svg.append('g')
+        .attr('class', 'x-axis')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
         .call(xAxis).selectAll('text')
 
@@ -340,6 +159,210 @@ const createComparisonChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    // Fix/unfix chart
+    new Waypoint({
+        element: document.getElementById('text_0'),
+        handler: direction => {
+            if (direction === DOWN)
+                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5)/3}%`)
+            else if (direction === UP)
+                d3.select('#chartIntro').style('position', '').style('top', '')
+        },
+        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`
+    })
+
+    // Change chart
+    new Waypoint({
+        element: document.getElementById('text_1'),
+        handler: async direction => {
+            if (direction === DOWN) {
+                console.log(dataCol)
+                svg.selectAll('.intcases').style('visibility', 'hidden')
+                let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
+                lastDay.setDate(lastDay.getDate() + 1)
+
+                x = d3.scaleTime().range([margin.left, width])
+                    .domain([firstDay, lastDay])
+
+                y = d3.scaleLinear()
+                    .range([height, margin.top])
+                    .domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['offTests']])) + 10])
+
+                xAxis = d3.axisBottom(x)
+                yAxis = d3.axisLeft(y)
+
+                svg.select('.x-axis')
+                    .transition().duration(1000)
+                    .call(xAxis).selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('transform', 'rotate(320)')
+
+                svg.select('.y-axis')
+                    .transition().duration(1000)
+                    .call(yAxis)
+
+                svg.selectAll('rect._offTests').remove()
+                svg.selectAll('rect._offTests').data(dataCol)
+                    .enter().append('rect')
+                    .attr('class', '_offTests')
+                    .attr('x', d => x(d[COLS_NAL['date']]))
+                    .attr('y', d => height)
+                    .attr('width', 5)
+                    .attr('height', d => 0)
+                    .style('fill', ORANGE)
+                    .append('title')
+                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)                    
+
+                svg.selectAll('rect._offTests')
+                    .transition().duration(1000)
+                    .attr('y', d => y(d[COLS_NAL['offTests']]))
+                    .attr('height', d => height - y(d[COLS_NAL['offTests']]))
+
+                createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
+
+
+            }
+            else if (direction === UP) {
+                svg.selectAll('.intcases').style('visibility', 'inherit')
+                x = d3.scaleLinear().range([margin.left, width])
+                    .domain([0, d3.max(await dataInt.map(d => d[COLS_INTNAL['day']])) + 1])
+
+                y = d3.scaleLog()
+                    .range([height, margin.top])
+                    .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
+
+                xAxis = d3.axisBottom(x)
+                yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
+
+                svg.select('.x-axis')
+                    .transition().duration(1000)
+                    .call(xAxis)
+
+                svg.select('.y-axis')
+                    .transition().duration(1000)
+                    .call(yAxis)
+
+                svg.selectAll('._offTests').remove()
+            }
+        },
+        offset: '40%'
+    })    
+
+    const reDimension = col => {
+        svg.selectAll(`rect._${col}`)
+            .transition().duration(1000)
+            .attr('y', d => y(d[COLS_NAL[col]]))
+            .attr('height', d => height - y(d[COLS_NAL[col]]))
+    }
+
+    const addCases = _ => {
+        svg.selectAll('rect._cases')
+            .data(dataCol)
+            .enter().append('rect')
+            .attr('class', '_cases')
+            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
+            .attr('y', height)
+            .attr('width', 5)
+            .attr('height', 0)
+            .style('fill', palette[0])
+            .append('title')
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
+
+        reDimension('cases')
+
+        // d3.select('#chartTitle')
+        //     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+    }
+
+    const addDiscarded = async _ => {
+        y.domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])) + 100])
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis)
+
+        reDimension('_offTests')
+        reDimension('_cases')
+
+        svg.selectAll('rect._discarded')
+            .data(dataCol)
+            .enter().append('rect')
+            .attr('class', '_discarded')
+            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
+            .attr('y', d => y(d[COLS_NAL['cases']]))
+            .attr('width', 5)
+            .attr('height', 0)
+            .style('fill', palette[1])
+            .append('title')
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['discarded']])} casos descartados`)
+
+        svg.selectAll('rect._discarded')
+            .transition()
+            .duration(1000)
+            .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
+            .attr('height', d => height - y(d[COLS_NAL['discarded']]))
+
+        d3.select('#chartTitle')
+            .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
+    }    
+
+    // Add/remove cases
+    new Waypoint({
+        element: document.getElementById('text_2'),
+        handler: direction => {
+            if (direction === DOWN)
+                addCases()
+            else if (direction === UP) {
+                d3.selectAll('._cases').remove()
+                // d3.select('#chartTitle')
+                //     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
+            }
+        },
+        offset: '60%'
+    })    
+
+    // Add/remove discarded
+    new Waypoint({
+        element: document.getElementById('text_3'),
+        handler: direction => {
+            if (direction === DOWN) {
+                svg.selectAll('p._blanks')
+                    .style('visibility', 'hidden')
+                addDiscarded()
+            }
+            else if (direction === UP) {
+                y.domain(d3.extent(dataCol, d => d[COLS_NAL['offTests']]))
+                svg.select('.y-axis')
+                    .transition().duration(1000)
+                    .call(yAxis)
+
+                reDimension('_offTests')
+                reDimension('_cases')
+
+                svg.selectAll('p._blanks')
+                    .style('visibility', 'inherit')
+
+                svg.selectAll('._discarded').remove()
+
+                d3.select('#chartTitle')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+            }
+        },
+        offset: '60%'
+    })
+
+    // Fix/unfix chart
+    new Waypoint({
+        element: document.getElementById('chapter_2'),
+        handler: direction => {
+            if (direction === DOWN) 
+                d3.select('#chartIntro').style('position', '').style('top', '')
+            else if (direction === UP) 
+                d3.select('#chartIntro').style('position', 'fixed').style('top', '5%')
+        },
+        offset: `${Math.round(h * 100 / vh) + 5}%`
+    })
+
 }
 
 const createSummaryChart = async (w, h) => {
@@ -348,7 +371,7 @@ const createSummaryChart = async (w, h) => {
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select('#summaryChart')
+    let svg = d3.select('#summaryChart').append('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
         .attr('transform',
@@ -365,7 +388,7 @@ const createSummaryChart = async (w, h) => {
         return d
     })
     data = data.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
-    
+
     let dataRate = await d3.csv('data/datos_tests_rate.csv')
     dataRate = await dataRate.map(d => {
         d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
@@ -388,7 +411,7 @@ const createSummaryChart = async (w, h) => {
 
     const updateLines = dataset => {
         y.domain([200, d3.max(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
-        
+
         svg.select('.y-axis')
             .transition().duration(1000)
             .call(yAxis)
@@ -449,6 +472,13 @@ const createSummaryChart = async (w, h) => {
 
     updateLines(data)
 
+    svg.append('text')
+        .attr('id', 'sources_1')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
         .call(xAxis).selectAll('text')
@@ -465,7 +495,7 @@ const createSummaryChart = async (w, h) => {
             if (direction === DOWN) {
                 d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
                 d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas <b>por millón de habitantes</b> a partir del día con 200 casos en `)
+                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos en `)
             }
             else if (direction === UP) {
                 d3.select('#summaryChart').style('position', '').style('top', '')
@@ -480,7 +510,7 @@ const createSummaryChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('text_5'),
         handler: async direction => {
-            if (direction === DOWN)           
+            if (direction === DOWN)
                 updateLines(dataRate)
             else if (direction === UP)
                 updateLines(data)
@@ -493,25 +523,23 @@ const createSummaryChart = async (w, h) => {
         element: document.getElementById('chapter_3'),
         handler: direction => {
             if (direction === DOWN)
-                svg.style('position', '').style('top', '')
+                d3.select('#summaryChart').style('position', '').style('top', '')
             else if (direction === UP)
-                svg.style('position', 'fixed').style('top', '5%')
+                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
         },
         offset: `${Math.round(h * 100 / vh) + 5}%`
     })
 }
 
 const createIntCharts = async (w, h, dataset) => {
-    let margin = { top: 40, right: 5, bottom: 10, left: 50 }
+    let margin = { top: 40, right: 5, bottom: 10, left: 60 }
 
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select(`#chart_${dataset}`)
+    let svg = d3.select(`#chart_${dataset}`).append('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
-        .attr('transform',
-            `translate(${margin.left}, ${margin.top})`)
 
     let data = await d3.csv(`data/data_${dataset}.csv`)
     data = await data.map(d => {
@@ -523,16 +551,16 @@ const createIntCharts = async (w, h, dataset) => {
     })
     data = data.sort((a, b) => a[COLS_POLITIKO['day']] - b[COLS_POLITIKO['day']])
 
-    var x = d3.scaleLinear().range([margin.left, width])
-        .domain(d3.extent(data, d => d[COLS_POLITIKO['day']]))        
+    var x = d3.scaleTime().range([margin.left, width])
+        .domain(d3.extent(data, d => d[COLS_POLITIKO['day']]))
     var y = d3.scaleLinear().range([height, margin.top])
-        .domain([0, d3.max(data.map(d => d[COLS_POLITIKO['cases']])) + 10])
+        .domain([0, d3.max(data.map(d => d[COLS_POLITIKO['tests']])) + 10])
 
     let xAxis = d3.axisBottom(x)
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {
-        
+
 
         let line = d3.area()
             .x(d => x(d[COLS_POLITIKO['day']]))
@@ -565,27 +593,24 @@ const createIntCharts = async (w, h, dataset) => {
             .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
     })
 
-    // svg.append('text')
-    //     .attr('id', 'chart3Title_a')
-    //     .attr('x', 10)
-    //     .attr('y', 15)
-    //     .html(`Pruebas procesadas a partir del día con 200 casos en `)
-
-    // svg.append('text')
-    //     .attr('id', 'chart3Title_b')
-    //     .attr('x', 10)
-    //     .attr('y', 30)
-    //     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)    
+    svg.append('text')
+        .attr('id', 'sources_1')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
         .call(xAxis).selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', 'rotate(320)')
 
     svg.append('g')
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
-   
+
 }
 
 const createMap = async (width, height) => {
@@ -597,7 +622,7 @@ const createMap = async (width, height) => {
     // let path = d3.geoPath()
     //     .projection(projection)
 
-    // let svg = d3.select('#map')
+    // let svg = d3.select('#map').append('svg')
     //     .attr('width', width)
     //     .attr('height', height)
 
