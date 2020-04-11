@@ -82,7 +82,7 @@ const createChart = async (w, h) => {
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select('#chartIntro').append('svg')
+    let svg = d3.select('#chartIntro').select('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
@@ -99,13 +99,13 @@ const createChart = async (w, h) => {
     svg.append('text')
         .attr('id', 'chartIntroTitle_a')
         .attr('x', 10)
-        .attr('y', 15)
+        .attr('y', 12)
         .html(`Casos confirmados a partir del día con 200 casos en`)
 
     svg.append('text')
         .attr('id', 'chartIntroTitle_b')
         .attr('x', 10)
-        .attr('y', 30)
+        .attr('y', 32)
         .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
@@ -391,7 +391,7 @@ const createSummaryChart = async (w, h) => {
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select('#summaryChart').append('svg')
+    let svg = d3.select('#summaryChart').select('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
@@ -511,7 +511,7 @@ const createSummaryChart = async (w, h) => {
         element: document.getElementById('summaryChart'),
         handler: direction => {
             if (direction === DOWN)
-                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
+                d3.select('#summaryChart').style('position', 'fixed').style('top', '10%')
             else if (direction === UP)
                 d3.select('#summaryChart').style('position', '').style('top', '')
         },
@@ -545,17 +545,17 @@ const createSummaryChart = async (w, h) => {
             else if (direction === UP)
                 d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
         },
-        offset: `${Math.round(h * 100 / vh) + 5}%`
+        offset: `${Math.round(h * 100 / vh) + 15}%`
     })
 }
 
 const createIntCharts = async (w, h, dataset) => {
-    let margin = { top: 40, right: 5, bottom: 10, left: 60 }
+    let margin = { top: 20, right: 5, bottom: 15, left: 60 }
 
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select(`#chart_${dataset}`).append('svg')
+    let svg = d3.select(`#chart_${dataset}`).select('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
@@ -599,7 +599,7 @@ const createIntCharts = async (w, h, dataset) => {
             .merge(paths)
             .transition().duration(1000)
             .attr('d', line)
-            .attr('fill', d3.color(palette[i+7]))
+            .attr('fill', d3.color(palette[i + 7]).brighter())
             .attr('stroke', d3.color(palette[i+7]).darker())
 
         let circles = svg.selectAll(`circle.politiko.${col}`)
@@ -650,7 +650,7 @@ const createMap = async (width, height) => {
     // let path = d3.geoPath()
     //     .projection(projection)
 
-    // let svg = d3.select('#map').append('svg')
+    // let svg = d3.select('#map').select('svg')
     //     .attr('width', width)
     //     .attr('height', height)
 

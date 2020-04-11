@@ -52,6 +52,11 @@ text > a {
 .sources {
   font-size: 12px;
   fill: grey;
+  color: grey;
+}
+
+.no-margin {
+  margin-bottom: 0px;
 }
 
 .axis path,
