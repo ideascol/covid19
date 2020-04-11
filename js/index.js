@@ -465,7 +465,7 @@ const createSummaryChart = async (w, h) => {
             if (direction === DOWN) {
                 d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
                 d3.select('#chart3Title_a')
-                .html(`Pruebas procesadas por millón de habitantes a partir del día con 200 casos en `)
+                    .html(`Pruebas procesadas <b>por millón de habitantes</b> a partir del día con 200 casos en `)
             }
             else if (direction === UP) {
                 d3.select('#summaryChart').style('position', '').style('top', '')
@@ -532,6 +532,8 @@ const createIntCharts = async (w, h, dataset) => {
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {
+        
+
         let line = d3.area()
             .x(d => x(d[COLS_POLITIKO['day']]))
             .y0(y(0))
@@ -558,8 +560,7 @@ const createIntCharts = async (w, h, dataset) => {
             .attr('cy', d => y(d[COLS_POLITIKO[col]]))
             .attr('r', 3)
             .style('fill', '#69b3a2')
-
-        circles.append('title')
+            .append('title')
             .attr('class', `politiko title ${col}`)
             .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
     })

@@ -9,9 +9,9 @@ const UP = 'up'
 const COUNTRIES = [
     'Italia',
     'EE.UU',
+    'Colombia',
     'Alemania',
-    'Corea del Sur',
-    'Colombia'
+    'Corea del Sur'
 ]
 
 const POLITIKO_LABELS = [
