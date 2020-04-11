@@ -16,7 +16,7 @@ async function initialize() {
     dataCol = await loadDataCol()
 
     createChart(width * 0.62, height)
-    createSummaryChart(width * 0.62, vh * 0.4)
+    createSummaryChart(width * 0.62, vh * 0.4 > width * 0.62 * 0.6 ? width * 0.62 * 0.6 : vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
