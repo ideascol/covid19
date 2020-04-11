@@ -46,8 +46,8 @@ text > a {
   fill: #039be5;
 }
 
-text.sources {
-  font-size: 10px;
+.sources {
+  font-size: 12px;
   fill: grey;
 }
 

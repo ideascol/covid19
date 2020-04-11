@@ -60,7 +60,7 @@ const createEmpty = (svg, x, width, height) => {
         .attr('x', x)
         .attr('y', 20)
         .attr('width', width)
-        .attr('height', height*1.1)
+        .attr('height', height * 1.1)
         .style('fill', '#fff3e0')
         .style('opacity', '0.6')
     svg.append('foreignObject')
@@ -68,7 +68,7 @@ const createEmpty = (svg, x, width, height) => {
         .attr('x', x + 1)
         .attr('y', 20)
         .attr('width', width)
-        .attr('height', height*1.1)
+        .attr('height', height * 1.1)
         .append('xhtml:p')
         .attr('class', '_blanks _offTests grey-text darken-1')
         .style('font-size', '10px')
@@ -96,19 +96,19 @@ const createChart = async (w, h) => {
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     svg.append('text')
-        .attr('id', 'chart2Title_a')
+        .attr('id', 'chartIntroTitle_a')
         .attr('x', 10)
         .attr('y', 15)
         .html(`Casos confirmados a partir del día con 200 casos en`)
 
     svg.append('text')
-        .attr('id', 'chart2Title_b')
+        .attr('id', 'chartIntroTitle_b')
         .attr('x', 10)
         .attr('y', 30)
         .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
-        .attr('id', 'chart2xAxis')
+        .attr('id', 'chartIntroxAxis')
         .attr('x', margin.left + 10)
         .attr('y', h - 10)
         .style('font-size', 13)
@@ -141,7 +141,7 @@ const createChart = async (w, h) => {
                 .html(d => `${COUNTRIES[i]}, día ${d[COLS_INTNAL['day']]}: ${d3.format(',d')(d[COLS_INTNAL[col]])} casos confirmados`)
 
         }, i * 500)
-    }    
+    }
 
     svg.append('text')
         .attr('id', 'sources_1')
@@ -165,7 +165,7 @@ const createChart = async (w, h) => {
         element: document.getElementById('text_0'),
         handler: direction => {
             if (direction === DOWN)
-                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5)/3}%`)
+                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`)
             else if (direction === UP)
                 d3.select('#chartIntro').style('position', '').style('top', '')
         },
@@ -212,7 +212,7 @@ const createChart = async (w, h) => {
                     .attr('height', d => 0)
                     .style('fill', ORANGE)
                     .append('title')
-                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)                    
+                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
 
                 svg.selectAll('rect._offTests')
                     .transition().duration(1000)
@@ -221,6 +221,14 @@ const createChart = async (w, h) => {
 
                 createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
 
+                d3.select('#chartIntroTitle_a')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
+
+                d3.select('#chartIntroTitle_b')
+                    .html('')  
+
+                d3.select('#chartIntroxAxis')
+                    .html('')
 
             }
             else if (direction === UP) {
@@ -244,10 +252,19 @@ const createChart = async (w, h) => {
                     .call(yAxis)
 
                 svg.selectAll('._offTests').remove()
+
+                svg.select('#chartIntroTitle_a')
+                    .html(`Casos confirmados a partir del día con 200 casos en`)
+
+                svg.select('#chartIntroTitle_b')
+                    .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+                    
+                d3.select('#chartIntroxAxis')
+                    .html(`Días a partir del día con 200 casos acumulados confirmados`)
             }
         },
         offset: '40%'
-    })    
+    })
 
     const reDimension = col => {
         svg.selectAll(`rect._${col}`)
@@ -271,8 +288,6 @@ const createChart = async (w, h) => {
 
         reDimension('cases')
 
-        // d3.select('#chartTitle')
-        //     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
     }
 
     const addDiscarded = async _ => {
@@ -302,24 +317,25 @@ const createChart = async (w, h) => {
             .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
             .attr('height', d => height - y(d[COLS_NAL['discarded']]))
 
-        d3.select('#chartTitle')
-            .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
-    }    
+    }
 
     // Add/remove cases
     new Waypoint({
         element: document.getElementById('text_2'),
         handler: direction => {
-            if (direction === DOWN)
+            if (direction === DOWN) {
                 addCases()
+                d3.select('#chartIntroTitle_a')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+            }
             else if (direction === UP) {
                 d3.selectAll('._cases').remove()
-                // d3.select('#chartTitle')
-                //     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
+                d3.select('#chartTitle')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
             }
         },
         offset: '60%'
-    })    
+    })
 
     // Add/remove discarded
     new Waypoint({
@@ -329,6 +345,9 @@ const createChart = async (w, h) => {
                 svg.selectAll('p._blanks')
                     .style('visibility', 'hidden')
                 addDiscarded()
+
+                d3.select('#chartIntroTitle_a')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)                
             }
             else if (direction === UP) {
                 y.domain(d3.extent(dataCol, d => d[COLS_NAL['offTests']]))
@@ -344,7 +363,7 @@ const createChart = async (w, h) => {
 
                 svg.selectAll('._discarded').remove()
 
-                d3.select('#chartTitle')
+                d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
             }
         },
@@ -355,12 +374,12 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('chapter_2'),
         handler: direction => {
-            if (direction === DOWN) 
+            if (direction === DOWN)
                 d3.select('#chartIntro').style('position', '').style('top', '')
-            else if (direction === UP) 
-                d3.select('#chartIntro').style('position', 'fixed').style('top', '5%')
+            else if (direction === UP)
+                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`)
         },
-        offset: `${Math.round(h * 100 / vh) + 5}%`
+        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3 + Math.round(h * 100 / vh) + 5}%`
     })
 
 }
