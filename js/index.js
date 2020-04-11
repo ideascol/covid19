@@ -12,6 +12,8 @@ function initialize() {
 
     createChart(width * 0.55, height)
     createSummaryChart(width * 0.65, vh * 0.4)
+    createIntCharts(width * 0.48, height, 'southkorea')
+    createIntCharts(width * 0.48, height, 'germany')
     // createMap(width, height)    
 }
 
@@ -497,6 +499,92 @@ const createSummaryChart = async (w, h) => {
         },
         offset: `${Math.round(h * 100 / vh) + 5}%`
     })
+}
+
+const createIntCharts = async (w, h, dataset) => {
+    let margin = { top: 40, right: 5, bottom: 10, left: 50 }
+
+    let width = w - margin.left - margin.right
+    let height = h - margin.top - margin.bottom
+
+    let svg = d3.select(`#chart_${dataset}`)
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+        .attr('transform',
+            `translate(${margin.left}, ${margin.top})`)
+
+    let data = await d3.csv(`data/data_${dataset}.csv`)
+    data = await data.map(d => {
+        d[COLS_POLITIKO['day']] = new Date(d[COLS_POLITIKO['day']])
+        d[COLS_POLITIKO['cases']] = +d[COLS_POLITIKO['cases']]
+        d[COLS_POLITIKO['tests']] = +d[COLS_POLITIKO['tests']]
+        d[COLS_POLITIKO['deaths']] = +d[COLS_POLITIKO['deaths']]
+        return d
+    })
+    data = data.sort((a, b) => a[COLS_POLITIKO['day']] - b[COLS_POLITIKO['day']])
+
+    var x = d3.scaleLinear().range([margin.left, width])
+        .domain(d3.extent(data, d => d[COLS_POLITIKO['day']]))        
+    var y = d3.scaleLinear().range([height, margin.top])
+        .domain([0, d3.max(data.map(d => d[COLS_POLITIKO['cases']])) + 10])
+
+    let xAxis = d3.axisBottom(x)
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
+
+    Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {
+        let line = d3.area()
+            .x(d => x(d[COLS_POLITIKO['day']]))
+            .y0(y(0))
+            .y1(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+
+        let paths = svg.selectAll(`.politiko.${col}`)
+            .data([data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0)])
+
+        paths
+            .enter().append('path')
+            .attr('class', `politiko ${col}`)
+            .merge(paths)
+            .transition().duration(1000)
+            .attr('d', line)
+            .attr("fill", "#cce5df")
+            .attr("stroke", "#69b3a2")
+
+        let circles = svg.selectAll(`circle.politiko.${col}`)
+            .data(data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0))
+
+        circles.enter().append('circle')
+            .attr('class', `politiko ${col}`)
+            .attr('cx', d => x(d[COLS_POLITIKO['day']]))
+            .attr('cy', d => y(d[COLS_POLITIKO[col]]))
+            .attr('r', 3)
+            .style('fill', '#69b3a2')
+
+        circles.append('title')
+            .attr('class', `politiko title ${col}`)
+            .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
+    })
+
+    // svg.append('text')
+    //     .attr('id', 'chart3Title_a')
+    //     .attr('x', 10)
+    //     .attr('y', 15)
+    //     .html(`Pruebas procesadas a partir del día con 200 casos en `)
+
+    // svg.append('text')
+    //     .attr('id', 'chart3Title_b')
+    //     .attr('x', 10)
+    //     .attr('y', 30)
+    //     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)    
+
+    svg.append('g')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
+   
 }
 
 const createMap = async (width, height) => {

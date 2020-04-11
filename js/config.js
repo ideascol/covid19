@@ -13,6 +13,13 @@ const COUNTRIES = [
     'Corea del Sur',
     'Colombia'
 ]
+
+const POLITIKO_LABELS = [
+    'casos confirmados',
+    'pruebas procesadas',
+    'muertes'
+]
+
 // Tests data columns
 const INT_EXAMPLES = [
     'southkorea',
@@ -45,6 +52,14 @@ const COLS_TESTS = {
     'col': 'Colombia',
     'germany': 'Germany',
     'southkorea': 'South Korea',
+}
+
+// Politiko data columns
+const COLS_POLITIKO = {
+    'day': 'Date',
+    'cases': 'Total Confirmed Cases',
+    'tests': 'Total Tests',
+    'deaths': 'Total deaths'
 }
 
 const palette = [
