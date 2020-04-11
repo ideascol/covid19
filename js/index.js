@@ -16,7 +16,7 @@ async function initialize() {
     dataCol = await loadDataCol()
 
     createChart(width * 0.62, height)
-    createSummaryChart(width * 0.65, vh * 0.4)
+    createSummaryChart(width * 0.62, vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
     createIntCharts(width * 0.60, height, 'germany')
     // createMap(width, height)    
@@ -393,8 +393,6 @@ const createSummaryChart = async (w, h) => {
     let svg = d3.select('#summaryChart').append('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
-        .attr('transform',
-            `translate(${margin.left}, ${margin.top})`)
 
     let data = await d3.csv('data/datos_tests.csv')
     data = await data.map(d => {
@@ -511,16 +509,10 @@ const createSummaryChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('summaryChart'),
         handler: direction => {
-            if (direction === DOWN) {
-                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
-                d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos en `)
-            }
-            else if (direction === UP) {
-                d3.select('#summaryChart').style('position', '').style('top', '')
-                d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas a partir del día con 200 casos en `)
-            }
+            if (direction === DOWN) 
+                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')               
+            else if (direction === UP) 
+                d3.select('#summaryChart').style('position', '').style('top', '')                
         },
         offset: `10%`
     })
@@ -529,10 +521,16 @@ const createSummaryChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('text_5'),
         handler: async direction => {
-            if (direction === DOWN)
+            if (direction === DOWN) {
                 updateLines(dataRate)
-            else if (direction === UP)
+                d3.select('#chart3Title_a')
+                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos en `)
+            }
+            else if (direction === UP) {
                 updateLines(data)
+                d3.select('#chart3Title_a')
+                    .html(`Pruebas procesadas a partir del día con 200 casos en `)
+            }
         },
         offset: `40%`
     })

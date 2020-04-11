@@ -46,6 +46,10 @@ text > a {
   fill: #039be5;
 }
 
+.right-chart {
+  padding-left: 10px;
+}
+
 .sources {
   font-size: 12px;
   fill: grey;
