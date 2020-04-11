@@ -57,7 +57,7 @@ const loadDataCol = _ => {
 
 const createEmpty = (svg, x, width, height) => {
     svg.append('rect')
-        .attr('class', '_blanks _offTests')
+        .attr('class', '_blanks')
         .attr('x', x)
         .attr('y', 20)
         .attr('width', width)
@@ -65,13 +65,13 @@ const createEmpty = (svg, x, width, height) => {
         .style('fill', '#fff3e0')
         .style('opacity', '0.6')
     svg.append('foreignObject')
-        .attr('class', '_blanks  _offTests')
+        .attr('class', '_blanks')
         .attr('x', x + 1)
         .attr('y', 20)
         .attr('width', width)
         .attr('height', height * 1.1)
         .append('xhtml:p')
-        .attr('class', '_blanks _offTests grey-text darken-1')
+        .attr('class', '_blanks grey-text darken-1')
         .style('font-size', '10px')
         .html(['No hay', 'datos', 'de pruebas', 'procesadas', 'a la', 'fecha'].join(`</br>`))
 }
@@ -130,7 +130,7 @@ const createChart = async (w, h) => {
                 .style('stroke', palette[i + 2])
                 .attr('d', line)
 
-            svg.selectAll(`circle.cases.${col}`)
+            svg.selectAll(`circle.intcases.${col}`)
                 .data(dataInt.filter(d => d[COLS_INTNAL[col]] && d[COLS_INTNAL[col]] > 0))
                 .enter().append('circle')
                 .attr('class', `intcases ${col}`)
@@ -253,6 +253,7 @@ const createChart = async (w, h) => {
                     .call(yAxis)
 
                 svg.selectAll('._offTests').remove()
+                svg.selectAll('._blanks').remove()
 
                 svg.select('#chartIntroTitle_a')
                     .html(`Casos confirmados a partir del día con 200 casos en`)
@@ -288,7 +289,6 @@ const createChart = async (w, h) => {
             .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
 
         reDimension('cases')
-
     }
 
     const addDiscarded = async _ => {
@@ -297,8 +297,8 @@ const createChart = async (w, h) => {
             .transition().duration(1000)
             .call(yAxis)
 
-        reDimension('_offTests')
-        reDimension('_cases')
+        reDimension('offTests')
+        reDimension('cases')
 
         svg.selectAll('rect._discarded')
             .data(dataCol)
@@ -356,8 +356,8 @@ const createChart = async (w, h) => {
                     .transition().duration(1000)
                     .call(yAxis)
 
-                reDimension('_offTests')
-                reDimension('_cases')
+                reDimension('offTests')
+                reDimension('cases')
 
                 svg.selectAll('p._blanks')
                     .style('visibility', 'inherit')
