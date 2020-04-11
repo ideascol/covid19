@@ -13,6 +13,11 @@ const COUNTRIES = [
     'Corea del Sur',
     'Colombia'
 ]
+// Tests data columns
+const INT_EXAMPLES = [
+    'southkorea',
+    'germany'
+]
 
 // National data columns
 const COLS_NAL = {

@@ -11,7 +11,7 @@ function initialize() {
     let height = vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35
 
     createChart(width * 0.55, height)
-    createSummaryChart(width * 0.95, vh * 0.5)
+    createSummaryChart(width * 0.65, vh * 0.4)
     // createMap(width, height)    
 }
 
@@ -235,22 +235,12 @@ const createChart = async (w, h) => {
 
     // Fix/unfix chart
     new Waypoint({
-        element: document.getElementById('summaryChart'),
+        element: document.getElementById('chapter_2'),
         handler: direction => {
-            if (direction === DOWN) {
+            if (direction === DOWN) 
                 svg.style('position', '').style('top', '')
-                let lineCols = Object.keys(COLS_TESTS).filter(d => d !== 'day')
-                for (let i = 0; i < lineCols.length; i++) {
-                    setTimeout(_ => {
-                        d3.selectAll(`.tests.${lineCols[i]}`)
-                        .style('visibility', 'inherit')
-                    }, i * 500)
-                }
-            }
-            else if (direction === UP) {
+            else if (direction === UP) 
                 svg.style('position', 'fixed').style('top', '5%')
-                d3.selectAll('.tests').style('visibility', 'hidden')
-            }
         },
         offset: `${Math.round(h * 100 / vh) + 5}%`
     })
@@ -373,22 +363,79 @@ const createSummaryChart = async (w, h) => {
         return d
     })
     data = data.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
-    console.log(data)
+    
+    let dataRate = await d3.csv('data/datos_tests_rate.csv')
+    dataRate = await dataRate.map(d => {
+        d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
+        d[COLS_TESTS['italy']] = +d[COLS_TESTS['italy']]
+        d[COLS_TESTS['germany']] = +d[COLS_TESTS['germany']]
+        d[COLS_TESTS['southkorea']] = +d[COLS_TESTS['southkorea']]
+        d[COLS_TESTS['us']] = +d[COLS_TESTS['us']]
+        d[COLS_TESTS['col']] = +d[COLS_TESTS['col']]
+        return d
+    })
+    dataRate = dataRate.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
+
     var x = d3.scaleLinear().range([margin.left, width])
         .domain([0, d3.max(await data.map(d => d[COLS_TESTS['day']])) + 1])
 
-    let y = d3.scaleLinear()
-        .range([height, margin.top])
-        .domain([200, d3.max(data.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
+    var y = d3.scaleLinear().range([height, margin.top])
 
     let xAxis = d3.axisBottom(x)
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
+    const updateLines = dataset => {
+        y.domain([200, d3.max(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
+        
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis)
+
+        Object.keys(COLS_TESTS).filter(d => d !== 'day').map((col, i) => {
+            let line = d3.line()
+                .x(d => x(d[COLS_TESTS['day']]))
+                .y(d => d[COLS_TESTS[col]] === 0 ? 1 : y(d[COLS_TESTS[col]]))
+
+            let paths = svg.selectAll(`.tests.${col}.line`)
+                .data([dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0)])
+
+            paths
+                .enter().append('path')
+                .attr('class', `tests ${col} line`)
+                .merge(paths)
+                .transition().duration(1000)
+                .attr('d', line)
+                .style('stroke', palette[i + 2])
+
+            let circles = svg.selectAll(`circle.tests.${col}`)
+                .data(dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
+
+            circles.enter().append('circle')
+                .attr('class', `tests ${col}`)
+                .merge(circles)
+                .transition().duration(1000)
+                .attr('cx', d => x(d[COLS_TESTS['day']]))
+                .attr('cy', d => y(d[COLS_TESTS[col]]))
+                .attr('r', 3)
+                .style('fill', palette[i + 2])
+
+            circles.append('title')
+                .attr('class', `tests title ${col}`)
+                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
+        })
+    }
+
     svg.append('text')
-        .attr('id', 'chart3Title')
+        .attr('id', 'chart3Title_a')
         .attr('x', 10)
         .attr('y', 15)
-        .html(`Pruebas procesadas a partir del día con 200 casos en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`Pruebas procesadas a partir del día con 200 casos en `)
+
+    svg.append('text')
+        .attr('id', 'chart3Title_b')
+        .attr('x', 10)
+        .attr('y', 30)
+        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
         .attr('id', 'chart3xAxis')
@@ -398,30 +445,7 @@ const createSummaryChart = async (w, h) => {
         .style('color', 'grey')
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
-    Object.keys(COLS_TESTS).filter(d => d !== 'day').map((col, i) => {
-        let line = d3.line()
-            .x(d => x(d[COLS_TESTS['day']]))
-            .y(d => d[COLS_TESTS[col]] === 0 ? 1 : y(d[COLS_TESTS[col]]))
-
-        svg.append('path')
-            .data([data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0)])
-            .attr('class', `tests ${col} line`)
-            .style('stroke', palette[i + 2])
-            .style('visibility', 'hidden')
-            .attr('d', line)
-
-        svg.selectAll(`circle.tests.${col}`)
-            .data(data.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
-            .enter().append('circle')
-            .attr('class', `tests ${col}`)
-            .attr('cx', d => x(d[COLS_TESTS['day']]))
-            .attr('cy', d => y(d[COLS_TESTS[col]]))
-            .attr('r', 3)
-            .style('fill', palette[i + 2])
-            .style('visibility', 'hidden')
-            .append('title')
-            .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
-    })
+    updateLines(data)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -431,6 +455,48 @@ const createSummaryChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    // Fix/unfix chart
+    new Waypoint({
+        element: document.getElementById('summaryChart'),
+        handler: direction => {
+            if (direction === DOWN) {
+                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
+                d3.select('#chart3Title_a')
+                .html(`Pruebas procesadas por millón de habitantes a partir del día con 200 casos en `)
+            }
+            else if (direction === UP) {
+                d3.select('#summaryChart').style('position', '').style('top', '')
+                d3.select('#chart3Title_a')
+                    .html(`Pruebas procesadas a partir del día con 200 casos en `)
+            }
+        },
+        offset: `10%`
+    })
+
+    // Fix/unfix chart
+    new Waypoint({
+        element: document.getElementById('text_5'),
+        handler: async direction => {
+            if (direction === DOWN)           
+                updateLines(dataRate)
+            else if (direction === UP)
+                updateLines(data)
+        },
+        offset: `40%`
+    })
+
+    // Remove/add chart
+    new Waypoint({
+        element: document.getElementById('chapter_3'),
+        handler: direction => {
+            if (direction === DOWN)
+                svg.style('position', '').style('top', '')
+            else if (direction === UP)
+                svg.style('position', 'fixed').style('top', '5%')
+        },
+        offset: `${Math.round(h * 100 / vh) + 5}%`
+    })
 }
 
 const createMap = async (width, height) => {
