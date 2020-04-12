@@ -100,7 +100,7 @@ const createChart = async (w, h) => {
         .attr('id', 'chartIntroTitle_a')
         .attr('x', 10)
         .attr('y', 12)
-        .html(`Casos confirmados a partir del día con 200 casos en`)
+        .html(`Casos confirmados a partir del día con 200 casos confirmados en`)
 
     svg.append('text')
         .attr('id', 'chartIntroTitle_b')
@@ -256,7 +256,7 @@ const createChart = async (w, h) => {
                 svg.selectAll('._blanks').remove()
 
                 svg.select('#chartIntroTitle_a')
-                    .html(`Casos confirmados a partir del día con 200 casos en`)
+                    .html(`Casos confirmados a partir del día con 200 casos confirmados en`)
 
                 svg.select('#chartIntroTitle_b')
                     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
@@ -472,7 +472,7 @@ const createSummaryChart = async (w, h) => {
         .attr('id', 'chart3Title_a')
         .attr('x', 10)
         .attr('y', 15)
-        .html(`Pruebas procesadas a partir del día con 200 casos en `)
+        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
 
     svg.append('text')
         .attr('id', 'chart3Title_b')
@@ -525,12 +525,17 @@ const createSummaryChart = async (w, h) => {
             if (direction === DOWN) {
                 updateLines(dataRate)
                 d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos en `)
+                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200`)
+
+                d3.select('#chart3Title_b')
+                    .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
             }
             else if (direction === UP) {
                 updateLines(data)
                 d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas a partir del día con 200 casos en `)
+                    .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
+                d3.select('#chart3Title_b')
+                    .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)                    
             }
         },
         offset: `40%`
