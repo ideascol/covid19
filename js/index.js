@@ -223,7 +223,7 @@ const createChart = async (w, h) => {
                 createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
 
                 d3.select('#chartIntroTitle_b')
                     .html('')
@@ -327,12 +327,12 @@ const createChart = async (w, h) => {
             if (direction === DOWN) {
                 addCases()
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>  acumulados`)
             }
             else if (direction === UP) {
                 d3.selectAll('._cases').remove()
                 d3.select('#chartTitle')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>`)
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
             }
         },
         offset: '60%'
@@ -348,7 +348,7 @@ const createChart = async (w, h) => {
                 addDiscarded()
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
             }
             else if (direction === UP) {
                 y.domain(d3.extent(dataCol, d => d[COLS_NAL['offTests']]))
@@ -365,7 +365,7 @@ const createChart = async (w, h) => {
                 svg.selectAll('._discarded').remove()
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>`)
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> acumulados`)
             }
         },
         offset: '60%'
