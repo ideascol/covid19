@@ -16,7 +16,11 @@
 }
 
 html {
-  font-family: Archia !important;
+  font-family: Archia !important;  
+}
+
+p {
+  font-size: 1.18rem;
 }
 
 body {
@@ -38,11 +42,26 @@ footer {
 
 .line {
     fill: none;
-    stroke: #ffab00;
     stroke-width: 3;
 }
 
+text > a {
+  fill: #039be5;
+}
 
+.right-chart {
+  padding-left: 10px;
+}
+
+.sources {
+  font-size: 12px;
+  fill: grey;
+  color: grey;
+}
+
+.no-margin {
+  margin-bottom: 0px;
+}
 
 .axis path,
 .axis line {

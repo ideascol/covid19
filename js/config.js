@@ -15,8 +15,8 @@ const COUNTRIES = [
 ]
 
 const POLITIKO_LABELS = [
-    'casos confirmados',
     'pruebas procesadas',
+    'casos confirmados',
     'muertes'
 ]
 
@@ -57,8 +57,8 @@ const COLS_TESTS = {
 // Politiko data columns
 const COLS_POLITIKO = {
     'day': 'Date',
-    'cases': 'Total Confirmed Cases',
     'tests': 'Total Tests',
+    'cases': 'Total Confirmed Cases',
     'deaths': 'Total deaths'
 }
 
@@ -70,4 +70,7 @@ const palette = [
     '#F8AF3C',
     'black',
     'rgb(211,28,35)',
+    '#331E36',
+    '#69B3A2',
+    '#994636'
 ]
