@@ -3,7 +3,10 @@ var dataInt = []
 var dataCol = []
 
 async function initialize() {
-    M.AutoInit();
+    $(document).ready(function () {
+        $(this).scrollTop(0)
+    })
+    M.AutoInit()
 
     d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
 
@@ -16,10 +19,12 @@ async function initialize() {
     dataCol = await loadDataCol()
 
     createChart(width * 0.62, height)
+    createIncreaseChart(width * 0.62)
     createSummaryChart(width * 0.62, vh * 0.4 > width * 0.62 * 0.6 ? width * 0.62 * 0.6 : vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
+    createIntCharts(width * 0.60, height, 'us')
     // createMap(width, height)    
 }
 
@@ -385,6 +390,93 @@ const createChart = async (w, h) => {
 
 }
 
+const createIncreaseChart = async w => {
+    let margin = { top: 20, right: 5, bottom: 15, left: 60 }
+
+    let h = d3.select('#chapter_2').node().getBoundingClientRect().height
+    let width = w - margin.left - margin.right
+    let height = h - margin.top - margin.bottom
+
+    let svg = d3.select(`#chartIncrease`).select('svg')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+
+    let data = await d3.csv(`data/datos_nal.csv`)
+    data = await data.map(d => {
+        d[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
+        d[COLS_NAL['offTests']] = +d[COLS_NAL['offTests']]
+        d[COLS_NAL['cases']] = +d[COLS_NAL['cases']]
+        d[COLS_NAL['discarded']] = +d[COLS_NAL['discarded']]
+        return d
+    })
+    data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
+
+    let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
+    lastDay.setDate(lastDay.getDate() + 1)
+
+    var x = d3.scaleTime().range([margin.left, width])
+        .domain([firstDay, lastDay])
+
+    var y = d3.scaleLinear().range([height, margin.top])
+        .domain([0, d3.max(data.map(d => d[COLS_NAL['offTests']])) + 10])
+
+    let xAxis = d3.axisBottom(x)
+    let yAxis = d3.axisLeft(y)
+
+    let line = d3.line()
+        .x(d => x(d[COLS_NAL['date']]))
+        .y(d => d[COLS_NAL['offTests']] === 0 ? 1 : y(d[COLS_NAL['offTests']]))
+
+    let paths = svg.selectAll(`.politiko.${'offTests'}`)
+        .data([data.filter(d => d[COLS_NAL['offTests']] && d[COLS_NAL['offTests']] > 0)])
+
+    paths
+        .enter().append('path')
+        .attr('class', 'line')
+        .merge(paths)
+        .transition().duration(1000)
+        .attr('d', line)
+        .attr('fill', d3.color(palette[7]).brighter())
+        .attr('stroke', d3.color(palette[7]).darker())
+
+    let circles = svg.selectAll(`circle.politiko.${'offTests'}`)
+        .data(data.filter(d => d[COLS_NAL['offTests']] && d[COLS_NAL['offTests']] > 0))
+
+    circles.enter().append('circle')
+        .attr('class', `politiko ${'offTests'}`)
+        .attr('cx', d => x(d[COLS_NAL['day']]))
+        .attr('cy', d => y(d[COLS_NAL['offTests']]))
+        .attr('r', 3)
+        .style('fill', d3.color(palette[7]))
+        .append('title')
+        .attr('class', `politiko title ${'offTests'}`)
+        .html(d => `${d[COLS_NAL['day']]}: ${d3.format(',d')(d[COLS_NAL['offTests']])} `)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 15)
+        .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)
+
+    svg.append('text')
+        .attr('id', 'sources_1')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+
+    svg.append('g')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', 'rotate(320)')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
+
+}
+
 const createSummaryChart = async (w, h) => {
     let margin = { top: 40, right: 5, bottom: 10, left: 80 }
 
@@ -535,7 +627,7 @@ const createSummaryChart = async (w, h) => {
                 d3.select('#chart3Title_a')
                     .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
                 d3.select('#chart3Title_b')
-                    .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)                    
+                    .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
             }
         },
         offset: `40%`
@@ -605,7 +697,7 @@ const createIntCharts = async (w, h, dataset) => {
             .transition().duration(1000)
             .attr('d', line)
             .attr('fill', d3.color(palette[i + 7]).brighter())
-            .attr('stroke', d3.color(palette[i+7]).darker())
+            .attr('stroke', d3.color(palette[i + 7]).darker())
 
         let circles = svg.selectAll(`circle.politiko.${col}`)
             .data(data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0))
@@ -615,7 +707,7 @@ const createIntCharts = async (w, h, dataset) => {
             .attr('cx', d => x(d[COLS_POLITIKO['day']]))
             .attr('cy', d => y(d[COLS_POLITIKO[col]]))
             .attr('r', 3)
-            .style('fill', d3.color(palette[i+7]))
+            .style('fill', d3.color(palette[i + 7]))
             .append('title')
             .attr('class', `politiko title ${col}`)
             .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
@@ -624,7 +716,7 @@ const createIntCharts = async (w, h, dataset) => {
     svg.append('text')
         .attr('x', 10)
         .attr('y', 15)
-        .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)    
+        .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)
 
     svg.append('text')
         .attr('id', 'sources_1')
