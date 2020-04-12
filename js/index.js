@@ -25,7 +25,7 @@ async function initialize() {
 
 const loadDataInt = _ => {
     return new Promise(async resolve => {
-        let data = await d3.csv('data/datos_intnal.csv')
+        let data = await d3.csv('data/data_200day_confirmed_cases_countries.csv')
         data = await data.map(d => {
             d[COLS_INTNAL['day']] = +d[COLS_INTNAL['day']]
             d[COLS_INTNAL['italy']] = +d[COLS_INTNAL['italy']]
@@ -395,7 +395,7 @@ const createSummaryChart = async (w, h) => {
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
-    let data = await d3.csv('data/datos_tests.csv')
+    let data = await d3.csv('data/data_200day_tests_countries.csv')
     data = await data.map(d => {
         d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
         d[COLS_TESTS['italy']] = +d[COLS_TESTS['italy']]
@@ -407,7 +407,7 @@ const createSummaryChart = async (w, h) => {
     })
     data = data.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
 
-    let dataRate = await d3.csv('data/datos_tests_rate.csv')
+    let dataRate = await d3.csv('data/data_million_tests_countries.csv')
     dataRate = await dataRate.map(d => {
         d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
         d[COLS_TESTS['italy']] = +d[COLS_TESTS['italy']]
