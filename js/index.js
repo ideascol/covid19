@@ -3,6 +3,8 @@ var dataInt = []
 var dataCol = []
 var dataMilestones = []
 
+const createExplaination = i => explainations[i].title ? `<div class='left-align'><b class='orange-text darken-3'>${explainations[i].title}:</b></br>${explainations[i].text}</div>` : `<div class='left-align'>${explainations[i].text}</div>`
+
 async function initialize() {
     $(document).ready(function () {
         $(this).scrollTop(0)
@@ -135,6 +137,9 @@ const createChart = async (w, h) => {
         .style('color', 'grey')
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
+    d3.select('#explanation_chart1')
+        .attr('data-tooltip', createExplaination(0))            
+
     let lineCols = Object.keys(COLS_INTNAL).filter(d => d !== 'day')
     for (let i = 0; i < lineCols.length; i++) {
         setTimeout(_ => {
@@ -168,7 +173,7 @@ const createChart = async (w, h) => {
         .attr('x', 10)
         .attr('y', height + margin.top + 10)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
     svg.append('g')
         .attr('class', 'x-axis')
@@ -323,6 +328,9 @@ const createChart = async (w, h) => {
 
                 createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), margin.top, x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
 
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
 
@@ -333,6 +341,10 @@ const createChart = async (w, h) => {
                     .html('')
 
                 createMilestones()
+
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(1))
+                    .html('<i class= "material-icons">help</i >')
             }
             else if (direction === UP) {
                 svg.selectAll('.intcases').style('visibility', 'inherit')
@@ -357,6 +369,9 @@ const createChart = async (w, h) => {
                 svg.selectAll('._offTests').remove()
                 svg.selectAll('._blanks').remove()
 
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)                
+
                 svg.select('#chartIntroTitle_a')
                     .html(`Casos confirmados a partir del día con 200 casos confirmados en`)
 
@@ -365,6 +380,9 @@ const createChart = async (w, h) => {
 
                 d3.select('#chartIntroxAxis')
                     .html(`Días a partir del día con 200 casos acumulados confirmados`)
+
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(0))                    
             }
         },
         offset: '40%'
@@ -376,13 +394,21 @@ const createChart = async (w, h) => {
         handler: direction => {
             if (direction === DOWN) {
                 addCases()
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)                       
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>  acumulados`)
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(2))                      
             }
             else if (direction === UP) {
                 d3.selectAll('._cases').remove()
                 d3.select('#chartTitle')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`) 
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(1))                                          
             }
         },
         offset: '60%'
@@ -396,6 +422,9 @@ const createChart = async (w, h) => {
                 svg.selectAll('p._blanks')
                     .style('visibility', 'hidden')
                 addDiscarded()
+
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(3))                   
 
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
@@ -413,7 +442,8 @@ const createChart = async (w, h) => {
                     .style('visibility', 'inherit')
 
                 svg.selectAll('._discarded').remove()
-
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(2))   
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> acumulados`)
             }
@@ -485,11 +515,11 @@ const createIncreaseChart = async w => {
         .attr('fill', d3.color(palette[7]))
 
     svg.append('text')
-        .attr('id', 'sources_1')
+        .attr('id', 'sources_2')
         .attr('x', 10)
         .attr('y', h + margin.bottom)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -610,11 +640,11 @@ const createSummaryChart = async (w, h) => {
     updateLines(data)
 
     svg.append('text')
-        .attr('id', 'sources_1')
+        .attr('id', 'sources_3')
         .attr('x', 10)
         .attr('y', h + margin.bottom)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -624,6 +654,9 @@ const createSummaryChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    d3.select('#explanation_chart3')
+        .attr('data-tooltip', createExplaination(4))         
 
     // Fix/unfix chart
     new Waypoint({
@@ -643,18 +676,29 @@ const createSummaryChart = async (w, h) => {
         handler: async direction => {
             if (direction === DOWN) {
                 updateLines(dataRate)
+
+                d3.select('#sources_3')
+                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
+
                 d3.select('#chart3Title_a')
                     .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200`)
 
                 d3.select('#chart3Title_b')
                     .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+
+                d3.select('#explanation_chart3')
+                    .attr('data-tooltip', createExplaination(5))                       
             }
             else if (direction === UP) {
                 updateLines(data)
+                d3.select('#sources_3')
+                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
                 d3.select('#chart3Title_a')
                     .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
                 d3.select('#chart3Title_b')
                     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+                d3.select('#explanation_chart3')
+                    .attr('data-tooltip', createExplaination(4)) 
             }
         },
         offset: `40%`
@@ -743,17 +787,19 @@ const createIntCharts = async (w, h, dataset) => {
             .html(d => `${d[COLS_POLITIKO['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} ${POLITIKO_LABELS[i]}`)
     })
 
+    d3.select(`#explanation_chart_${dataset}`)
+        .attr('data-tooltip', createExplaination(6))       
+
     svg.append('text')
         .attr('x', 10)
         .attr('y', 15)
         .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)
 
     svg.append('text')
-        .attr('id', 'sources_1')
         .attr('x', 10)
         .attr('y', h + margin.bottom)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
