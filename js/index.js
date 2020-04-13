@@ -166,6 +166,58 @@ const createChart = async (w, h) => {
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
 
+    const reDimension = col => {
+        svg.selectAll(`rect._${col}`)
+            .transition().duration(1000)
+            .attr('y', d => y(d[COLS_NAL[col]]))
+            .attr('height', d => height - y(d[COLS_NAL[col]]))
+    }
+
+    const addCases = _ => {
+        svg.selectAll('rect._cases')
+            .data(dataCol)
+            .enter().append('rect')
+            .attr('class', '_cases')
+            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
+            .attr('y', height)
+            .attr('width', 5)
+            .attr('height', 0)
+            .style('fill', palette[0])
+            .append('title')
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
+
+        reDimension('cases')
+    }
+
+    const addDiscarded = async _ => {
+        y.domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])) + 100])
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis)
+
+        reDimension('offTests')
+        reDimension('cases')
+
+        svg.selectAll('rect._discarded')
+            .data(dataCol)
+            .enter().append('rect')
+            .attr('class', '_discarded')
+            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
+            .attr('y', d => y(d[COLS_NAL['cases']]))
+            .attr('width', 5)
+            .attr('height', 0)
+            .style('fill', palette[1])
+            .append('title')
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['discarded']])} casos descartados`)
+
+        svg.selectAll('rect._discarded')
+            .transition()
+            .duration(1000)
+            .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
+            .attr('height', d => height - y(d[COLS_NAL['discarded']]))
+
+    }
+
     // Fix/unfix chart
     new Waypoint({
         element: document.getElementById('text_0'),
@@ -225,6 +277,8 @@ const createChart = async (w, h) => {
                     .attr('y', d => y(d[COLS_NAL['offTests']]))
                     .attr('height', d => height - y(d[COLS_NAL['offTests']]))
 
+                createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
+
                 createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
 
                 d3.select('#chartIntroTitle_a')
@@ -272,58 +326,6 @@ const createChart = async (w, h) => {
         },
         offset: '40%'
     })
-
-    const reDimension = col => {
-        svg.selectAll(`rect._${col}`)
-            .transition().duration(1000)
-            .attr('y', d => y(d[COLS_NAL[col]]))
-            .attr('height', d => height - y(d[COLS_NAL[col]]))
-    }
-
-    const addCases = _ => {
-        svg.selectAll('rect._cases')
-            .data(dataCol)
-            .enter().append('rect')
-            .attr('class', '_cases')
-            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
-            .attr('y', height)
-            .attr('width', 5)
-            .attr('height', 0)
-            .style('fill', palette[0])
-            .append('title')
-            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
-
-        reDimension('cases')
-    }
-
-    const addDiscarded = async _ => {
-        y.domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])) + 100])
-        svg.select('.y-axis')
-            .transition().duration(1000)
-            .call(yAxis)
-
-        reDimension('offTests')
-        reDimension('cases')
-
-        svg.selectAll('rect._discarded')
-            .data(dataCol)
-            .enter().append('rect')
-            .attr('class', '_discarded')
-            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
-            .attr('y', d => y(d[COLS_NAL['cases']]))
-            .attr('width', 5)
-            .attr('height', 0)
-            .style('fill', palette[1])
-            .append('title')
-            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['discarded']])} casos descartados`)
-
-        svg.selectAll('rect._discarded')
-            .transition()
-            .duration(1000)
-            .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
-            .attr('height', d => height - y(d[COLS_NAL['discarded']]))
-
-    }
 
     // Add/remove cases
     new Waypoint({
@@ -380,20 +382,23 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('chapter_2'),
         handler: direction => {
-            if (direction === DOWN)
-                d3.select('#chartIntro').style('position', '').style('top', '')
+            if (direction === DOWN) {
+                let divHeight = d3.select('#chapter_1_text').node().getBoundingClientRect().height
+                d3.select('#chapter_1_chart').style('position', 'relative').style('height', `${divHeight}px`)
+                d3.select('#chartIntro').style('position', 'absolute').style('bottom', '0').style('top', '')
+            }
             else if (direction === UP)
                 d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`)
         },
-        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3 + Math.round(h * 100 / vh) + 5}%`
+        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3 + Math.round(h * 100 / vh) + 15}%`
     })
 
 }
 
 const createIncreaseChart = async w => {
-    let margin = { top: 20, right: 5, bottom: 15, left: 60 }
+    let margin = { top: 0, right: 5, bottom: 15, left: 60 }
 
-    let h = d3.select('#chapter_2').node().getBoundingClientRect().height
+    let h = d3.select('#text_4').node().getBoundingClientRect().height * 0.7
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
@@ -404,9 +409,7 @@ const createIncreaseChart = async w => {
     let data = await d3.csv(`data/datos_nal.csv`)
     data = await data.map(d => {
         d[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        d[COLS_NAL['offTests']] = +d[COLS_NAL['offTests']]
-        d[COLS_NAL['cases']] = +d[COLS_NAL['cases']]
-        d[COLS_NAL['discarded']] = +d[COLS_NAL['discarded']]
+        d[COLS_NAL['newTests']] = +d[COLS_NAL['newTests']]
         return d
     })
     data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
@@ -418,17 +421,21 @@ const createIncreaseChart = async w => {
         .domain([firstDay, lastDay])
 
     var y = d3.scaleLinear().range([height, margin.top])
-        .domain([0, d3.max(data.map(d => d[COLS_NAL['offTests']])) + 10])
+        .domain([0, d3.max(data.map(d => d[COLS_NAL['newTests']])) + 10])
 
-    let xAxis = d3.axisBottom(x)
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%V')(d))
     let yAxis = d3.axisLeft(y)
 
     let line = d3.line()
         .x(d => x(d[COLS_NAL['date']]))
-        .y(d => d[COLS_NAL['offTests']] === 0 ? 1 : y(d[COLS_NAL['offTests']]))
+        .y(d => d[COLS_NAL['newTests']] === 0 ? 1 : y(d[COLS_NAL['newTests']]))
 
-    let paths = svg.selectAll(`.politiko.${'offTests'}`)
-        .data([data.filter(d => d[COLS_NAL['offTests']] && d[COLS_NAL['offTests']] > 0)])
+    let paths = svg.selectAll(`.increase.${'newTests'}`)
+        .data([data.filter(d => d[COLS_NAL['newTests']] && d[COLS_NAL['newTests']] > 0)])
+
+    createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
+
+    createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
 
     paths
         .enter().append('path')
@@ -439,23 +446,18 @@ const createIncreaseChart = async w => {
         .attr('fill', d3.color(palette[7]).brighter())
         .attr('stroke', d3.color(palette[7]).darker())
 
-    let circles = svg.selectAll(`circle.politiko.${'offTests'}`)
-        .data(data.filter(d => d[COLS_NAL['offTests']] && d[COLS_NAL['offTests']] > 0))
+    let circles = svg.selectAll(`circle.increase.${'newTests'}`)
+        .data(data.filter(d => d[COLS_NAL['newTests']] && d[COLS_NAL['newTests']] > 0))
 
     circles.enter().append('circle')
-        .attr('class', `politiko ${'offTests'}`)
-        .attr('cx', d => x(d[COLS_NAL['day']]))
-        .attr('cy', d => y(d[COLS_NAL['offTests']]))
+        .attr('class', `increase ${'newTests'}`)
+        .attr('cx', d => x(d[COLS_NAL['date']]))
+        .attr('cy', d => y(d[COLS_NAL['newTests']]))
         .attr('r', 3)
         .style('fill', d3.color(palette[7]))
         .append('title')
-        .attr('class', `politiko title ${'offTests'}`)
-        .html(d => `${d[COLS_NAL['day']]}: ${d3.format(',d')(d[COLS_NAL['offTests']])} `)
-
-    svg.append('text')
-        .attr('x', 10)
-        .attr('y', 15)
-        .html(`<tspan fill="${palette[7]}">Pruebas procesadas</tspan>, <tspan fill="${palette[8]}">casos confirmados</tspan> y <tspan fill="${palette[9]}">muertes</tspan>`)
+        .attr('class', `increase title ${'newTests'}`)
+        .html(d => `${d[COLS_NAL['date']]}: ${d3.format(',d')(d[COLS_NAL['newTests']])} `)
 
     svg.append('text')
         .attr('id', 'sources_1')
@@ -637,12 +639,15 @@ const createSummaryChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('chapter_3'),
         handler: direction => {
-            if (direction === DOWN)
-                d3.select('#summaryChart').style('position', '').style('top', '')
+            if (direction === DOWN) {
+                let divHeight = d3.select('#chapter_2_text').node().getBoundingClientRect().height
+                d3.select('#chapter_2_chart').style('position', 'relative').style('height', `${divHeight}px`)
+                d3.select('#summaryChart').style('position', 'absolute').style('bottom', '0').style('top', '')
+            }
             else if (direction === UP)
                 d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
         },
-        offset: `${Math.round(h * 100 / vh) + 15}%`
+        offset: `${Math.round(h * 100 / vh) + 25}%`
     })
 }
 
