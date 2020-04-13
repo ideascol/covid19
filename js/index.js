@@ -247,7 +247,7 @@ const createChart = async (w, h) => {
                     .range([height, margin.top])
                     .domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['offTests']])) + 10])
 
-                xAxis = d3.axisBottom(x)
+                xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
                 yAxis = d3.axisLeft(y)
 
                 svg.select('.x-axis')
@@ -265,9 +265,9 @@ const createChart = async (w, h) => {
                     .enter().append('rect')
                     .attr('class', '_offTests')
                     .attr('x', d => x(d[COLS_NAL['date']]))
-                    .attr('y', d => height)
+                    .attr('y', height)
                     .attr('width', 5)
-                    .attr('height', d => 0)
+                    .attr('height', 0)
                     .style('fill', ORANGE)
                     .append('title')
                     .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
@@ -396,7 +396,7 @@ const createChart = async (w, h) => {
 }
 
 const createIncreaseChart = async w => {
-    let margin = { top: 0, right: 5, bottom: 15, left: 60 }
+    let margin = { top: 0, right: 5, bottom: 25, left: 60 }
 
     let h = d3.select('#text_4').node().getBoundingClientRect().height * 0.7
     let width = w - margin.left - margin.right
@@ -407,10 +407,12 @@ const createIncreaseChart = async w => {
         .attr('height', h + margin.top + margin.bottom)
 
     let data = await d3.csv(`data/datos_nal.csv`)
-    data = await data.map(d => {
-        d[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        d[COLS_NAL['newTests']] = +d[COLS_NAL['newTests']]
-        return d
+    data = await data.map((d, i) => {
+        let row = {}
+        row[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
+        row[COLS_NAL['offNewTests']] = i==0?0:i < 22 ? +d[COLS_NAL['offNewTests']] : +d[COLS_NAL['calNewTests']]
+        row[COLS_NAL['calNewTests']] = +d[COLS_NAL['calNewTests']]
+        return row
     })
     data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
 
@@ -421,43 +423,23 @@ const createIncreaseChart = async w => {
         .domain([firstDay, lastDay])
 
     var y = d3.scaleLinear().range([height, margin.top])
-        .domain([0, d3.max(data.map(d => d[COLS_NAL['newTests']])) + 10])
+        .domain([0, d3.max(data.map(d => d[COLS_NAL['offNewTests']])) + 100])
 
-    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%V')(d))
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
     let yAxis = d3.axisLeft(y)
 
-    let line = d3.line()
-        .x(d => x(d[COLS_NAL['date']]))
-        .y(d => d[COLS_NAL['newTests']] === 0 ? 1 : y(d[COLS_NAL['newTests']]))
+    let rects = svg.selectAll(`.increase.offNewTests`)
+        .data(data)
 
-    let paths = svg.selectAll(`.increase.${'newTests'}`)
-        .data([data.filter(d => d[COLS_NAL['newTests']] && d[COLS_NAL['newTests']] > 0)])
-
-    createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
-
-    createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
-
-    paths
-        .enter().append('path')
-        .attr('class', 'line')
-        .merge(paths)
-        .transition().duration(1000)
-        .attr('d', line)
-        .attr('fill', d3.color(palette[7]).brighter())
-        .attr('stroke', d3.color(palette[7]).darker())
-
-    let circles = svg.selectAll(`circle.increase.${'newTests'}`)
-        .data(data.filter(d => d[COLS_NAL['newTests']] && d[COLS_NAL['newTests']] > 0))
-
-    circles.enter().append('circle')
-        .attr('class', `increase ${'newTests'}`)
-        .attr('cx', d => x(d[COLS_NAL['date']]))
-        .attr('cy', d => y(d[COLS_NAL['newTests']]))
-        .attr('r', 3)
-        .style('fill', d3.color(palette[7]))
-        .append('title')
-        .attr('class', `increase title ${'newTests'}`)
-        .html(d => `${d[COLS_NAL['date']]}: ${d3.format(',d')(d[COLS_NAL['newTests']])} `)
+    rects
+        .enter().append('rect')
+        .attr('class', 'increase offNewTests')
+        .merge(rects)
+        .attr('x', d => x(d[COLS_NAL['date']]))
+        .attr('y', d => y(d[COLS_NAL['offNewTests']]))
+        .attr('width', 8)
+        .attr('height', d => height - y(d[COLS_NAL['offNewTests']]))
+        .attr('fill', d3.color(palette[7]))
 
     svg.append('text')
         .attr('id', 'sources_1')
@@ -676,7 +658,7 @@ const createIntCharts = async (w, h, dataset) => {
     var y = d3.scaleLinear().range([height, margin.top])
         .domain([0, d3.max(data.map(d => d[COLS_POLITIKO['tests']])) + 10])
 
-    let xAxis = d3.axisBottom(x)
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {

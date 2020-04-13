@@ -32,7 +32,8 @@ const COLS_NAL = {
     'offTests': 'Pruebas realizadas',
     'cases': 'Casos Confirmados Totales',
     'discarded': 'Casos Descartados Totales',
-    'newTests': 'Nuevas pruebas realizadas'
+    'offNewTests': 'Nuevas pruebas realizadas',
+    'calNewTests': 'Nuevas confirmados + descartados'
 }
 
 // International data columns
