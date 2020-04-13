@@ -1,6 +1,7 @@
 var vh = 0
 var dataInt = []
 var dataCol = []
+var dataMilestones = []
 
 async function initialize() {
     $(document).ready(function () {
@@ -17,8 +18,9 @@ async function initialize() {
 
     dataInt = await loadDataInt()
     dataCol = await loadDataCol()
+    dataMilestones = await loadDataMilestones()
 
-    createChart(width * 0.62, height)
+    createChart(width * 0.62, height*1.06)
     createIncreaseChart(width * 0.62)
     createSummaryChart(width * 0.62, vh * 0.4 > width * 0.62 * 0.6 ? width * 0.62 * 0.6 : vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
@@ -60,21 +62,33 @@ const loadDataCol = _ => {
     })
 }
 
-const createEmpty = (svg, x, width, height) => {
+const loadDataMilestones = _ => {
+    return new Promise(async resolve => {
+        let data = await d3.csv('data/data_milestones.csv')
+        data = await data.map(d => {
+            d[COLS_MS['date']] = new Date(d[COLS_MS['date']])
+            return d
+        })
+        data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
+        resolve(data)
+    })
+}
+
+const createEmpty = (svg, x, y, width, height) => {
     svg.append('rect')
         .attr('class', '_blanks')
         .attr('x', x)
-        .attr('y', 20)
+        .attr('y', y)
         .attr('width', width)
-        .attr('height', height * 1.1)
+        .attr('height', height)
         .style('fill', '#fff3e0')
         .style('opacity', '0.6')
     svg.append('foreignObject')
         .attr('class', '_blanks')
         .attr('x', x + 1)
-        .attr('y', 20)
+        .attr('y', y)
         .attr('width', width)
-        .attr('height', height * 1.1)
+        .attr('height', height)
         .append('xhtml:p')
         .attr('class', '_blanks grey-text darken-1')
         .style('font-size', '10px')
@@ -82,7 +96,7 @@ const createEmpty = (svg, x, width, height) => {
 }
 
 const createChart = async (w, h) => {
-    let margin = { top: 40, right: 5, bottom: 5, left: 50 }
+    let margin = { top: 40, right: 5, bottom: h * 0.06, left: 50 }
 
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
@@ -116,7 +130,7 @@ const createChart = async (w, h) => {
     svg.append('text')
         .attr('id', 'chartIntroxAxis')
         .attr('x', margin.left + 10)
-        .attr('y', h - 10)
+        .attr('y', height + margin.top - 5)
         .style('font-size', 13)
         .style('color', 'grey')
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
@@ -152,7 +166,7 @@ const createChart = async (w, h) => {
     svg.append('text')
         .attr('id', 'sources_1')
         .attr('x', 10)
-        .attr('y', h + margin.bottom)
+        .attr('y', height + margin.top + 10)
         .attr('class', 'sources')
         .html(`Fuentes: <a href="" target="_blank">N.Y. Times</a>`)
 
@@ -165,6 +179,34 @@ const createChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    const createMilestones = _ => {
+        for (let i = 0; i < dataMilestones.length; i++) {
+            setTimeout(_ => {
+                let news = dataMilestones[i]
+
+                svg.append('line')
+                    .attr('stroke', 'grey')
+                    .attr('opacity', '0.4')
+                    .attr('class', '_offTests')
+                    .attr('stroke-width', 2)
+                    .attr('x1', x(news[COLS_MS['date']]))
+                    .attr('y1', margin.top)
+                    .attr('x2', x(news[COLS_MS['date']]))
+                    .attr('y2', margin.top)
+                    .transition().duration(1000)
+                    .attr('y2', height + margin.top + 30 + 20*i)
+
+                svg.append('text')
+                    .attr('class', 'sources _offTests')
+                    .attr('x', x(news[COLS_MS['date']]) - 5)
+                    .attr('y', height + margin.top + 30 + 20 * i)
+                    .style('text-anchor', 'end')
+                    .text(news[COLS_MS['name']])
+
+            }, i * 500)
+        }
+    }
 
     const reDimension = col => {
         svg.selectAll(`rect._${col}`)
@@ -277,9 +319,9 @@ const createChart = async (w, h) => {
                     .attr('y', d => y(d[COLS_NAL['offTests']]))
                     .attr('height', d => height - y(d[COLS_NAL['offTests']]))
 
-                createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
+                createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), margin.top, x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
 
-                createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
+                createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), margin.top, x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
 
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
@@ -290,6 +332,7 @@ const createChart = async (w, h) => {
                 d3.select('#chartIntroxAxis')
                     .html('')
 
+                createMilestones()
             }
             else if (direction === UP) {
                 svg.selectAll('.intcases').style('visibility', 'inherit')
@@ -410,7 +453,7 @@ const createIncreaseChart = async w => {
     data = await data.map((d, i) => {
         let row = {}
         row[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        row[COLS_NAL['offNewTests']] = i==0?0:i < 22 ? +d[COLS_NAL['offNewTests']] : +d[COLS_NAL['calNewTests']]
+        row[COLS_NAL['offNewTests']] = i == 0 ? 0 : i < 22 ? +d[COLS_NAL['offNewTests']] : +d[COLS_NAL['calNewTests']]
         row[COLS_NAL['calNewTests']] = +d[COLS_NAL['calNewTests']]
         return row
     })

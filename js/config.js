@@ -46,6 +46,14 @@ const COLS_INTNAL = {
     'southkorea': 'South Korea',
 }
 
+// Milestones data columns
+const COLS_MS = {
+    'date': 'Fecha',
+    'offTests': 'Fuente',
+    'href': 'Referencia',
+    'name': 'Noticia'
+}
+
 // Tests data columns
 const COLS_TESTS = {
     'day': 'Day(200 confirmed cases)',
