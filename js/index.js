@@ -22,7 +22,7 @@ async function initialize() {
     dataCol = await loadDataCol()
     dataMilestones = await loadDataMilestones()
 
-    createChart(width * 0.62, height*1.06)
+    createChart(width * 0.62, height * 1.06)
     createIncreaseChart(width * 0.62)
     createSummaryChart(width * 0.62, vh * 0.4 > width * 0.62 * 0.6 ? width * 0.62 * 0.6 : vh * 0.4)
     createIntCharts(width * 0.60, height, 'southkorea')
@@ -79,22 +79,12 @@ const loadDataMilestones = _ => {
 const createEmpty = (svg, x, y, width, height) => {
     svg.append('rect')
         .attr('class', '_blanks')
-        .attr('x', x)
+        .attr('x', x - 4)
         .attr('y', y)
-        .attr('width', width)
+        .attr('width', width + 12)
         .attr('height', height)
         .style('fill', '#fff3e0')
         .style('opacity', '0.6')
-    svg.append('foreignObject')
-        .attr('class', '_blanks')
-        .attr('x', x + 1)
-        .attr('y', y)
-        .attr('width', width)
-        .attr('height', height)
-        .append('xhtml:p')
-        .attr('class', '_blanks grey-text darken-1')
-        .style('font-size', '10px')
-        .html(['No hay', 'datos', 'de pruebas', 'procesadas', 'a la', 'fecha'].join(`</br>`))
 }
 
 const createChart = async (w, h) => {
@@ -138,7 +128,7 @@ const createChart = async (w, h) => {
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
     d3.select('#explanation_chart1')
-        .attr('data-tooltip', createExplaination(0))            
+        .attr('data-tooltip', createExplaination(0))
 
     let lineCols = Object.keys(COLS_INTNAL).filter(d => d !== 'day')
     for (let i = 0; i < lineCols.length; i++) {
@@ -195,12 +185,12 @@ const createChart = async (w, h) => {
                     .attr('opacity', '0.4')
                     .attr('class', '_offTests')
                     .attr('stroke-width', 2)
-                    .attr('x1', x(news[COLS_MS['date']]))
-                    .attr('y1', margin.top)
-                    .attr('x2', x(news[COLS_MS['date']]))
-                    .attr('y2', margin.top)
+                    .attr('x1', x(news[COLS_MS['date']]) + 4)
+                    .attr('y1', height)
+                    .attr('x2', x(news[COLS_MS['date']]) + 4)
+                    .attr('y2', height)
                     .transition().duration(1000)
-                    .attr('y2', height + margin.top + 30 + 20*i)
+                    .attr('y2', height + margin.top + 30 + 20 * i)
 
                 svg.append('text')
                     .attr('class', 'sources _offTests')
@@ -209,8 +199,37 @@ const createChart = async (w, h) => {
                     .style('text-anchor', 'end')
                     .text(news[COLS_MS['name']])
 
+                svg.append('circle')
+                    .attr('class', '_offTests')
+                    .attr('cx', x(news[COLS_MS['date']]) + 4)
+                    .attr('cy', height)
+                    .attr('r', 4)
+                    .attr('fill', 'grey')
+                    .append('title')
+                    .html(news[COLS_MS['name']])
+
             }, i * 500)
         }
+    }
+
+    const createAllEmpties = _ => {
+        svg.append('foreignObject')
+            .attr('class', '_blanks')
+            .attr('x', margin.left)
+            .attr('y', height + 60)
+            .attr('width', 125)
+            .attr('height', 60)
+            .style('background', 'rgba(255, 243, 224, 0.6)')
+            .append('xhtml:p')
+            .attr('class', '_blanks grey-text darken-1')
+            .style('font-size', '10px')
+            .html(['No hay datos', 'de pruebas procesadas', 'a la fecha'].join(`</br>`))
+
+        createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), margin.top, x(dataCol[22][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
+
+        createEmpty(svg, x(dataCol[24][COLS_NAL['date']]), margin.top, x(dataCol[29][COLS_NAL['date']]) - x(dataCol[24][COLS_NAL['date']]), height - margin.top)
+
+        createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), margin.top, x(dataCol[36][COLS_NAL['date']]) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
     }
 
     const reDimension = col => {
@@ -324,9 +343,7 @@ const createChart = async (w, h) => {
                     .attr('y', d => y(d[COLS_NAL['offTests']]))
                     .attr('height', d => height - y(d[COLS_NAL['offTests']]))
 
-                createEmpty(svg, x(dataCol[22][COLS_NAL['date']]), margin.top, x(dataCol[30][COLS_NAL['date']]) - x(dataCol[22][COLS_NAL['date']]), height - margin.top)
-
-                createEmpty(svg, x(dataCol[31][COLS_NAL['date']]), margin.top, x(lastDay) - x(dataCol[31][COLS_NAL['date']]), height - margin.top)
+                createAllEmpties()
 
                 d3.select('#sources_1')
                     .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
@@ -370,7 +387,7 @@ const createChart = async (w, h) => {
                 svg.selectAll('._blanks').remove()
 
                 d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)                
+                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
                 svg.select('#chartIntroTitle_a')
                     .html(`Casos confirmados a partir del día con 200 casos confirmados en`)
@@ -382,7 +399,7 @@ const createChart = async (w, h) => {
                     .html(`Días a partir del día con 200 casos acumulados confirmados`)
 
                 d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination(0))                    
+                    .attr('data-tooltip', createExplaination(0))
             }
         },
         offset: '40%'
@@ -395,20 +412,20 @@ const createChart = async (w, h) => {
             if (direction === DOWN) {
                 addCases()
                 d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)                       
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>  acumulados`)
                 d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination(2))                      
+                    .attr('data-tooltip', createExplaination(2))
             }
             else if (direction === UP) {
                 d3.selectAll('._cases').remove()
                 d3.select('#chartTitle')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
                 d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`) 
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
                 d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination(1))                                          
+                    .attr('data-tooltip', createExplaination(1))
             }
         },
         offset: '60%'
@@ -419,12 +436,10 @@ const createChart = async (w, h) => {
         element: document.getElementById('text_3'),
         handler: direction => {
             if (direction === DOWN) {
-                svg.selectAll('p._blanks')
-                    .style('visibility', 'hidden')
                 addDiscarded()
 
                 d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination(3))                   
+                    .attr('data-tooltip', createExplaination(3))
 
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
@@ -438,12 +453,9 @@ const createChart = async (w, h) => {
                 reDimension('offTests')
                 reDimension('cases')
 
-                svg.selectAll('p._blanks')
-                    .style('visibility', 'inherit')
-
                 svg.selectAll('._discarded').remove()
                 d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination(2))   
+                    .attr('data-tooltip', createExplaination(2))
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> acumulados`)
             }
@@ -475,7 +487,7 @@ const createIncreaseChart = async w => {
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select(`#chartIncrease`).select('svg')
+    let svg = d3.select(`#newTests`)
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
@@ -483,8 +495,8 @@ const createIncreaseChart = async w => {
     data = await data.map((d, i) => {
         let row = {}
         row[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        row[COLS_NAL['offNewTests']] = i == 0 ? 0 : i < 22 ? +d[COLS_NAL['offNewTests']] : +d[COLS_NAL['calNewTests']]
-        row[COLS_NAL['calNewTests']] = +d[COLS_NAL['calNewTests']]
+        row[COLS_NAL['newTests']] = +d[COLS_NAL['newTests']]
+        row[COLS_NAL['testsIncreasingRate']] = +d[COLS_NAL['testsIncreasingRate']]
         return row
     })
     data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
@@ -496,23 +508,49 @@ const createIncreaseChart = async w => {
         .domain([firstDay, lastDay])
 
     var y = d3.scaleLinear().range([height, margin.top])
-        .domain([0, d3.max(data.map(d => d[COLS_NAL['offNewTests']])) + 100])
+        .domain([0, d3.max(data.map(d => d[COLS_NAL['newTests']])) + 100])
 
     let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
-    let yAxis = d3.axisLeft(y)
+    let yAxis = d3.axisLeft(y).ticks(5)
 
-    let rects = svg.selectAll(`.increase.offNewTests`)
+    let rects = svg.selectAll(`.increase.newTests`)
         .data(data)
 
     rects
         .enter().append('rect')
-        .attr('class', 'increase offNewTests')
+        .attr('class', 'increase newTests')
         .merge(rects)
         .attr('x', d => x(d[COLS_NAL['date']]))
-        .attr('y', d => y(d[COLS_NAL['offNewTests']]))
+        .attr('y', d => y(d[COLS_NAL['newTests']]))
         .attr('width', 8)
-        .attr('height', d => height - y(d[COLS_NAL['offNewTests']]))
+        .attr('height', d => height - y(d[COLS_NAL['newTests']]))
         .attr('fill', d3.color(palette[7]))
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
+
+    svg.selectAll('.increase.increaseTests')
+        .data(data)
+        .enter().append('rect')
+        .attr('class', 'increase increaseTests')
+        .attr('x', d => x(d[COLS_NAL['date']]))
+        .attr('y', d => d[COLS_NAL['testsIncreasingRate']] < 0 ? y(d[COLS_NAL['newTests']] + Math.abs(d[COLS_NAL['testsIncreasingRate']])) : height)
+        .attr('width', 8)
+        .attr('height', d => d[COLS_NAL['testsIncreasingRate']] < 0 ? height - y(Math.abs(d[COLS_NAL['testsIncreasingRate']])) : 0)
+        .attr('fill', 'red')
+        .style('opacity', '0.3')
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
+
+    svg.selectAll('.increase.daysNegative')
+        .data(data)
+        .enter().append('circle')
+        .attr('class', 'increase daysNegative')
+        .attr('cx', d => x(d[COLS_NAL['date']]) + 4)
+        .attr('cy', height)
+        .attr('r', d => d[COLS_NAL['testsIncreasingRate']] < 0 ? 4 : 0)
+        .attr('fill', 'red')
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
 
     svg.append('text')
         .attr('id', 'sources_2')
@@ -531,7 +569,6 @@ const createIncreaseChart = async w => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
-
 }
 
 const createSummaryChart = async (w, h) => {
@@ -656,7 +693,7 @@ const createSummaryChart = async (w, h) => {
         .call(yAxis)
 
     d3.select('#explanation_chart3')
-        .attr('data-tooltip', createExplaination(4))         
+        .attr('data-tooltip', createExplaination(4))
 
     // Fix/unfix chart
     new Waypoint({
@@ -687,7 +724,7 @@ const createSummaryChart = async (w, h) => {
                     .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
                 d3.select('#explanation_chart3')
-                    .attr('data-tooltip', createExplaination(5))                       
+                    .attr('data-tooltip', createExplaination(5))
             }
             else if (direction === UP) {
                 updateLines(data)
@@ -698,7 +735,7 @@ const createSummaryChart = async (w, h) => {
                 d3.select('#chart3Title_b')
                     .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
                 d3.select('#explanation_chart3')
-                    .attr('data-tooltip', createExplaination(4)) 
+                    .attr('data-tooltip', createExplaination(4))
             }
         },
         offset: `40%`
@@ -788,7 +825,7 @@ const createIntCharts = async (w, h, dataset) => {
     })
 
     d3.select(`#explanation_chart_${dataset}`)
-        .attr('data-tooltip', createExplaination(6))       
+        .attr('data-tooltip', createExplaination(6))
 
     svg.append('text')
         .attr('x', 10)
