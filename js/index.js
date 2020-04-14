@@ -30,13 +30,13 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
 
-    createFINDChart(width*0.6, height)
+    createFINDChart(width * 0.6, height)
     // createMap(width, height)    
 }
 
 const loadDataInt = _ => {
     return new Promise(async resolve => {
-        let data = await d3.csv('data/data_200day_confirmed_cases_countries.csv')
+        let data = await d3.csv('data/data_million_confirmed_cases_countries.csv')
         data = await data.map(d => {
             d[COLS_INTNAL['day']] = +d[COLS_INTNAL['day']]
             d[COLS_INTNAL['italy']] = +d[COLS_INTNAL['italy']]
@@ -103,14 +103,14 @@ const createChart = async (w, h) => {
         .attr('height', h + margin.top + margin.bottom)
 
     let x = d3.scaleLinear().range([margin.left, width])
-        .domain([0, d3.max(await dataInt.map(d => d[COLS_INTNAL['day']])) + 1])
+        .domain([1, d3.max(await dataInt.map(d => d[COLS_INTNAL['day']])) + 1])
 
     let y = d3.scaleLog()
         .range([height, margin.top])
-        .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
+        .domain([0.71, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']])))])
 
     let xAxis = d3.axisBottom(x)
-    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format('2,d')(d))
 
     svg.append('text')
         .attr('id', 'chartIntroTitle_a')
@@ -179,6 +179,13 @@ const createChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    svg.selectAll('.y-axis').selectAll('.tick').selectAll('text')
+        .each(function () {
+            let char = `${d3.select(this).html()}`.substring(0, 1)
+            if (char !== '1' && char !== '5')
+                d3.select(this).remove()
+        })
 
     const createMilestones = _ => {
         for (let i = 0; i < dataMilestones.length; i++) {
@@ -477,7 +484,7 @@ const createChart = async (w, h) => {
                     .enter().append('rect')
                     .attr('class', 'tests-find')
                     .attr('x', d => x(d[COLS_NAL['date']]))
-                    .attr('y', d => y(d[COLS_NAL['testsFIND']])-1.5)
+                    .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
                     .attr('width', 10)
                     .attr('height', 3)
                     .attr('fill', 'white')
@@ -486,7 +493,7 @@ const createChart = async (w, h) => {
                     .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas en el FIND`)
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)                    
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
 
                 d3.select('#explanation_chart1')
                     .attr('data-tooltip', createExplaination(3))
@@ -499,7 +506,7 @@ const createChart = async (w, h) => {
                     .attr('data-tooltip', createExplaination(3))
 
                 d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)                    
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
 
                 d3.select('#chartIntroTitle_b')
                     .html('')
@@ -514,9 +521,9 @@ const createChart = async (w, h) => {
     new Waypoint({
         element: document.getElementById('text_3a'),
         handler: direction => {
-            if (direction === DOWN) 
+            if (direction === DOWN)
                 createMilestones()
-            else if (direction === UP) 
+            else if (direction === UP)
                 svg.selectAll('._milestones').remove()
         },
         offset: '80%'
@@ -612,13 +619,13 @@ const createIncreaseChart = async w => {
         .attr('x', 10)
         .attr('y', 12)
         .attr('r', 4)
-        .html(`</tspan><tspan style="fill:${palette[7]}">Pruebas procesadas diarias</tspan>, <tspan style="fill:rgba(256,0,0,0.6)">diferencia con respecto al día anterior`)        
+        .html(`</tspan><tspan style="fill:${palette[7]}">Pruebas procesadas diarias</tspan>, <tspan style="fill:rgba(256,0,0,0.6)">diferencia con respecto al día anterior`)
 
     svg.append('text')
         .attr('x', 25)
         .attr('y', 27)
         .attr('r', 4)
-        .html(`<tspan style="fill:red">días con diferencia negativa</tspan>`)        
+        .html(`<tspan style="fill:red">días con diferencia negativa</tspan>`)
 
     svg.append('text')
         .attr('id', 'sources_2')
@@ -952,7 +959,7 @@ const createFINDChart = async (w, h) => {
         .attr('height', d => height - y(d[COLS_NAL['offTests']]))
         .style('fill', ORANGE)
         .append('title')
-        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)    
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
 
     svg.selectAll('rect._find')
         .data(dataCol)
