@@ -149,18 +149,12 @@
                     realizadas pues no comprende el número de casos que están en observación, pero nos dice al menos
                     cuántas pruebas se
                     están haciendo.</p>
-                <p id="text_3a">El 12 de abril, el INS publicó en su página de Twitter la <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">página que reporta los datos oficiales de pruebas procesadas en Colombia</a>. Diariamente desde el 3 de marzo
+                <p id="text_3a">El 12 de abril, el INS publicó en su página de Twitter la <a
+                        href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">página que reporta los
+                        datos oficiales de pruebas procesadas en Colombia</a>. Diariamente desde el 3 de marzo
                     hasta el 27 de marzo. Sin embargo, a la fecha ya no se presentan informes actualizando la
                     información a diario sino
-                    semanalmente. En nuestro intento por tener una idea del número de pruebas que se están realizando
-                    diariamente en el
-                    país, sumamos el número de casos confirmados y casos descartados diariamente y tomamos esta cifra
-                    como una <b>aproximación
-                        del número de pruebas realizadas diariamente</b>. Sabemos que esta cifra puede ser menor que el
-                    número total de pruebas
-                    realizadas pues no comprende el número de casos que están en observación, pero nos dice al menos
-                    cuántas pruebas se
-                    están haciendo.</p>
+                    semanalmente. <a class="modal-trigger" href="#dataFIND">¿Por qué no creemos en estos datos?</a></p>
             </div>
             <div id="chapter_1_chart" class="col m7">
                 <div id="chartIntro" class="right-chart">
@@ -466,10 +460,34 @@
                 </p>
                 <i class="secondary-content">(11)</i>
             </li>
+            <li id="ref12" class="collection-item avatar">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/FIND2_ok.jpg" alt="" class="circle">
+                <span class="title">FIND: Because diagnosis matters</span>
+                <p><a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/"
+                        target="_blank">Covid-19 Diagnostics Resource Center</a>
+                </p>
+                <i class="secondary-content">(12)</i>
+            </li>
         </ul>
     </div>
 
     <!-- MODALS -->
+
+    <div id="dataFIND" class="modal">
+        <div class="modal-content">
+            <h4 class="orange-text darken-3">Los datos reportados en FIND</h4>
+            <div class="row">
+                <svg id="findDataChart"></svg>
+            </div>
+            <div class="row">
+                <blockquote>Fuente: FIND: Because Diagnostics Matters<b class='right'><a href='#ref12'><cite>(12)</cite></a></b>
+                </blockquote>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close orange darken-3 waves-effect waves-green btn-flat white-text">Cerrar</a>
+        </div>
+    </div>
 
     <div id="southkorea" class="modal">
         <div class="modal-content">

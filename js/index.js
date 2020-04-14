@@ -186,7 +186,7 @@ const createChart = async (w, h) => {
                 svg.append('line')
                     .attr('stroke', 'grey')
                     .attr('opacity', '0.4')
-                    .attr('class', '_offTests')
+                    .attr('class', '_milestones')
                     .attr('stroke-width', 2)
                     .attr('x1', x(news[COLS_MS['date']]) + 4)
                     .attr('y1', height)
@@ -196,14 +196,14 @@ const createChart = async (w, h) => {
                     .attr('y2', height + margin.top + 30 + 20 * i)
 
                 svg.append('text')
-                    .attr('class', 'sources _offTests')
+                    .attr('class', 'sources _milestones')
                     .attr('x', x(news[COLS_MS['date']]) - 5)
                     .attr('y', height + margin.top + 30 + 20 * i)
                     .style('text-anchor', 'end')
                     .text(news[COLS_MS['name']])
 
                 svg.append('circle')
-                    .attr('class', '_offTests')
+                    .attr('class', '_milestones')
                     .attr('cx', x(news[COLS_MS['date']]) + 4)
                     .attr('cy', height)
                     .attr('r', 4)
@@ -360,8 +360,6 @@ const createChart = async (w, h) => {
                 d3.select('#chartIntroxAxis')
                     .html('')
 
-                createMilestones()
-
                 d3.select('#explanation_chart1')
                     .attr('data-tooltip', createExplaination(1))
                     .html('<i class= "material-icons">help</i >')
@@ -471,23 +469,55 @@ const createChart = async (w, h) => {
         element: document.getElementById('text_3a'),
         handler: direction => {
             if (direction === DOWN) {
-                addDiscarded()
+
+                svg.selectAll('.tests-find')
+                    .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
+                    .enter().append('rect')
+                    .attr('class', 'tests-find')
+                    .attr('x', d => x(d[COLS_NAL['date']]))
+                    .attr('y', d => y(d[COLS_NAL['testsFIND']])-1.5)
+                    .attr('width', 10)
+                    .attr('height', 3)
+                    .attr('fill', 'white')
+                    .attr('stroke', palette[7])
+                    .append('title')
+                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas en el FIND`)
+
+                d3.select('#chartIntroTitle_a')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)                    
 
                 d3.select('#explanation_chart1')
                     .attr('data-tooltip', createExplaination(3))
 
                 d3.select('#chartIntroTitle_b')
-                    .html('<tspan style="fill: red">pruebas procesadas oficiales</tspan>')
+                    .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas oficiales</tspan> acumuladas`)
             }
             else if (direction === UP) {
                 d3.select('#explanation_chart1')
                     .attr('data-tooltip', createExplaination(3))
 
+                d3.select('#chartIntroTitle_a')
+                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)                    
+
                 d3.select('#chartIntroTitle_b')
                     .html('')
+
+                d3.selectAll('.tests-find').remove()
             }
         },
-        offset: '60%'
+        offset: '40%'
+    })
+
+    // Add/remove discarded
+    new Waypoint({
+        element: document.getElementById('text_3a'),
+        handler: direction => {
+            if (direction === DOWN) 
+                createMilestones()
+            else if (direction === UP) 
+                svg.selectAll('._milestones').remove()
+        },
+        offset: '80%'
     })
 
     // Fix/unfix chart
