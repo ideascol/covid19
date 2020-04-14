@@ -49,6 +49,10 @@ text > a {
   fill: #039be5;
 }
 
+.sharing-button {
+  width: 5%;
+}
+
 .right-chart {
   padding-left: 10px;
 }

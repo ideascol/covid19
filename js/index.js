@@ -29,6 +29,8 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
+
+    createFINDChart(width*0.6, height)
     // createMap(width, height)    
 }
 
@@ -915,6 +917,70 @@ const createIntCharts = async (w, h, dataset) => {
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
 
+}
+
+const createFINDChart = async (w, h) => {
+    let margin = { top: 40, right: 5, bottom: h * 0.06, left: 50 }
+
+    let width = w - margin.left - margin.right
+    let height = h - margin.top - margin.bottom
+
+    let svg = d3.select('#findDataChart')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+
+    let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
+    lastDay.setDate(lastDay.getDate() + 1)
+
+    let x = d3.scaleTime().range([margin.left, width])
+        .domain([firstDay, lastDay])
+
+    let y = d3.scaleLinear()
+        .range([height, margin.top])
+        .domain([0, d3.max(dataCol.map(d => Math.max(d[COLS_NAL['offTests']], d[COLS_NAL['cases']] + d[COLS_NAL['discarded']], d[COLS_NAL['testsFIND']]) + 100))])
+
+    let xAxis = d3.axisBottom(x)
+    let yAxis = d3.axisLeft(y)
+
+    svg.selectAll('rect._offTests')
+        .data(dataCol)
+        .enter().append('rect')
+        .attr('class', '_offTests')
+        .attr('x', d => x(d[COLS_NAL['date']]))
+        .attr('y', d => y(d[COLS_NAL['offTests']]))
+        .attr('width', 5)
+        .attr('height', d => height - y(d[COLS_NAL['offTests']]))
+        .style('fill', ORANGE)
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)    
+
+    svg.selectAll('rect._find')
+        .data(dataCol)
+        .enter().append('rect')
+        .attr('class', '_find')
+        .attr('x', d => x(d[COLS_NAL['date']] + 6))
+        .attr('y', d => y(d[COLS_NAL['testsFIND']]))
+        .attr('width', 5)
+        .attr('height', d => height - y(d[COLS_NAL['testsFIND']]))
+        .style('fill', palette[0])
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', height + margin.top + 10)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+
+    svg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
 }
 
 const createMap = async (width, height) => {
