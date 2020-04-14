@@ -57,6 +57,9 @@ const loadDataCol = _ => {
             d[COLS_NAL['offTests']] = +d[COLS_NAL['offTests']]
             d[COLS_NAL['cases']] = +d[COLS_NAL['cases']]
             d[COLS_NAL['discarded']] = +d[COLS_NAL['discarded']]
+            d[COLS_NAL['newTests']] = +d[COLS_NAL['newTests']]
+            d[COLS_NAL['testsIncreasingRate']] = +d[COLS_NAL['testsIncreasingRate']]
+            d[COLS_NAL['testsFIND']] = +d[COLS_NAL['testsFIND']]
             return d
         })
         data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
@@ -463,6 +466,30 @@ const createChart = async (w, h) => {
         offset: '60%'
     })
 
+    // Add/remove discarded
+    new Waypoint({
+        element: document.getElementById('text_3a'),
+        handler: direction => {
+            if (direction === DOWN) {
+                addDiscarded()
+
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(3))
+
+                d3.select('#chartIntroTitle_b')
+                    .html('<tspan style="fill: red">pruebas procesadas oficiales</tspan>')
+            }
+            else if (direction === UP) {
+                d3.select('#explanation_chart1')
+                    .attr('data-tooltip', createExplaination(3))
+
+                d3.select('#chartIntroTitle_b')
+                    .html('')
+            }
+        },
+        offset: '60%'
+    })
+
     // Fix/unfix chart
     new Waypoint({
         element: document.getElementById('chapter_2'),
@@ -481,9 +508,9 @@ const createChart = async (w, h) => {
 }
 
 const createIncreaseChart = async w => {
-    let margin = { top: 0, right: 5, bottom: 25, left: 60 }
+    let margin = { top: 30, right: 5, bottom: 9, left: 60 }
 
-    let h = d3.select('#text_4').node().getBoundingClientRect().height * 0.7
+    let h = d3.select('#text_4').node().getBoundingClientRect().height
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
@@ -491,15 +518,6 @@ const createIncreaseChart = async w => {
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
-    let data = await d3.csv(`data/datos_nal.csv`)
-    data = await data.map((d, i) => {
-        let row = {}
-        row[COLS_NAL['date']] = new Date(d[COLS_NAL['date']])
-        row[COLS_NAL['newTests']] = +d[COLS_NAL['newTests']]
-        row[COLS_NAL['testsIncreasingRate']] = +d[COLS_NAL['testsIncreasingRate']]
-        return row
-    })
-    data = data.sort((a, b) => new Date(a[COLS_NAL['date']]) - new Date(b[COLS_NAL['date']]))
 
     let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
     lastDay.setDate(lastDay.getDate() + 1)
@@ -508,13 +526,13 @@ const createIncreaseChart = async w => {
         .domain([firstDay, lastDay])
 
     var y = d3.scaleLinear().range([height, margin.top])
-        .domain([0, d3.max(data.map(d => d[COLS_NAL['newTests']])) + 100])
+        .domain([0, d3.max(dataCol.map(d => d[COLS_NAL['newTests']])) + 100])
 
     let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
     let yAxis = d3.axisLeft(y).ticks(5)
 
     let rects = svg.selectAll(`.increase.newTests`)
-        .data(data)
+        .data(dataCol)
 
     rects
         .enter().append('rect')
@@ -524,12 +542,12 @@ const createIncreaseChart = async w => {
         .attr('y', d => y(d[COLS_NAL['newTests']]))
         .attr('width', 8)
         .attr('height', d => height - y(d[COLS_NAL['newTests']]))
-        .attr('fill', d3.color(palette[7]))
+        .attr('fill', palette[7])
         .append('title')
         .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
 
     svg.selectAll('.increase.increaseTests')
-        .data(data)
+        .data(dataCol)
         .enter().append('rect')
         .attr('class', 'increase increaseTests')
         .attr('x', d => x(d[COLS_NAL['date']]))
@@ -542,7 +560,7 @@ const createIncreaseChart = async w => {
         .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
 
     svg.selectAll('.increase.daysNegative')
-        .data(data)
+        .data(dataCol)
         .enter().append('circle')
         .attr('class', 'increase daysNegative')
         .attr('cx', d => x(d[COLS_NAL['date']]) + 4)
@@ -551,6 +569,24 @@ const createIncreaseChart = async w => {
         .attr('fill', 'red')
         .append('title')
         .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['newTests']])} nuevas pruebas procesadas, ${d[COLS_NAL['testsIncreasingRate']] > 0 ? `${d[COLS_NAL['testsIncreasingRate']]} más que el día anterior` : `${Math.abs(d[COLS_NAL['testsIncreasingRate']])} menos que el día anterior`}`)
+
+    svg.append('circle')
+        .attr('cx', 16)
+        .attr('cy', 22)
+        .attr('r', 4)
+        .attr('fill', 'red')
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 12)
+        .attr('r', 4)
+        .html(`</tspan><tspan style="fill:${palette[7]}">Pruebas procesadas diarias</tspan>, <tspan style="fill:rgba(256,0,0,0.6)">diferencia con respecto al día anterior`)        
+
+    svg.append('text')
+        .attr('x', 25)
+        .attr('y', 27)
+        .attr('r', 4)
+        .html(`<tspan style="fill:red">días con diferencia negativa</tspan>`)        
 
     svg.append('text')
         .attr('id', 'sources_2')

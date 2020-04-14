@@ -33,7 +33,8 @@ const COLS_NAL = {
     'cases': 'Casos Confirmados Totales',
     'discarded': 'Casos Descartados Totales',
     'newTests': 'Pruebas procesadas diarias',
-    'testsIncreasingRate': 'Incremento en pruebas procesadas diarias'
+    'testsIncreasingRate': 'Incremento en pruebas procesadas diarias',
+    'testsFIND': 'Pruebas procesadas FIND'
 }
 
 // International data columns
