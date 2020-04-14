@@ -206,7 +206,7 @@ const createChart = async (w, h) => {
 
                 svg.append('text')
                     .attr('class', 'sources _milestones')
-                    .attr('x', x(news[COLS_MS['date']]) - 5)
+                    .attr('x', x(news[COLS_MS['date']]))
                     .attr('y', height + margin.top + 30 + 20 * i)
                     .style('text-anchor', 'end')
                     .text(news[COLS_MS['name']])
@@ -412,7 +412,7 @@ const createChart = async (w, h) => {
                     .attr('data-tooltip', createExplaination(0))
             }
         },
-        offset: '40%'
+        offset: '60%'
     })
 
     // Add/remove cases
@@ -422,7 +422,7 @@ const createChart = async (w, h) => {
             if (direction === DOWN) {
                 addCases()
                 d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>`)
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>  acumulados`)
                 d3.select('#explanation_chart1')
@@ -478,7 +478,9 @@ const createChart = async (w, h) => {
         element: document.getElementById('text_3a'),
         handler: direction => {
             if (direction === DOWN) {
-
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
+                
                 svg.selectAll('.tests-find')
                     .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
                     .enter().append('rect')
@@ -502,6 +504,9 @@ const createChart = async (w, h) => {
                     .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas oficiales</tspan> acumuladas`)
             }
             else if (direction === UP) {
+                d3.select('#sources_1')
+                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>`)
+
                 d3.select('#explanation_chart1')
                     .attr('data-tooltip', createExplaination(3))
 
@@ -632,7 +637,7 @@ const createIncreaseChart = async w => {
         .attr('x', 10)
         .attr('y', h + margin.bottom)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="" target="_blank">Cálculos nuestros</a>`)
+        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
