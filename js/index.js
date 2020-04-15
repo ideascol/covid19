@@ -886,9 +886,8 @@ const createIntCharts = async (w, h, dataset) => {
             .attr('class', `politiko ${col} area`)
             .attr('d', area)
             .attr('fill', d3.color(palette[i + 8]))
-            .attr('fill-opacity', 0.8)
-            .attr('stroke', d3.color(palette[i + 8]))
-            .attr('stroke-width', 5)
+            .attr('fill-opacity', 0.3)
+            .attr('stroke', 'none')
 
         let circles = svg.selectAll(`circle.politiko.${col}`)
             .data(data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0))
