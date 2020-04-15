@@ -133,6 +133,16 @@
                     confirmados probablemente es menor al número verdadero de enfermos si no se hacen pruebas
                     suficientes.
                 </p>
+                <p>
+                    Algunas de las gráficas que encontrarás a continuación se encuentran en escala logarítmica. Esto lo
+                    hacemos debido a que
+                    la naturaleza exponencial de la información (casos confirmados, muertes, pruebas realizadas) nos
+                    obliga a utilizar la
+                    escala logarítmica para comparar las tasas de crecimiento de estos datos. Si quieres entender un
+                    poco más sobre por qué
+                    hacemos esto, <a class="modal-trigger" href="#logScale">mira aquí</a>.
+
+                </p>
                 <p id="text_1">
                     Ha sido difícil recopilar información precisa sobre las pruebas realizadas en el país. El Instituto
                     Nacional de Salud
@@ -267,6 +277,13 @@
             funcionado y
             lo que no, puede ayudarnos a pensar hacia dónde encaminar nuestras políticas con los recursos que tenemos
             disponibles.
+            En las gráficas de esta sección verás el número de pruebas realizadas, casos confirmados y muertes por país.
+            Entre más
+            área sombreada veas entre la línea del número de pruebas realizadas y la línea de número de casos
+            confirmados significa
+            que el número de pruebas que se están realizando es muy superior al número de casos que se están confirmado
+            diariamente. <a class="tooltipped" data-position="bottom"
+                data-tooltip="Próximamente discutiremos esto.">¿Qué nos gustaría ver?</a>
         </p>
         <div class="row">
             <h6 class="orange-text darken-3"><img src="https://cdn.webshopapp.com/shops/31683/files/69008828/image.jpg"
@@ -643,6 +660,14 @@
                 </p>
                 <i class="secondary-content">(22)</i>
             </li>
+            <li id="ref23" class="collection-item avatar">
+                <img src="https://avatars0.githubusercontent.com/u/221409?s=280&v=4" alt="" class="circle">
+                <span class="title">The New York Times</span>
+                <p><a href="https://www.nytimes.com/2020/03/20/health/coronavirus-data-logarithm-chart.html"
+                        target="_blank">A Different Way to Chart the Spread of Coronavirus</a>
+                </p>
+                <i class="secondary-content">(23)</i>
+            </li>
         </ul>
     </div>
 
@@ -670,7 +695,8 @@
                 realidad sí. En ese
                 caso debería haber un espacio vacío que represente la ausencia de esa información.</p>
             <div class="row center-align"><svg id="findMarch29"></svg></div>
-            <p>Por último, en los periodos cuando el INS dejó de hacer pública la información diaria de pruebas, hay días
+            <p>Por último, en los periodos cuando el INS dejó de hacer pública la información diaria de pruebas, hay
+                días
                 en los que el
                 dato de FIND corresponde a la suma de confirmados y descartados, pero del día anterior como pasa, por
                 ejemplo, el 31 de
@@ -961,6 +987,50 @@
             </div>
             <div class="row">
                 <blockquote>Fuente: New York Times<b class='right'><a href='#ref9'><cite>(9)</cite></a></b>
+                </blockquote>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close orange darken-3 waves-effect waves-green btn-flat white-text">Cerrar</a>
+        </div>
+    </div>
+
+    <div id="logScale" class="modal">
+        <div class="modal-content">
+            <h4 class="orange-text darken-3">¿Por qué graficamos en escala logarítmica?</h4>
+            <div class="row">
+                <p>En una gráfica común, los valores en el eje vertical crecen de forma lineal: 1, 2, 3 y así
+                    sucesivamente, o 10, 20, 30,
+                    por ejemplo. Por el contrario, en una logarítmica, cada marca en el eje vertical representa un
+                    crecimiento exponencial
+                    de la marca anterior: 1, luego 10, luego 100, 1000, 10000 y así (los intervalos no tienen que ser
+                    necesariamente un
+                    factor de 10, pueden ser de 2, 5 o cualquier número). Esto permite que la escala logarítmica
+                    visualice de forma más
+                    clara la tasa de crecimiento de una variable que una escala lineal. Veamos la gráfica de abajo.
+                </p>
+                <img style="width:100%" src="assets/images/new_york.png">
+                <p>
+                    Ambas muestran los casos confirmados en Italia y Estados Unidos. A la izquierda los datos están
+                    graficados linealmente,
+                    mientras que a la derecha logarítmicamente. La gráfica de la izquierda nos muestra que la situación
+                    está mucho más grave
+                    en Italia que en Estados Unidos, porque sus casos confirmados son muchísimo más altos, a pesar de
+                    que los casos vayan en
+                    aumento en ambos países. Pero esto es solo una parte de la historia. La gráfica de la derecha nos
+                    muestra que Italia
+                    tiene más casos que Estados Unidos (al igual que la otra gráfica), sin embargo, esta gráfica nos
+                    muestra al final que el
+                    número de casos en Italia está empezando a desacelerarse, mientras que en Estados Unidos se está
+                    acelerando. Lo cual
+                    indicaría que la situación en Italia está mejorando, mientras que en Estados Unidos no. Esta parte
+                    de la historia es
+                    fundamental a la hora de observar el impacto que tienen las políticas públicas en la contención de
+                    la epidemia.
+                </p>
+            </div>
+            <div class="row">
+                <blockquote>Fuente: New York Times<b class='right'><a href='#ref23'><cite>(23)</cite></a></b>
                 </blockquote>
             </div>
         </div>
