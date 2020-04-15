@@ -507,8 +507,8 @@ const createChart = async (w, h) => {
                     .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
                     .attr('width', 10)
                     .attr('height', 3)
-                    .attr('fill', 'white')
-                    .attr('stroke', palette[7])
+                    .attr('fill', palette[7])
+                    .attr('stroke', 'white')
                     .append('title')
                     .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`)
 
