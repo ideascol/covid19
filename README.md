@@ -23,3 +23,10 @@ Conscientes de que mantener la cuarentena indefinidamente es insostenible, la ex
 Esta página está en construcción. ¡Síganla y compártanla si les parece útil! [Covid-19: Seguimiento diario en Colombia](https://ideascol.github.io/covid19/)
 
 Ayúdanos a encontrar más datos relacionados. <a target="_blank" href="mailto:jc.chaves20@gmail.com,meilivh8@gmail.com,linaramirez0604@gmail.com?subject=Ideas COL: Email de contacto página web">¡Contáctanos!</a>
+
+---
+
+### Ideas Col
+
+| [<img width='150px' src="https://pbs.twimg.com/profile_images/1197273651151867904/BCUAVA_h_400x400.jpg"/><br /><sub>Lina M. Ramirez Leguizamón</sub>](https://www.linkedin.com/in/lina-ramirez-leguizamon-b22888178/)<br /> | [<img width='150px' src="https://media-exp1.licdn.com/dms/image/C4E03AQG9ISMLZXK5Wg/profile-displayphoto-shrink_200_200/0?e=1592438400&v=beta&t=7PMC-GJY_pS_SYZ_KaLNYSRtHBj5To1JBGAHYQPcxag"/><br /><sub>Meili Vanegas-Hernandez</sub>](https://mvanegas10.github.io/)<br /> | [<img width='150px' src="https://pbs.twimg.com/profile_images/1188149035871461376/iFLA5O0I_400x400.jpg"/><br /><sub>Juan Camilo Chaves Puentes</sub>](https://www.linkedin.com/in/juan-camilo-chaves-71123a17a/)<br /> |
+| :---: | :---: | :---: |
