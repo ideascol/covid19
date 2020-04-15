@@ -926,9 +926,15 @@ const createIntCharts = async (w, h, dataset) => {
 
     svg.append('text')
         .attr('x', 10)
-        .attr('y', h + margin.bottom)
+        .attr('y', h + margin.bottom - 2)
         .attr('class', 'sources')
         .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>`)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom + 10)
+        .attr('class', 'sources')
+        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)        
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
