@@ -400,7 +400,7 @@ const createChart = async (w, h) => {
                     .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
                 svg.select('#chartIntroTitle_a')
-                    .html(`Casos confirmados por millón de habitantes a partir del día con`)
+                    .html(`Casos confirmados por millón de habitantes a partir del día con 200`)
 
                 svg.select('#chartIntroTitle_b')
                     .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
@@ -497,13 +497,13 @@ const createChart = async (w, h) => {
                     .attr('fill', 'white')
                     .attr('stroke', palette[7])
                     .append('title')
-                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas en el FIND`)
+                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`)
 
                 d3.select('#chartIntroTitle_a')
                     .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
 
                 d3.select('#chartIntroTitle_b')
-                    .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas oficiales</tspan> acumuladas`)
+                    .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas reportadas por FIND</tspan> acumuladas`)
             }
             else if (direction === UP) {
                 d3.select('#explanation_chart1')
@@ -874,9 +874,9 @@ const createIntCharts = async (w, h, dataset) => {
 
     Object.keys(COLS_POLITIKO).filter(d => d !== 'day').map((col, i) => {
         let area = d3.area()
-                .x(d => x(d[COLS_POLITIKO['day']]))
-                .y0(y(1))
-                .y1(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+            .x(d => x(d[COLS_POLITIKO['day']]))
+            .y0(y(1))
+            .y1(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
 
         let paths = svg.selectAll(`.area.politiko.${col}`)
             .data([data.filter(d => d[COLS_POLITIKO[col]] && d[COLS_POLITIKO[col]] > 0)])
@@ -938,14 +938,14 @@ const createIntCharts = async (w, h, dataset) => {
 }
 
 const createFINDChart = async (w, h) => {
-    let margin = { top: 40, right: 5, bottom: h * 0.06, left: 50 }
+    let margin = { top: 20, right: 0, bottom: 20, left: 50 }
 
     let width = w - margin.left - margin.right
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select('#findDataChart')
         .attr('width', w + margin.left + margin.right)
-        .attr('height', h + margin.top + margin.bottom)
+        .attr('height', (h + margin.top + margin.bottom) * 0.85)
 
     let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
     lastDay.setDate(lastDay.getDate() + 1)
@@ -970,25 +970,30 @@ const createFINDChart = async (w, h) => {
         .attr('height', d => height - y(d[COLS_NAL['offTests']]))
         .style('fill', ORANGE)
         .append('title')
-        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas procesadas`)
 
     svg.selectAll('rect._find')
         .data(dataCol)
         .enter().append('rect')
         .attr('class', '_find')
-        .attr('x', d => x(d[COLS_NAL['date']] + 6))
+        .attr('x', d => x(d[COLS_NAL['date']]) + 6)
         .attr('y', d => y(d[COLS_NAL['testsFIND']]))
         .attr('width', 5)
         .attr('height', d => height - y(d[COLS_NAL['testsFIND']]))
-        .style('fill', palette[0])
+        .style('fill', palette[7])
         .append('title')
-        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']])} casos confirmados`)
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['testsFIND']])} pruebas reportadas por FIND`)
 
     svg.append('text')
         .attr('x', 10)
-        .attr('y', height + margin.top + 10)
+        .attr('y', h - margin.bottom * 0.5)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', margin.top * .8)
+        .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[7]}">pruebas procesadas reportadas por FIND</tspan> acumuladas`)
 
     svg.append('g')
         .attr('class', 'x-axis')
@@ -999,6 +1004,132 @@ const createFINDChart = async (w, h) => {
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
+
+    let svg1 = d3.select('#findMarch22')
+        .attr('width', w)
+        .attr('height', 100)
+
+    let y1 = d3.scaleLinear()
+        .range([margin.left, width])
+        .domain([0, dataCol[16][COLS_NAL['offTests']] + 1000])
+
+    let yAxis1 = d3.axisBottom(y1)
+
+    svg1.append('circle')
+        .attr('cx', y1(dataCol[16][COLS_NAL['offTests']]))
+        .attr('cy', 50)
+        .attr('r', 5)
+        .style('fill', ORANGE)
+        .append('title')
+        .html(`pruebas procesadas`)
+
+    svg1.append('circle')
+        .attr('cx', y1(dataCol[16][COLS_NAL['cases']] + dataCol[16][COLS_NAL['discarded']]))
+        .attr('cy', 50)
+        .attr('r', 5)
+        .style('fill', palette[1])
+        .append('title')
+        .html(`pruebas procesadas`)
+
+    svg1.append('circle')
+        .attr('cx', y1(dataCol[16][COLS_NAL['testsFIND']]))
+        .attr('cy', 50)
+        .attr('r', 5)
+        .style('fill', palette[7])
+        .append('title')
+        .html(`pruebas procesadas`)
+
+    svg1.append('text')
+        .attr('x', 10)
+        .attr('y', 100)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
+
+    svg1.append('text')
+        .attr('x', 10)
+        .attr('y', 11)
+        .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[7]}">pruebas procesadas reportadas por FIND</tspan> y`)
+
+    svg1.append('text')
+        .attr('x', 10)
+        .attr('y', 26)
+        .html(`<tspan style="fill: ${palette[1]}">suma de casos confirmados mas descartados</tspan> acumulados al 22 de marzo`)
+
+    svg1.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(0,70)`)
+        .call(yAxis1)
+
+    let svg2 = d3.select('#findMarch29')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', (h + margin.top + margin.bottom) * 0.85)
+
+    let tmpData = [...dataCol].splice(22, 4)
+
+    console.log(tmpData)
+
+    let x2 = d3.scaleTime().range([margin.left, width])
+        .domain(d3.extent(tmpData, d => d[COLS_NAL['date']]))
+
+    let y2 = d3.scaleLinear()
+        .range([height, margin.top])
+        .domain([0, d3.max(tmpData, d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])+100])
+
+    let xAxis2 = d3.axisBottom(x2).ticks(4).tickFormat(d => d3.timeFormat('%d %b')(d))
+    let yAxis2 = d3.axisLeft(y2)
+
+    svg2.selectAll('rect._find')
+        .data(tmpData)
+        .enter().append('rect')
+        .attr('class', '_find')
+        .attr('x', d => x2(d[COLS_NAL['date']]))
+        .attr('y', d => y2(d[COLS_NAL['testsFIND']]))
+        .attr('width', 30)
+        .attr('height', d => height - y2(d[COLS_NAL['testsFIND']]))
+        .style('fill', palette[7])
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['testsFIND']])} pruebas reportadas por FIND`)
+
+    svg2.selectAll('rect._ideascol')
+        .data(tmpData)
+        .enter().append('rect')
+        .attr('class', '_ideascol')
+        .attr('x', d => x2(d[COLS_NAL['date']]) + 34)
+        .attr('y', d => y2(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
+        .attr('width', 30)
+        .attr('height', d => height - y2(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
+        .style('fill', palette[1])
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])} pruebas reportadas por FIND`)
+
+    svg2.append('line')
+        .attr('x1', x2(tmpData[1][COLS_NAL['date']]) - 10)
+        .attr('y1', y2(tmpData[1][COLS_NAL['testsFIND']]))
+        .attr('x2', x2(tmpData[2][COLS_NAL['date']]) + 74)
+        .attr('y2', y2(tmpData[1][COLS_NAL['testsFIND']]))
+        .style('stroke-width', 5)
+        .style('stroke', palette[0])        
+
+    svg2.append('text')
+        .attr('x', 10)
+        .attr('y', margin.top * .8)
+        .html(`<tspan style="fill: ${palette[7]}">Pruebas reportadas por FIND</tspan> y <tspan style="fill: ${palette[1]}">casos confirmados más descartados </tspan> acumulados`)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', h - margin.bottom * 0.5)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
+
+    svg2.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis2).selectAll('text')
+
+    svg2.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis2)
 }
 
 const createMap = async (width, height) => {

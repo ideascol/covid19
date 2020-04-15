@@ -37,8 +37,9 @@
         <div class="row center-align">
             <h3 class="orange-text darken-1">Covid-19: Seguimiento diario en Colombia</h3>
             <h6 class="grey-text darken-3">¿Estamos haciendo pruebas suficientes? ¿Qué datos deberíamos considerar?</h6>
-            <h7 class="grey-text darken-3">Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL <img style="width:12px"
-                    src="https://ideascol.github.io/favicon.ico"></a>. Última actualización: </h7>
+            <h7 class="grey-text darken-3">Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas
+                    COL <img style="width:12px" src="https://ideascol.github.io/favicon.ico"></a>. Última actualización:
+            </h7>
             <h7 id="date">lunes 21 de marzo</h7>
             <h6>
                 <a href="https://facebook.com/sharer/sharer.php?u=https://ideascol.github.io/covid19/" target="_blank"
@@ -49,8 +50,8 @@
 
                 <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&title=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
                     target="_blank" rel="noopener" class="share-button fa fa-linkedin"></a>
-                <a href="https://github.com/ideascol/covid19"
-                    target="_blank" rel="noopener" class="share-button fa fa-github"></a>
+                <a href="https://github.com/ideascol/covid19" target="_blank" rel="noopener"
+                    class="share-button fa fa-github"></a>
             </h6>
         </div>
         <div class="row">
@@ -649,10 +650,10 @@
 
     <div id="dataFIND" class="modal">
         <div class="modal-content">
-            <h4 class="orange-text darken-3">Los datos reportados en el FIND</h4>
-            <!-- <div class="row">
+            <h4 class="orange-text darken-3">Los datos reportados por FIND</h4>
+            <div class="row center-align">
                 <svg id="findDataChart"></svg>
-            </div> -->
+            </div>
             <p>Hay varias inconsistencias en el número de pruebas procesadas que se reportan por FIND. Primero, a pesar
                 de citar al INS
                 como fuente de los datos, hay días en los que el dato de FIND no coincide con el dato oficial de INS ni
@@ -660,11 +661,13 @@
                 casos confirmados y descartados que nosotros proveemos como pasa, por ejemplo, el 22 de marzo. ¿De dónde
                 salió esa
                 información?</p>
+            <div class="row center-align"><svg id="findMarch22"></svg></div>
             <p>Segundo, en los periodos cuando el INS dejó de hacer pública la información diaria de pruebas, hay días
                 en los que el
                 dato de FIND corresponde a la suma de confirmados y descartados, pero del día anterior como pasa, por
-                ejemplo, el 31 de
+                ejemplo, el 29 y 30 de
                 marzo.</p>
+            <div class="row center-align"><svg id="findMarch29"></svg></div>
             <p>Por último, hay días en los que FIND no reporta nuevas pruebas realizadas en el día y lo que hace es
                 mantener el dato
                 del día anterior en lugar de utilizar la suma de confirmados y descartados de ese día como pasa por
@@ -678,7 +681,6 @@
                 garantizar la
                 precisión de los datos en cada uno de los países.
             </p>
-            <p><i>Gráficas en construcción . . .</i></p>
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-close orange darken-3 waves-effect waves-green btn-flat white-text">Cerrar</a>
