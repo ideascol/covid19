@@ -170,6 +170,13 @@ const createChart = async (w, h) => {
         .attr('class', 'sources')
         .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
+    svg.append('text')
+        .attr('id', 'note_1')
+        .attr('x', 10)
+        .attr('y', height + margin.top + 30)
+        .attr('class', 'sources')
+        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)        
+
     svg.append('g')
         .attr('class', 'x-axis')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -338,6 +345,9 @@ const createChart = async (w, h) => {
                     .transition().duration(1000)
                     .call(yAxis)
 
+                d3.select('#note_1')
+                    .html(``)        
+
                 svg.selectAll('rect._offTests').remove()
                 svg.selectAll('rect._offTests').data(dataCol)
                     .enter().append('rect')
@@ -381,6 +391,9 @@ const createChart = async (w, h) => {
                 y = d3.scaleLog()
                     .range([height, margin.top])
                     .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
+
+                d3.select('#note_1')
+                    .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)  
 
                 xAxis = d3.axisBottom(x)
                 yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
@@ -1021,7 +1034,7 @@ const createFINDChart = async (w, h) => {
         .attr('r', 5)
         .style('fill', ORANGE)
         .append('title')
-        .html(`pruebas procesadas`)
+        .html(`${d3.format('0,d')(dataCol[16][COLS_NAL['offTests']])} pruebas procesadas el 22 de marzo`)
 
     svg1.append('circle')
         .attr('cx', y1(dataCol[16][COLS_NAL['cases']] + dataCol[16][COLS_NAL['discarded']]))
@@ -1029,7 +1042,7 @@ const createFINDChart = async (w, h) => {
         .attr('r', 5)
         .style('fill', palette[1])
         .append('title')
-        .html(`pruebas procesadas`)
+        .html(`${d3.format('0,d')(dataCol[16][COLS_NAL['cases']] + dataCol[16][COLS_NAL['discarded']])} casos confirmados mas descartados el 22 de marzo`)
 
     svg1.append('circle')
         .attr('cx', y1(dataCol[16][COLS_NAL['testsFIND']]))
@@ -1037,7 +1050,7 @@ const createFINDChart = async (w, h) => {
         .attr('r', 5)
         .style('fill', palette[7])
         .append('title')
-        .html(`pruebas procesadas`)
+        .html(`${d3.format('0,d')(dataCol[16][COLS_NAL['testsFIND']])} pruebas reportadas por FIND el 22 de marzo`)
 
     svg1.append('text')
         .attr('x', 10)
@@ -1065,8 +1078,6 @@ const createFINDChart = async (w, h) => {
         .attr('height', (h + margin.top + margin.bottom) * 0.85)
 
     let tmpData = [...dataCol].splice(22, 4)
-
-    console.log(tmpData)
 
     let x2 = d3.scaleTime().range([margin.left, width])
         .domain(d3.extent(tmpData, d => d[COLS_NAL['date']]))
@@ -1113,9 +1124,9 @@ const createFINDChart = async (w, h) => {
     svg2.append('text')
         .attr('x', 10)
         .attr('y', margin.top * .8)
-        .html(`<tspan style="fill: ${palette[7]}">Pruebas reportadas por FIND</tspan> y <tspan style="fill: ${palette[1]}">casos confirmados más descartados </tspan> acumulados`)
+        .html(`<tspan style="fill: ${palette[7]}">Pruebas reportadas por FIND</tspan> y <tspan style="fill: ${palette[1]}">casos confirmados mas descartados </tspan> acumulados`)
 
-    svg.append('text')
+    svg2.append('text')
         .attr('x', 10)
         .attr('y', h - margin.bottom * 0.5)
         .attr('class', 'sources')
