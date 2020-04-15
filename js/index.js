@@ -175,7 +175,7 @@ const createChart = async (w, h) => {
         .attr('x', 10)
         .attr('y', height + margin.top + 30)
         .attr('class', 'sources')
-        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)        
+        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
 
     svg.append('g')
         .attr('class', 'x-axis')
@@ -346,7 +346,7 @@ const createChart = async (w, h) => {
                     .call(yAxis)
 
                 d3.select('#note_1')
-                    .html(``)        
+                    .html(``)
 
                 svg.selectAll('rect._offTests').remove()
                 svg.selectAll('rect._offTests').data(dataCol)
@@ -393,7 +393,7 @@ const createChart = async (w, h) => {
                     .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
 
                 d3.select('#note_1')
-                    .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)  
+                    .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
 
                 xAxis = d3.axisBottom(x)
                 yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
@@ -934,7 +934,7 @@ const createIntCharts = async (w, h, dataset) => {
         .attr('x', 10)
         .attr('y', h + margin.bottom + 10)
         .attr('class', 'sources')
-        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)        
+        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -1083,14 +1083,14 @@ const createFINDChart = async (w, h) => {
         .attr('width', w + margin.left + margin.right)
         .attr('height', (h + margin.top + margin.bottom) * 0.85)
 
-    let tmpData = [...dataCol].splice(22, 4)
+    let tmpData = [...dataCol].splice(22, 5)
 
     let x2 = d3.scaleTime().range([margin.left, width])
         .domain(d3.extent(tmpData, d => d[COLS_NAL['date']]))
 
     let y2 = d3.scaleLinear()
         .range([height, margin.top])
-        .domain([0, d3.max(tmpData, d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])+100])
+        .domain([0, d3.max(tmpData, d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]) + 100])
 
     let xAxis2 = d3.axisBottom(x2).ticks(4).tickFormat(d => d3.timeFormat('%d %b')(d))
     let yAxis2 = d3.axisLeft(y2)
@@ -1120,12 +1120,20 @@ const createFINDChart = async (w, h) => {
         .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])} pruebas reportadas por FIND`)
 
     svg2.append('line')
-        .attr('x1', x2(tmpData[1][COLS_NAL['date']]) - 10)
+        .attr('x1', x2(tmpData[1][COLS_NAL['date']]) + 16)
         .attr('y1', y2(tmpData[1][COLS_NAL['testsFIND']]))
-        .attr('x2', x2(tmpData[2][COLS_NAL['date']]) + 74)
+        .attr('x2', x2(tmpData[2][COLS_NAL['date']]) + 44)
         .attr('y2', y2(tmpData[1][COLS_NAL['testsFIND']]))
         .style('stroke-width', 5)
-        .style('stroke', palette[0])        
+        .style('stroke', palette[0])
+
+    svg2.append('line')
+        .attr('x1', x2(tmpData[2][COLS_NAL['date']]) + 20)
+        .attr('y1', y2(tmpData[3][COLS_NAL['testsFIND']]))
+        .attr('x2', x2(tmpData[3][COLS_NAL['date']]) + 44)
+        .attr('y2', y2(tmpData[3][COLS_NAL['testsFIND']]))
+        .style('stroke-width', 5)
+        .style('stroke', palette[0])
 
     svg2.append('text')
         .attr('x', 10)
