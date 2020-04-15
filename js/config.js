@@ -2,7 +2,7 @@ const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
 const lastUpdate = new Date(document.lastModified)
 const firstDay = new Date(2020, 02, 06)
-const ORANGE = '#ff9800'
+const ORANGE = '#c06b84'
 const SVG = 'chart'
 const DOWN = 'down'
 const UP = 'up'
@@ -74,14 +74,14 @@ const COLS_POLITIKO = {
 }
 
 const palette = [
-    'rgb(80,198,229)',
-    'rgb(53,108,164)',
-    'rgb(156,181,50)',
-    'rgb(16,50,124)',
-    '#F8AF3C',
-    'black',
-    'rgb(211,28,35)',
-    '#331E36',
+    '#f3a5a5',
+    '#93abd7',
+    '#66c2a5',
+    '#3288bd',
+    '#fee08b',
+    '#828282',
+    '#f46d43',
+    'rgb(89, 53, 95)',
     '#69B3A2',
     '#994636'
 ]
