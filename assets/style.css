@@ -1,18 +1,18 @@
 @font-face {
   font-family: "Raleway";
-  src: url("./fonts/Raleway-SemiBold.otf") format("opentype");
+  src: url("./fonts/Raleway-SemiBold.ttf") format("opentype");
   font-weight: bold;
 }
 
 @font-face {
   font-family: "Raleway";
-  src: url("./fonts/Raleway-SemiBold.otf") format("opentype");
+  src: url("./fonts/Raleway-SemiBold.ttf") format("opentype");
   font-weight: bolder;
 }
 
 @font-face {
   font-family: "Raleway";
-  src: url("./fonts/Raleway-Regular.otf") format("opentype");
+  src: url("./fonts/Raleway-Regular.ttf") format("opentype");
 }
 
 html {
