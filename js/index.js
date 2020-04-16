@@ -29,7 +29,7 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
-    // createIntCharts(width * 0.60, height, 'col')
+    createIntCharts(width * 0.60, height, 'col')
 
     createFINDChart(width * 0.6, height)
     // createMap(width, height)    
