@@ -1,22 +1,22 @@
 @font-face {
-  font-family: "Archia";
-  src: url("./Archia-SemiBold.otf") format("opentype");
+  font-family: "Raleway";
+  src: url("./Raleway-SemiBold.otf") format("opentype");
   font-weight: bold;
 }
 
 @font-face {
-  font-family: "Archia";
-  src: url("./Archia-SemiBold.otf") format("opentype");
+  font-family: "Raleway";
+  src: url("./Raleway-SemiBold.otf") format("opentype");
   font-weight: bolder;
 }
 
 @font-face {
-  font-family: "Archia";
-  src: url("./Archia-Light.otf") format("opentype");
+  font-family: "Raleway";
+  src: url("./Raleway-Regular.otf") format("opentype");
 }
 
 html {
-  font-family: Archia !important;  
+  font-family: 'Raleway' !important;  
 }
 
 p {
@@ -78,7 +78,7 @@ text > a {
 }
 
 text {
-  font-family: Archia !important;
+  font-family: 'Raleway' !important;
   color: #757575;
 }
 
