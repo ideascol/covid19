@@ -1,7 +1,9 @@
 const testData = 'data/Casos-02-abr-2020.csv'
 const colombiaGeoJson = 'data/colombia.json'
-const lastUpdate = new Date() - new Date(document.lastModified)
-const oneDay = 1000 * 60 * 60 * 24
+const lastUpdate = (new Date() - new Date(document.lastModified)) / (1000 * 60 * 60 * 24)
+const daysUp = Math.round(lastUpdate)
+const hoursUp = Math.round(lastUpdate*24)
+const minsUp = Math.round(lastUpdate*24*60)
 const firstDay = new Date(2020, 02, 06)
 const ORANGE = '#c06b84'
 const SVG = 'chart'
