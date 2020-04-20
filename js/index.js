@@ -29,7 +29,7 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
-    createIntCharts(width * 0.90, height, 'col')
+    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx'}])
 
     createFINDChart(width * 0.6, height)
     // createMap(width, height)    
@@ -858,7 +858,7 @@ const createSummaryChart = async (w, h) => {
     })
 }
 
-const createIntCharts = async (w, h, dataset) => {
+const createIntCharts = async (w, h, dataset, sources) => {
     let margin = { top: 20, right: 5, bottom: 15, left: 60 }
 
     let width = w - margin.left - margin.right
@@ -929,7 +929,7 @@ const createIntCharts = async (w, h, dataset) => {
         .attr('x', 10)
         .attr('y', h + margin.bottom - 2)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>`)
+        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', '): '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
 
     svg.append('text')
         .attr('x', 10)
