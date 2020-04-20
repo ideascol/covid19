@@ -11,7 +11,8 @@ async function initialize() {
     })
     M.AutoInit()
 
-    d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
+    console.log(lastUpdate)
+    d3.select('#date').text(`${Math.round(lastUpdate / oneDay)} días ${Math.round(lastUpdate / oneDay / 24)} horas ${Math.round(lastUpdate / oneDay / 24 / 60)} minutos`)
 
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
@@ -29,7 +30,7 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
-    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx'}])
+    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width * 0.6, height)
     // createMap(width, height)    
@@ -929,7 +930,7 @@ const createIntCharts = async (w, h, dataset, sources) => {
         .attr('x', 10)
         .attr('y', h + margin.bottom - 2)
         .attr('class', 'sources')
-        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', '): '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
+        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', ') : '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
 
     svg.append('text')
         .attr('x', 10)
