@@ -32,7 +32,7 @@ async function initialize() {
     createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width * 0.6, height)
-    // createMap(width, width)    
+    createMap(width, width)    
 }
 
 const loadDataInt = _ => {
@@ -1184,23 +1184,6 @@ const createMap = async (width, height) => {
         .style('fill', 'white')
         .style('stroke', 'gray')
 
-    // Fix/unfix map
-    new Waypoint({
-        element: document.getElementById('chart'),
-        handler: direction => {
-            if (direction === DOWN)
-                d3.select('#chart').style('position', 'fixed').style('top', '5%')
-            else if (direction === UP)
-                d3.select('#chart').style('position', '').style('top', '')
-        },
-        offset: '10%'
-    })
-
-    // Add/remove dots
-    new Waypoint({
-        element: document.getElementById('text_2'),
-        handler: direction => {
-            if (direction === DOWN)
                 mapLayer.selectAll('circle')
                     .data(features)
                     .enter().append('circle')
@@ -1210,39 +1193,33 @@ const createMap = async (width, height) => {
                         'translate(' + path.centroid(d) + ')'
                     )
                     .style('fill', '#047ab3')
-            else if (direction === UP)
-                mapLayer.selectAll('.text_1')
-                    .remove()
-        },
-        offset: '40%'
-    })
 
     // Add/remove color
-    new Waypoint({
-        element: document.getElementById('text_2'),
-        handler: direction => {
-            if (direction === DOWN) {
-                mapLayer.selectAll('path')
-                    .style('fill', d => palette[Math.round(Math.random() * 19)])
+    // new Waypoint({
+    //     element: document.getElementById('text_2'),
+    //     handler: direction => {
+    //         if (direction === DOWN) {
+    //             mapLayer.selectAll('path')
+    //                 .style('fill', d => palette[Math.round(Math.random() * 19)])
 
-                mapLayer.selectAll('.text_1')
-                    .remove()
-            }
-            else if (direction === UP) {
-                mapLayer.selectAll('path')
-                    .style('fill', 'white')
+    //             mapLayer.selectAll('.text_1')
+    //                 .remove()
+    //         }
+    //         else if (direction === UP) {
+    //             mapLayer.selectAll('path')
+    //                 .style('fill', 'white')
 
-                mapLayer.selectAll('circle')
-                    .data(features)
-                    .enter().append('circle')
-                    .attr('class', 'text_1')
-                    .attr('r', 5)
-                    .attr('transform', d => `translate(${path.centroid(d)})`)
-                    .style('fill', '#047ab3')
-            }
-        },
-        offset: '40%'
-    })
+    //             mapLayer.selectAll('circle')
+    //                 .data(features)
+    //                 .enter().append('circle')
+    //                 .attr('class', 'text_1')
+    //                 .attr('r', 5)
+    //                 .attr('transform', d => `translate(${path.centroid(d)})`)
+    //                 .style('fill', '#047ab3')
+    //         }
+    //     },
+    //     offset: '40%'
+    // })
 }
 
 initialize()
