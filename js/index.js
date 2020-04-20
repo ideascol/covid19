@@ -1167,6 +1167,10 @@ const createMap = async (width, height) => {
     let path = d3.geoPath()
         .projection(projection)
 
+    let data = await d3.csv('data/data_departamentos.csv')
+
+    console.log(data)
+
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
         .attr('height', height)
