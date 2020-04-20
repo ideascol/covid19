@@ -11,7 +11,7 @@ async function initialize() {
     })
     M.AutoInit()
 
-    d3.select('#date').text(`${lastUpdate.toDateString()} ${lastUpdate.toLocaleTimeString()}`)
+    d3.select('#date').text(daysUp >= 1 ? `${daysUp} días ${hoursUp} horas ${minsUp} minutos` : hoursUp >= 1 ? `${hoursUp} horas ${minsUp} minutos`: minsUp > 5? `${minsUp} minutos`: 'Hace unos minutos')
 
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
@@ -29,10 +29,10 @@ async function initialize() {
     createIntCharts(width * 0.60, height, 'germany')
     createIntCharts(width * 0.60, height, 'italy')
     createIntCharts(width * 0.60, height, 'us')
-    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx'}])
+    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width * 0.6, height)
-    // createMap(width, height)    
+    // createMap(width, width)    
 }
 
 const loadDataInt = _ => {
@@ -929,7 +929,7 @@ const createIntCharts = async (w, h, dataset, sources) => {
         .attr('x', 10)
         .attr('y', h + margin.bottom - 2)
         .attr('class', 'sources')
-        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', '): '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
+        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', ') : '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
 
     svg.append('text')
         .attr('x', 10)
@@ -1159,65 +1159,44 @@ const createFINDChart = async (w, h) => {
 }
 
 const createMap = async (width, height) => {
-    // let projection = d3.geoMercator()
-    //     .scale(1600)
-    //     .center([-74, 4.5])
-    //     .translate([width / 2, height / 2])
+    let projection = d3.geoMercator()
+        .scale(1600)
+        .center([-74, 4.5])
+        .translate([width / 2, height / 2])
 
-    // let path = d3.geoPath()
-    //     .projection(projection)
+    let path = d3.geoPath()
+        .projection(projection)
 
-    // let svg = d3.select('#map').select('svg')
-    //     .attr('width', width)
-    //     .attr('height', height)
+    let data = await d3.csv('data/data_departamentos.csv')
 
-    // let mapLayer = svg.append('g')
+    let svg = d3.select('#map').select('svg')
+        .attr('width', width)
+        .attr('height', height)
 
-    // let mapData = await d3.json(colombiaGeoJson)
-    // let features = mapData.features
+    let mapLayer = svg.append('g')
 
-    // mapLayer.selectAll('path')
-    //     .data(features)
-    //     .enter().append('path')
-    //     .attr('d', path)
-    //     .attr('vector-effect', 'non-scaling-stroke')
-    //     .style('fill', 'white')
-    //     .style('stroke', 'gray')
+    let mapData = await d3.json(colombiaGeoJson)
+    let features = mapData.features
 
-    // // Fix/unfix map
-    // new Waypoint({
-    //     element: document.getElementById('chart'),
-    //     handler: direction => {
-    //         if (direction === DOWN)
-    //             d3.select('#chart').style('position', 'fixed').style('top', '5%')
-    //         else if (direction === UP)
-    //             d3.select('#chart').style('position', '').style('top', '')
-    //     },
-    //     offset: '10%'
-    // })
+    mapLayer.selectAll('path')
+        .data(features)
+        .enter().append('path')
+        .attr('d', path)
+        .attr('vector-effect', 'non-scaling-stroke')
+        .style('fill', 'white')
+        .style('stroke', 'gray')
 
-    // // Add/remove dots
-    // new Waypoint({
-    //     element: document.getElementById('text_2'),
-    //     handler: direction => {
-    //         if (direction === DOWN)
-    //             mapLayer.selectAll('circle')
-    //                 .data(features)
-    //                 .enter().append('circle')
-    //                 .attr('class', 'text_1')
-    //                 .attr('r', 5)
-    //                 .attr('transform', d =>
-    //                     'translate(' + path.centroid(d) + ')'
-    //                 )
-    //                 .style('fill', '#047ab3')
-    //         else if (direction === UP)
-    //             mapLayer.selectAll('.text_1')
-    //                 .remove()
-    //     },
-    //     offset: '40%'
-    // })
+                mapLayer.selectAll('circle')
+                    .data(features)
+                    .enter().append('circle')
+                    .attr('class', 'text_1')
+                    .attr('r', 5)
+                    .attr('transform', d =>
+                        'translate(' + path.centroid(d) + ')'
+                    )
+                    .style('fill', '#047ab3')
 
-    // // Add/remove color
+    // Add/remove color
     // new Waypoint({
     //     element: document.getElementById('text_2'),
     //     handler: direction => {
