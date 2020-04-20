@@ -32,7 +32,7 @@ async function initialize() {
     createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width * 0.6, height)
-    createMap(width, width)    
+    // createMap(width, width)    
 }
 
 const loadDataInt = _ => {
@@ -1168,8 +1168,6 @@ const createMap = async (width, height) => {
         .projection(projection)
 
     let data = await d3.csv('data/data_departamentos.csv')
-
-    console.log(data)
 
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
