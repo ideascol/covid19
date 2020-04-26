@@ -31,28 +31,27 @@
     <link href="./assets/style.css" rel="stylesheet">
     <title>Ideas COL: Covid-19</title>
 </head>
-
 <main>
+    <spam class="fixed-top grey-text darken-3"> Última actualización hace: <spam id="date"></spam></spam>
     <div class="main-container container">
         <div class="row center-align">
-            <h3 class="orange-text darken-1">Covid-19: Seguimiento diario en Colombia</h3>
-            <h6>¿Estamos haciendo pruebas suficientes? ¿Qué datos deberíamos considerar?</h6>
-            <h7 class="grey-text darken-3">Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas
-                    COL <img style="width:12px" src="https://ideascol.github.io/favicon.ico"></a>. Última actualización hace:
-            </h7>
-            <h7 id="date">lunes 21 de marzo</h7>
-            <h6>
-                <a href="https://facebook.com/sharer/sharer.php?u=https://ideascol.github.io/covid19/" target="_blank"
-                    rel="noopener" class="share-button fa fa-facebook"></a>
-
-                <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&text=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
-                    target="_blank" rel="noopener" class="share-button fa fa-twitter"></a>
-
-                <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&title=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
-                    target="_blank" rel="noopener" class="share-button fa fa-linkedin"></a>
-                <a href="https://github.com/ideascol/covid19" target="_blank" rel="noopener"
-                    class="share-button fa fa-github"></a>
-            </h6>
+            <div class="navbar-fixed">
+                <nav class="orange lighten-3 white-text">
+                    <div class="nav-wrapper">
+                        <h3 class="orange-text darken-1">Covid-19: Seguimiento diario en Colombia</h3>
+                        <h6>¿Estamos haciendo pruebas suficientes? ¿Qué datos deberíamos considerar?</h6>
+                        <div>
+                            <a class="btn-floating btn-large waves-effect waves-light orange darken-1"
+                                href="#chapter_1">1</a>
+                            Introducción
+                            <a class="btn-floating btn-large waves-effect waves-light orange darken-1"
+                                href="#chapter_2">2</a>
+                            <a class="btn-floating btn-large waves-effect waves-light orange darken-1"
+                                href="#chapter_3">3</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
         </div>
         <div class="row">
             <p id="chapter_0">La evidencia internacional ha mostrado que realizar <a class="tooltipped"
@@ -109,7 +108,8 @@
                     interactivas</b>.
             </p>
         </div>
-        <h5 id="chapter_1" class="orange-text darken-3 center-align">¿Cómo estamos en la administración de pruebas de
+        <h5 id="chapter_1" class="chapter orange-text darken-3 center-align">¿Cómo estamos en la administración de
+            pruebas de
             Covid-19 en
             Colombia?
         </h5>
@@ -199,7 +199,7 @@
                 </div>
             </div>
         </div>
-        <div id="chapter_2" class="row">
+        <div id="chapter_2" class="row chapter">
             <div id="text_4" class="col m5">
                 <p>Ahora, ¿Vamos bien? La tendencia es buena, es claro que el número de pruebas está aumentando en el
                     país. Sin embargo,
@@ -218,7 +218,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row chapter">
             <div id="chapter_2_text" class="col m5">
                 <p>Primero veamos cuántas <b>nuevas pruebas</b> se están procesando al día y si realmente se está
                     aumentando su uso. A pesar de las noticias, sobre la llegada de nuevos
@@ -269,7 +269,7 @@
                 </div>
             </div>
         </div>
-        <h5 id="chapter_3" class="orange-text darken-3 center-align">Experiencias internacionales</h5>
+        <h5 id="chapter_3" class="chapter orange-text darken-3 center-align">Experiencias internacionales</h5>
         <p>
             Los países alrededor del mundo están reaccionado de formas diferentes a la pandemia. Si bien cada país tiene
             un punto de
@@ -1131,16 +1131,26 @@
 </main>
 <footer class="page-footer orange darken-1">
     <div class="footer-copyright">
-        <div class="container center-align">
-            <div class="row" style="margin-bottom: 0px;">
-                <div class="col m4">
-                    Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL <img
-                            style="width:12px" src="https://ideascol.github.io/favicon.ico"></a>
-                </div>
-                <div class="col m8">
-                    Ayúdanos a encontrar más datos relacionados. <a target="_blank"
-                        href="mailto:jc.chaves20@gmail.com,meilivh8@gmail.com,linaramirez0604@gmail.com?subject=Ideas COL: Email de contacto página web">Contáctanos</a>
-                </div>
+        <div class="row center-align" style="margin-bottom: 0px;">
+            <div class="col m4">
+                Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL <img style="width:12px"
+                        src="https://ideascol.github.io/favicon.ico"></a>
+            </div>
+            <div class="col m4">
+                <a href="https://facebook.com/sharer/sharer.php?u=https://ideascol.github.io/covid19/" target="_blank"
+                    rel="noopener" class="share-button fa fa-facebook"></a>
+
+                <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&text=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
+                    target="_blank" rel="noopener" class="share-button fa fa-twitter"></a>
+
+                <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&title=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
+                    target="_blank" rel="noopener" class="share-button fa fa-linkedin"></a>
+                <a href="https://github.com/ideascol/covid19" target="_blank" rel="noopener"
+                    class="share-button fa fa-github"></a>
+            </div>
+            <div class="col m4">
+                Ayúdanos a encontrar más datos relacionados. <a target="_blank"
+                    href="mailto:jc.chaves20@gmail.com,meilivh8@gmail.com,linaramirez0604@gmail.com?subject=Ideas COL: Email de contacto página web">Contáctanos</a>
             </div>
         </div>
     </div>

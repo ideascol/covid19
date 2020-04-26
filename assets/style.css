@@ -49,6 +49,26 @@ text > a {
   fill: #039be5;
 }
 
+.navbar-fixed > nav {
+  left: 0 !important;
+  height: 200px !important;
+}
+
+.chapter {
+  padding-top: 200px;
+}
+
+.navbar-fixed {
+  height: 200px !important;
+}
+
+.fixed-top {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
 .share-button {
   margin:  0% 1%;
 }
