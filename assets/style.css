@@ -115,6 +115,10 @@ text {
   padding: 5%;
 }
 
+.sidenav-fixed {
+  border-right: solid 1px #ffe0b2 !important;
+}
+
 @media only screen and (max-width : 992px) {
   .material-tooltip {
     max-width: 92%;
