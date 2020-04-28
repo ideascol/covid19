@@ -2,10 +2,11 @@
 *Created: 04/23/2020
 *Last Modified: 04/26/2020
 *Purpose: 		
-	- Clean dataset from INS 
-	- Obtain number of confirmed cases and deaths by departmento
+	- Create working datasets at national and department level. 
 *Author: Lina Ramirez 
 *Created files: 
+	-"C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombiadata\ins_mod\departamentos\data_dpto.dta"
+	-"C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombiadata\ins_mod\nacional\data_nal.dta"
 
 *READ THIS: 
 *Requirements: STATA 16. 	
