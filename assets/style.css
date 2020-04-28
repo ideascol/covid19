@@ -34,12 +34,6 @@ main {
   padding-bottom: 5vh;
 }
 
-footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-}
-
 .line {
     fill: none;
     stroke-width: 3;
