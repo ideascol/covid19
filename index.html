@@ -33,20 +33,33 @@
     <title>Ideas COL: Covid-19</title>
 </head>
 <main>
-    <spam class="fixed-top grey-text darken-3"> Última actualización hace: <spam id="date"></spam>
-    </spam>
+    <ul id="slide-out" class="orange lighten-4 sidenav sidenav-fixed">
+        <div class="dayEntryMenu grey-text"><span>En esta página puedes encontrar entradas constantes que desarrollan análisis del covid-19 en Colombia.</span><br><span>¡No te pierdas ninguna entrada!</span></div>
+        <h6 class="dayEntryMenu">16 abril 2020:</h6>
+        <li><a href="#chapter_1">Administración de pruebas</a></li>
+        <li><a href="#chapter_3">Experiencias internacionales</a></li>
+    </ul>
+    <a href="#" data-target="slide-out"
+        class="btn-floating btn-large waves-effect waves-light fixed-top orange darken-1 sidenav-trigger"><i
+            class="material-icons">menu</i></a>
     <div class="main-container container">
         <div class="row center-align">
-            <div class="nav-wrapper">
-                <h3 class="orange-text darken-1">Covid-19: Seguimiento diario en Colombia</h3>
-                <h6>¿Estamos haciendo pruebas suficientes? ¿Qué datos deberíamos considerar?</h6>
-                <div>
-                    <a class="btn-floating btn-large waves-effect waves-light orange darken-1"
-                        href="#chapter_1">Abr.<br>23</a>
-                    <a class="btn-floating btn-large waves-effect waves-light orange darken-1" href="#chapter_2">2</a>
-                    <a class="btn-floating btn-large waves-effect waves-light orange darken-1" href="#chapter_3">3</a>
-                </div>
-            </div>
+            <h3 class="orange-text darken-1">Covid-19: Seguimiento diario en Colombia</h3>
+            <h6>¿Estamos haciendo pruebas suficientes? ¿Qué datos deberíamos considerar?</h6>
+            <spam>Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL</a></spam>
+            <br>
+            <a href="https://facebook.com/sharer/sharer.php?u=https://ideascol.github.io/covid19/" target="_blank"
+                rel="noopener" class="share-button fa fa-facebook"></a>
+
+            <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&text=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
+                target="_blank" rel="noopener" class="share-button fa fa-twitter"></a>
+            <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&title=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
+                target="_blank" rel="noopener" class="share-button fa fa-linkedin"></a>
+            <a href="https://github.com/ideascol/covid19" target="_blank" rel="noopener"
+                class="share-button fa fa-github"></a>
+            <br>
+            <spam class="grey-text darken-3"> Última actualización hace: <spam id="date"></spam>
+            </spam>
         </div>
         <div class="row">
             <p id="chapter_0">La evidencia internacional ha mostrado que realizar <a class="tooltipped"
@@ -103,13 +116,13 @@
                     interactivas</b>.
             </p>
         </div>
-        <h5 id="chapter_1" class="chapter orange-text darken-3 center-align">¿Cómo estamos en la administración de
+        <h5 id="chapter_1" class="orange-text darken-3 center-align">¿Cómo estamos en la administración de
             pruebas de
             Covid-19 en
             Colombia?
         </h5>
         <div class="row">
-            <div id="chapter_1_text" class="col m5">
+            <div id="chapter_1_text">
                 <p id="text_0">El 6 de Marzo se reportó el primer caso de Coronavirus en Colombia. A pesar de que el
                     crecimiento de <a class="tooltipped" data-position="bottom" data-tooltip="<div class='left-align'>Se refiere a una persona con confirmación de infección de COVID-19 por parte de un laboratorio, independientemente de si
                         muestra signos clínicos o síntomas.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref7'><cite>(7)</cite></a></b></blockquote>
@@ -128,6 +141,23 @@
                     confirmados probablemente es menor al número verdadero de enfermos si no se hacen pruebas
                     suficientes.
                 </p>
+            </div>
+            <div id="chapter_1_chart">
+                <div id="chartIntro" class="right-chart">
+                    <div class="row no-margin"><span id="explanation_chart1"
+                            class="valign-wrapper tooltipped orange-text darken-3" data-position="left"
+                            data-tooltip=""><i class="material-icons">
+                                help
+                            </i> ¿Cómo
+                            leer esta gráfica?</span>
+                    </div>
+                    <div class="row"><svg></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div>
                 <p>
                     Algunas de las gráficas que encontrarás a continuación se encuentran en escala logarítmica. Esto lo
                     hacemos debido a que
@@ -136,7 +166,6 @@
                     escala logarítmica para comparar las tasas de crecimiento de estos datos. Si quieres entender un
                     poco más sobre por qué
                     hacemos esto, <a class="modal-trigger" href="#logScale">mira aquí</a>.
-
                 </p>
                 <p id="text_1">
                     Ha sido difícil recopilar información precisa sobre las pruebas realizadas en el país. El Instituto
@@ -153,7 +182,8 @@
                     regiones.</p>
                 <p id="text_3">El 28 de marzo, el INS publicó en su página de <a
                         href="https://twitter.com/INSColombia/status/1243966616959963136?s=20"
-                        target="_blank">Twitter</a> el
+                        target="_blank">Twitter</a>
+                    el
                     número de <i>muestras
                         procesadas</i> diariamente desde el 3 de marzo hasta el 27 de marzo. Sin embargo, después de
                     este reporte dejó de presentar informes
@@ -180,27 +210,26 @@
                     una correspondencia directa.
                 </p>
             </div>
-            <div id="chapter_1_chart" class="col m7">
-                <div id="chartIntro" class="right-chart">
-                    <div class="row no-margin"><span id="explanation_chart1"
+            <div>
+                <div id="chartIntro2" class="right-chart">
+                    <div class="row no-margin"><span id="explanation_chart1b"
                             class="valign-wrapper tooltipped orange-text darken-3" data-position="left"
                             data-tooltip=""><i class="material-icons">
                                 help
-                            </i> ¿Cómo
-                            leer esta gráfica?</span>
+                            </i></span>
                     </div>
                     <div class="row"><svg></svg>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="chapter_2" class="row chapter">
-            <div id="text_4" class="col m5 s12">
+        <div id="chapter_2" class="row">
+            <div id="text_4">
                 <p>Ahora, ¿Vamos bien? La tendencia es buena, es claro que el número de pruebas está aumentando en el
                     país. Sin embargo,
                     ¿es suficiente? Veamos . . .</p>
             </div>
-            <div class="col m7 s12">
+            <div>
                 <div id="chartIncrease" class="right-chart">
                     <div class="row no-margin"><span id="explanation_chart2" class="tooltipped orange-text darken-3"
                             data-position="left" data-tooltip=""><i class="material-icons">
@@ -213,8 +242,8 @@
                 </div>
             </div>
         </div>
-        <div class="row chapter">
-            <div id="chapter_2_text" class="col m5">
+        <div class="row">
+            <div>
                 <p>Primero veamos cuántas <b>nuevas pruebas</b> se están procesando al día y si realmente se está
                     aumentando su uso. A pesar de las noticias, sobre la llegada de nuevos
                     kits de pruebas al país, el procesamiento no está aumentando como esperaríamos. La
@@ -231,6 +260,21 @@
                     de Italia, pero es
                     muy diferente a la de Alemania, Corea del Sur y Estados Unidos, que para el día 15 procesaban
                     muchísimas más pruebas.</p>
+            </div>
+            <div id="chapter_2_chart">
+                <div id="summaryChart" class="right-chart">
+                    <div class="row no-margin"><span id="explanation_chart3" class="tooltipped" data-position="left"
+                            data-tooltip=""><i class="material-icons orange-text darken-3">
+                                help
+                            </i></span>
+                    </div>
+                    <div class="row"><svg></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div>
                 <p id="text_5">Sin embargo, concluir esto de entrada puede ser peligroso pues no estamos teniendo en
                     cuenta que Alemania y Estados
                     Unidos son países mucho más grandes que Colombia en términos de población. Si comparamos por
@@ -252,9 +296,9 @@
                     la experiencia internacional con más detalle antes de apresurarnos a criticar.
                 </p>
             </div>
-            <div id="chapter_2_chart" class="col m7">
-                <div id="summaryChart" class="right-chart">
-                    <div class="row no-margin"><span id="explanation_chart3" class="tooltipped" data-position="left"
+            <div>
+                <div id="summaryChartb" class="right-chart">
+                    <div class="row no-margin"><span id="explanation_chart3b" class="tooltipped" data-position="left"
                             data-tooltip=""><i class="material-icons orange-text darken-3">
                                 help
                             </i></span>
@@ -264,7 +308,7 @@
                 </div>
             </div>
         </div>
-        <h5 id="chapter_3" class="chapter orange-text darken-3 center-align">Experiencias internacionales</h5>
+        <h5 id="chapter_3" class="orange-text darken-3 center-align">Experiencias internacionales</h5>
         <p>
             Los países alrededor del mundo están reaccionado de formas diferentes a la pandemia. Si bien cada país tiene
             un punto de
@@ -284,7 +328,7 @@
         <div class="row">
             <h6 class="orange-text darken-3"><img src="https://cdn.webshopapp.com/shops/31683/files/69008828/image.jpg"
                     width="20" alt=""> Italia</h6>
-            <div class="col m5">
+            <div>
                 <p>Italia fue el primer país de Europa en ser golpeado por la epidemia y el segundo a nivel mundial,
                     después de China, en
                     decretar un cierre nacional el 9 de Marzo. Empezó a llamar la atención de la prensa mundial por
@@ -295,7 +339,7 @@
                 <p><a class="modal-trigger" href="#italy">Ver más . . .</a>
                 </p>
             </div>
-            <div class="col m7">
+            <div>
                 <div id="chart_italy" class="right-chart">
                     <div class="row no-margin"><span id="explanation_chart_italy" class="tooltipped"
                             data-position="left"
@@ -314,7 +358,7 @@
             <h6 class="orange-text darken-3"><img
                     src="https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png"
                     width="20" alt=""> Alemania</h6>
-            <div class="col m5">
+            <div>
                 <p>La experiencia de Alemania es impresionante. Con más de 100 mil casos confirmados, es uno de los
                     países con la <a class="tooltipped" data-position="bottom"
                         data-tooltip="<div class='left-align'>Es el número de muertes confirmadas dividido por el número de casos confirmados.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref9'><cite>(11)</cite></a></b></blockquote></div>">tasa
@@ -325,7 +369,7 @@
                 <p><a class="modal-trigger" href="#germany">Ver más . . .</a>
                 </p>
             </div>
-            <div class="col m7">
+            <div>
                 <div id="chart_germany" class="right-chart">
                     <div class="row no-margin"><span id="explanation_chart_germany" class="tooltipped"
                             data-position="left"
@@ -344,7 +388,7 @@
             <h6 class="orange-text darken-3"><img
                     src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" width="20" alt="">
                 Corea del Sur</h6>
-            <div class="col m5">
+            <div>
                 <p>Corea del Sur fue uno de los primeros países afectados por Covid-19. A finales de febrero y
                     principios de marzo, en
                     cuestión de días el número de personas con coronavirus en el país pasó de unas cuantas decenas a
@@ -356,7 +400,7 @@
                 <p><a class="modal-trigger" href="#southkorea">Ver más . . .</a>
                 </p>
             </div>
-            <div class="col m7">
+            <div>
                 <div id="chart_southkorea" class="right-chart">
                     <div class="row no-margin"><span id="explanation_chart_southkorea" class="tooltipped"
                             data-position="left"
@@ -375,7 +419,7 @@
             <h6 class="orange-text darken-3"><img
                     src="https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/Flag_of_the_United_States.svg/1200px-Flag_of_the_United_States.svg.png"
                     width="20" alt=""> Estados Unidos</h6>
-            <div class="col m5">
+            <div>
                 <p>Estados Unidos tenía muy pocos casos confirmados de Covid-19 cuando el sistema de salud de Italia
                     empezó a verse saturado
                     por casos de Covid-19. A pesar de esto, el gobierno de Estados Unidos no aprovechó el tiempo extra
@@ -392,7 +436,7 @@
                 <p><a class="modal-trigger" href="#us">Ver más . . .</a>
                 </p>
             </div>
-            <div class="col m7">
+            <div>
                 <div id="chart_us" class="right-chart">
                     <div class="row no-margin"><span id="explanation_chart_us" class="tooltipped" data-position="left"
                             data-tooltip="<div class='left-align'>¿Cómo leer esta gráfica?</br>Esta gráfica...</div>"><i
@@ -1127,21 +1171,10 @@
 <footer class="page-footer orange darken-1">
     <div class="footer-copyright">
         <div class="row center-align" style="margin: 0px;width:100%">
-            <div class="col m4">
+            <div class="col m6">
                 Desarrollado por <a href="https://ideascol.github.io/" target="_blank">Ideas COL</a>
             </div>
-            <div class="col m4">
-                <a href="https://facebook.com/sharer/sharer.php?u=https://ideascol.github.io/covid19/" target="_blank"
-                    rel="noopener" class="share-button fa fa-facebook"></a>
-
-                <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&text=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
-                    target="_blank" rel="noopener" class="share-button fa fa-twitter"></a>
-                <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fideascol.github.io%2Fcovid19%2F&title=%C2%BFEstamos%20haciendo%20pruebas%20suficientes%20de%20Covid-19%20en%20Colombia%3F%20%C2%BFQu%C3%A9%20datos%20deber%C3%ADamos%20considerar%3F"
-                    target="_blank" rel="noopener" class="share-button fa fa-linkedin"></a>
-                <a href="https://github.com/ideascol/covid19" target="_blank" rel="noopener"
-                    class="share-button fa fa-github"></a>
-            </div>
-            <div class="col m4">
+            <div class="col m6">
                 <a target="_blank"
                     href="mailto:jc.chaves20@gmail.com,meilivh8@gmail.com,linaramirez0604@gmail.com?subject=Ideas COL: Email de contacto página web">Contáctanos</a>
             </div>

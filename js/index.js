@@ -11,27 +11,31 @@ async function initialize() {
     })
     M.AutoInit()
 
-    d3.select('#date').text(daysUp >= 1 ? `${daysUp} días ${hoursUp} horas ${minsUp} minutos` : hoursUp >= 1 ? `${hoursUp} horas ${minsUp} minutos`: minsUp > 5? `${minsUp} minutos`: 'Hace unos minutos')
+    d3.select('#date').text(daysUp >= 1 ? `${daysUp} días ${hoursUp} horas ${minsUp} minutos` : hoursUp >= 1 ? `${hoursUp} horas ${minsUp} minutos` : minsUp > 5 ? `${minsUp} minutos` : 'Hace unos minutos')
 
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
     let width = d3.select('#chapter_0').node().getBoundingClientRect().width
-    let height = vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35
+    let height = width > 500 ? vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35 : width * 0.7
 
     dataInt = await loadDataInt()
     dataCol = await loadDataCol()
     dataMilestones = await loadDataMilestones()
 
-    createChart(width * 0.62, height * 1.06)
-    createIncreaseChart(width * 0.62)
-    createSummaryChart(width * 0.62, vh * 0.4 > width * 0.62 * 0.6 ? width * 0.62 * 0.6 : vh * 0.4)
-    createIntCharts(width * 0.60, height, 'southkorea')
-    createIntCharts(width * 0.60, height, 'germany')
-    createIntCharts(width * 0.60, height, 'italy')
-    createIntCharts(width * 0.60, height, 'us')
-    createIntCharts(width * 0.90, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
+    createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.95, height * 1.06)
+    createNationalChart(d3.select('#chartIntro2').node().getBoundingClientRect().width * 0.95, height * 1.06)
+    createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.95, height)
+    createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.95, height * 1.06)
+    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.95, height * 1.06)
 
-    createFINDChart(width * 0.6, height)
+    width = d3.select('#chart_italy').node().getBoundingClientRect().width * 0.95
+    createIntCharts(width, height, 'southkorea')
+    createIntCharts(width, height, 'germany')
+    createIntCharts(width, height, 'italy')
+    createIntCharts(width, height, 'us')
+    createIntCharts(d3.select('#chart_col').node().getBoundingClientRect().width * 0.95, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
+
+    createFINDChart(d3.select('#dataFIND').node().getBoundingClientRect().width * 0.95, height)
     // createMap(width, width)    
 }
 
@@ -96,7 +100,7 @@ const createEmpty = (svg, x, y, width, height) => {
 const createChart = async (w, h) => {
     let margin = { top: 40, right: 5, bottom: h * 0.06, left: 50 }
 
-    let width = w - margin.left - margin.right
+    let width = w
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select('#chartIntro').select('svg')
@@ -114,20 +118,17 @@ const createChart = async (w, h) => {
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format('2,d')(d))
 
     svg.append('text')
-        .attr('id', 'chartIntroTitle_a')
         .attr('x', 10)
         .attr('y', 12)
         .html(`Casos confirmados por millón de habitantes a partir del día con 200`)
 
     svg.append('text')
-        .attr('id', 'chartIntroTitle_b')
         .attr('x', 10)
         .attr('y', 32)
         .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
-        .attr('id', 'chartIntroxAxis')
-        .attr('x', margin.left + 10)
+        .attr('x', 10)
         .attr('y', height + margin.top - 5)
         .style('font-size', 13)
         .style('color', 'grey')
@@ -165,14 +166,12 @@ const createChart = async (w, h) => {
     }
 
     svg.append('text')
-        .attr('id', 'sources_1')
         .attr('x', 10)
         .attr('y', height + margin.top + 10)
         .attr('class', 'sources')
         .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
     svg.append('text')
-        .attr('id', 'note_1')
         .attr('x', 10)
         .attr('y', height + margin.top + 30)
         .attr('class', 'sources')
@@ -194,6 +193,89 @@ const createChart = async (w, h) => {
             if (char !== '1' && char !== '5')
                 d3.select(this).remove()
         })
+
+}
+
+const createNationalChart = async (w, h) => {
+    let margin = { top: 40, right: 5, bottom: h * 0.06, left: 50 }
+
+    let width = w
+    let height = h - margin.top - margin.bottom
+
+    let svg = d3.select('#chartIntro2').select('svg')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+
+    let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
+    lastDay.setDate(lastDay.getDate() + 1)
+
+    let x = d3.scaleTime().range([margin.left, width])
+        .domain([firstDay, lastDay])
+
+    let y = d3.scaleLinear()
+        .range([height, margin.top])
+        .domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['offTests']])) + 10])
+
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
+    let yAxis = d3.axisLeft(y)
+
+    svg.append('text')
+        .attr('id', 'chartIntroTitle_a')
+        .attr('x', 10)
+        .attr('y', 12)
+        .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
+
+    svg.append('text')
+        .attr('id', 'chartIntroTitle_b')
+        .attr('x', 10)
+        .attr('y', 32)
+        .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas reportadas por FIND</tspan> acumuladas`)
+
+    svg.append('text')
+        .attr('id', 'sources_1')
+        .attr('x', 10)
+        .attr('y', height + margin.top + 10)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
+
+    svg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
+
+    svg.selectAll('.intcases').style('visibility', 'hidden')
+
+    svg.select('.x-axis')
+        .transition().duration(1000)
+        .call(xAxis).selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', 'rotate(320)')
+
+    svg.select('.y-axis')
+        .transition().duration(1000)
+        .call(yAxis)
+
+    svg.selectAll('rect._offTests').remove()
+    svg.selectAll('rect._offTests').data(dataCol)
+        .enter().append('rect')
+        .attr('class', '_offTests')
+        .attr('x', d => x(d[COLS_NAL['date']]))
+        .attr('y', height)
+        .attr('width', 5)
+        .attr('height', 0)
+        .style('fill', ORANGE)
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
+
+    svg.selectAll('rect._offTests')
+        .transition().duration(1000)
+        .attr('y', d => y(d[COLS_NAL['offTests']]))
+        .attr('height', d => height - y(d[COLS_NAL['offTests']]))
 
     const createMilestones = _ => {
         for (let i = 0; i < dataMilestones.length; i++) {
@@ -304,276 +386,35 @@ const createChart = async (w, h) => {
 
     }
 
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('text_0'),
-        handler: direction => {
-            if (direction === DOWN)
-                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`)
-            else if (direction === UP)
-                d3.select('#chartIntro').style('position', '').style('top', '')
-        },
-        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`
-    })
+    // createAllEmpties()
 
-    // Change chart
-    new Waypoint({
-        element: document.getElementById('text_1'),
-        handler: async direction => {
-            if (direction === DOWN) {
-                console.log(dataCol)
-                svg.selectAll('.intcases').style('visibility', 'hidden')
-                let lastDay = new Date(d3.max(await dataCol.map(d => d[COLS_NAL['date']])).getTime())
-                lastDay.setDate(lastDay.getDate() + 1)
+    d3.select('#explanation_chart1b')
+        .attr('data-tooltip', createExplaination('testsNcasesNdiscardedNfindCol'))
 
-                x = d3.scaleTime().range([margin.left, width])
-                    .domain([firstDay, lastDay])
+    addCases()
 
-                y = d3.scaleLinear()
-                    .range([height, margin.top])
-                    .domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['offTests']])) + 10])
+    addDiscarded()
 
-                xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
-                yAxis = d3.axisLeft(y)
+    svg.selectAll('.tests-find')
+        .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
+        .enter().append('rect')
+        .attr('class', 'tests-find')
+        .attr('x', d => x(d[COLS_NAL['date']]))
+        .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
+        .attr('width', 10)
+        .attr('height', 3)
+        .attr('fill', palette[7])
+        .attr('stroke', 'white')
+        .append('title')
+        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`)
 
-                svg.select('.x-axis')
-                    .transition().duration(1000)
-                    .call(xAxis).selectAll('text')
-                    .style('text-anchor', 'end')
-                    .attr('transform', 'rotate(320)')
-
-                svg.select('.y-axis')
-                    .transition().duration(1000)
-                    .call(yAxis)
-
-                d3.select('#note_1')
-                    .html(``)
-
-                svg.selectAll('rect._offTests').remove()
-                svg.selectAll('rect._offTests').data(dataCol)
-                    .enter().append('rect')
-                    .attr('class', '_offTests')
-                    .attr('x', d => x(d[COLS_NAL['date']]))
-                    .attr('y', height)
-                    .attr('width', 5)
-                    .attr('height', 0)
-                    .style('fill', ORANGE)
-                    .append('title')
-                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
-
-                svg.selectAll('rect._offTests')
-                    .transition().duration(1000)
-                    .attr('y', d => y(d[COLS_NAL['offTests']]))
-                    .attr('height', d => height - y(d[COLS_NAL['offTests']]))
-
-                createAllEmpties()
-
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
-
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
-
-                d3.select('#chartIntroTitle_b')
-                    .html('')
-
-                d3.select('#chartIntroxAxis')
-                    .html('')
-
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsCol'))
-                    .html('<i class= "material-icons">help</i >')
-            }
-            else if (direction === UP) {
-                svg.selectAll('.intcases').style('visibility', 'inherit')
-                x = d3.scaleLinear().range([margin.left, width])
-                    .domain([0, d3.max(await dataInt.map(d => d[COLS_INTNAL['day']])) + 1])
-
-                y = d3.scaleLog()
-                    .range([height, margin.top])
-                    .domain([200, d3.max(dataInt.map(d => Math.max(d[COLS_INTNAL['italy']], d[COLS_INTNAL['germany']], d[COLS_INTNAL['southkorea']], d[COLS_INTNAL['us']], d[COLS_INTNAL['col']]))) + 10])
-
-                d3.select('#note_1')
-                    .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
-
-                xAxis = d3.axisBottom(x)
-                yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
-
-                svg.select('.x-axis')
-                    .transition().duration(1000)
-                    .call(xAxis)
-
-                svg.select('.y-axis')
-                    .transition().duration(1000)
-                    .call(yAxis)
-
-                svg.selectAll('._offTests').remove()
-                svg.selectAll('._blanks').remove()
-
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
-
-                svg.select('#chartIntroTitle_a')
-                    .html(`Casos confirmados por millón de habitantes a partir del día con 200`)
-
-                svg.select('#chartIntroTitle_b')
-                    .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
-
-                d3.select('#chartIntroxAxis')
-                    .html(`Días a partir del día con 200 casos acumulados confirmados`)
-
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('million_confirmed_cases_countries'))
-            }
-        },
-        offset: '60%'
-    })
-
-    // Add/remove cases
-    new Waypoint({
-        element: document.getElementById('text_2'),
-        handler: direction => {
-            if (direction === DOWN) {
-                addCases()
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>`)
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan>  acumulados`)
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesCol'))
-            }
-            else if (direction === UP) {
-                d3.selectAll('._cases').remove()
-                d3.select('#chartTitle')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> acumuladas`)
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsCol'))
-            }
-        },
-        offset: '60%'
-    })
-
-    // Add/remove discarded
-    new Waypoint({
-        element: document.getElementById('text_3'),
-        handler: direction => {
-            if (direction === DOWN) {
-                addDiscarded()
-
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesNdiscardedCol'))
-
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
-            }
-            else if (direction === UP) {
-                y.domain(d3.extent(dataCol, d => d[COLS_NAL['offTests']]))
-                svg.select('.y-axis')
-                    .transition().duration(1000)
-                    .call(yAxis)
-
-                reDimension('offTests')
-                reDimension('cases')
-
-                svg.selectAll('._discarded').remove()
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesCol'))
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> acumulados`)
-            }
-        },
-        offset: '60%'
-    })
-
-    // Add/remove discarded
-    new Waypoint({
-        element: document.getElementById('text_3a'),
-        handler: direction => {
-            if (direction === DOWN) {
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>, <a href="https://finddx.shinyapps.io/FIND_Cov_19_Tracker/" target="_blank">FIND</a>`)
-
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesNdiscardedNfindCol'))
-
-                console.log(explainations['testsNcasesNdiscardedNfindCol'])
-
-                svg.selectAll('.tests-find')
-                    .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
-                    .enter().append('rect')
-                    .attr('class', 'tests-find')
-                    .attr('x', d => x(d[COLS_NAL['date']]))
-                    .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
-                    .attr('width', 10)
-                    .attr('height', 3)
-                    .attr('fill', palette[7])
-                    .attr('stroke', 'white')
-                    .append('title')
-                    .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`)
-
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[0]}">casos confirmados</tspan>, <tspan style="fill: ${palette[1]}">casos descartados</tspan>`)
-
-                d3.select('#chartIntroTitle_b')
-                    .html(`<tspan style="fill: ${palette[7]}">pruebas procesadas reportadas por FIND</tspan> acumuladas`)
-            }
-            else if (direction === UP) {
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesNdiscardedCol'))
-                d3.select('#sources_1')
-                    .html(`Fuentes: <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://ideascol.github.io/" target="_blank">Cálculos nuestros</a>`)
-
-                d3.select('#explanation_chart1')
-                    .attr('data-tooltip', createExplaination('testsNcasesNdiscardedCol'))
-
-                d3.select('#chartIntroTitle_a')
-                    .html(`<tspan style="fill: ${ORANGE}">Pruebas procesadas</tspan> y <tspan style="fill: ${palette[0]}">casos confirmados</tspan> y <tspan style="fill: ${palette[1]}">casos descartados</tspan> acumulados`)
-
-                d3.select('#chartIntroTitle_b')
-                    .html('')
-
-                d3.selectAll('.tests-find').remove()
-            }
-        },
-        offset: '40%'
-    })
-
-    // Add/remove discarded
-    new Waypoint({
-        element: document.getElementById('text_3a'),
-        handler: direction => {
-            if (direction === DOWN)
-                createMilestones()
-            else if (direction === UP)
-                svg.selectAll('._milestones').remove()
-        },
-        offset: '80%'
-    })
-
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('chapter_2'),
-        handler: direction => {
-            if (direction === DOWN) {
-                let divHeight = d3.select('#chapter_1_text').node().getBoundingClientRect().height
-                d3.select('#chapter_1_chart').style('position', 'relative').style('height', `${divHeight}px`)
-                d3.select('#chartIntro').style('position', 'absolute').style('bottom', '0').style('top', '')
-            }
-            else if (direction === UP)
-                d3.select('#chartIntro').style('position', 'fixed').style('top', `${(100 - Math.round(h * 100 / vh) + 5) / 3}%`)
-        },
-        offset: `${(100 - Math.round(h * 100 / vh) + 5) / 3 + Math.round(h * 100 / vh) + 15}%`
-    })
-
+    createMilestones()
 }
 
-const createIncreaseChart = async w => {
+const createIncreaseChart = async (w, h) => {
     let margin = { top: 30, right: 5, bottom: 9, left: 60 }
 
-    let h = d3.select('#text_4').node().getBoundingClientRect().height
-    let width = w - margin.left - margin.right
+    let width = w
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select(`#newTests`)
@@ -675,7 +516,7 @@ const createIncreaseChart = async w => {
 const createSummaryChart = async (w, h) => {
     let margin = { top: 40, right: 5, bottom: 10, left: 80 }
 
-    let width = w - margin.left - margin.right
+    let width = w
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select('#summaryChart').select('svg')
@@ -694,6 +535,103 @@ const createSummaryChart = async (w, h) => {
     })
     data = data.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
 
+    var x = d3.scaleLinear().range([margin.left, width])
+        .domain([0, d3.max(await data.map(d => d[COLS_TESTS['day']])) + 1])
+
+    var y = d3.scaleLinear().range([height, margin.top])
+
+    let xAxis = d3.axisBottom(x)
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
+
+    const updateLines = dataset => {
+        y.domain([200, d3.max(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
+
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis)
+
+        Object.keys(COLS_TESTS).filter(d => d !== 'day').map((col, i) => {
+            let line = d3.line()
+                .x(d => x(d[COLS_TESTS['day']]))
+                .y(d => d[COLS_TESTS[col]] === 0 ? 1 : y(d[COLS_TESTS[col]]))
+
+            let paths = svg.selectAll(`.tests.${col}.line`)
+                .data([dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0)])
+
+            paths
+                .enter().append('path')
+                .attr('class', `tests ${col} line`)
+                .merge(paths)
+                .transition().duration(1000)
+                .attr('d', line)
+                .style('stroke', palette[i + 2])
+
+            let circles = svg.selectAll(`circle.tests.${col}`)
+                .data(dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
+
+            circles.enter().append('circle')
+                .attr('class', `tests ${col}`)
+                .merge(circles)
+                .transition().duration(1000)
+                .attr('cx', d => x(d[COLS_TESTS['day']]))
+                .attr('cy', d => y(d[COLS_TESTS[col]]))
+                .attr('r', 3)
+                .style('fill', palette[i + 2])
+
+            circles.append('title')
+                .attr('class', `tests title ${col}`)
+                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
+        })
+    }
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 15)
+        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 30)
+        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', h - 10)
+        .style('font-size', 13)
+        .style('color', 'grey')
+        .html(`Días a partir del día con 200 casos acumulados confirmados`)
+
+    updateLines(data)
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+
+    svg.append('g')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
+
+    d3.select('#explanation_chart3')
+        .attr('data-tooltip', createExplaination('200day_tests_countries'))
+}
+
+const createSummaryChart2 = async (w, h) => {
+    let margin = { top: 40, right: 5, bottom: 10, left: 80 }
+
+    let width = w
+    let height = h - margin.top - margin.bottom
+
+    let svg = d3.select('#summaryChartb').select('svg')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+
     let dataRate = await d3.csv('data/data_million_tests_countries.csv')
     dataRate = await dataRate.map(d => {
         d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
@@ -707,7 +645,7 @@ const createSummaryChart = async (w, h) => {
     dataRate = dataRate.sort((a, b) => a[COLS_TESTS['day']] - b[COLS_TESTS['day']])
 
     var x = d3.scaleLinear().range([margin.left, width])
-        .domain([0, d3.max(await data.map(d => d[COLS_TESTS['day']])) + 1])
+        .domain([0, d3.max(await dataRate.map(d => d[COLS_TESTS['day']])) + 1])
 
     var y = d3.scaleLinear().range([height, margin.top])
 
@@ -769,13 +707,11 @@ const createSummaryChart = async (w, h) => {
 
     svg.append('text')
         .attr('id', 'chart3xAxis')
-        .attr('x', margin.left + 10)
+        .attr('x', 10)
         .attr('y', h - 10)
         .style('font-size', 13)
         .style('color', 'grey')
         .html(`Días a partir del día con 200 casos acumulados confirmados`)
-
-    updateLines(data)
 
     svg.append('text')
         .attr('id', 'sources_3')
@@ -796,72 +732,26 @@ const createSummaryChart = async (w, h) => {
     d3.select('#explanation_chart3')
         .attr('data-tooltip', createExplaination('200day_tests_countries'))
 
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('summaryChart'),
-        handler: direction => {
-            if (direction === DOWN)
-                d3.select('#summaryChart').style('position', 'fixed').style('top', '10%')
-            else if (direction === UP)
-                d3.select('#summaryChart').style('position', '').style('top', '')
-        },
-        offset: `10%`
-    })
+    updateLines(dataRate)
 
-    // Fix/unfix chart
-    new Waypoint({
-        element: document.getElementById('text_5'),
-        handler: async direction => {
-            if (direction === DOWN) {
-                updateLines(dataRate)
+    d3.select('#sources_3')
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
 
-                d3.select('#sources_3')
-                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
+    d3.select('#chart3Title_a')
+        .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200`)
 
-                d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200`)
+    d3.select('#chart3Title_b')
+        .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
-                d3.select('#chart3Title_b')
-                    .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+    d3.select('#explanation_chart3b')
+        .attr('data-tooltip', createExplaination('million_tests_countries'))
 
-                d3.select('#explanation_chart3')
-                    .attr('data-tooltip', createExplaination('million_tests_countries'))
-            }
-            else if (direction === UP) {
-                updateLines(data)
-                d3.select('#sources_3')
-                    .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
-                d3.select('#chart3Title_a')
-                    .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
-                d3.select('#chart3Title_b')
-                    .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
-                d3.select('#explanation_chart3')
-                    .attr('data-tooltip', createExplaination('200day_tests_countries'))
-            }
-        },
-        offset: `40%`
-    })
-
-    // Remove/add chart
-    new Waypoint({
-        element: document.getElementById('chapter_3'),
-        handler: direction => {
-            if (direction === DOWN) {
-                let divHeight = d3.select('#chapter_2_text').node().getBoundingClientRect().height
-                d3.select('#chapter_2_chart').style('position', 'relative').style('height', `${divHeight}px`)
-                d3.select('#summaryChart').style('position', 'absolute').style('bottom', '0').style('top', '')
-            }
-            else if (direction === UP)
-                d3.select('#summaryChart').style('position', 'fixed').style('top', '5%')
-        },
-        offset: `${Math.round(h * 100 / vh) + 25}%`
-    })
 }
 
 const createIntCharts = async (w, h, dataset, sources) => {
     let margin = { top: 20, right: 5, bottom: 15, left: 60 }
 
-    let width = w - margin.left - margin.right
+    let width = w
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select(`#chart_${dataset}`).select('svg')
@@ -960,7 +850,7 @@ const createIntCharts = async (w, h, dataset, sources) => {
 const createFINDChart = async (w, h) => {
     let margin = { top: 20, right: 0, bottom: 20, left: 50 }
 
-    let width = w - margin.left - margin.right
+    let width = w
     let height = h - margin.top - margin.bottom
 
     let svg = d3.select('#findDataChart')
@@ -1186,15 +1076,15 @@ const createMap = async (width, height) => {
         .style('fill', 'white')
         .style('stroke', 'gray')
 
-                mapLayer.selectAll('circle')
-                    .data(features)
-                    .enter().append('circle')
-                    .attr('class', 'text_1')
-                    .attr('r', 5)
-                    .attr('transform', d =>
-                        'translate(' + path.centroid(d) + ')'
-                    )
-                    .style('fill', '#047ab3')
+    mapLayer.selectAll('circle')
+        .data(features)
+        .enter().append('circle')
+        .attr('class', 'text_1')
+        .attr('r', 5)
+        .attr('transform', d =>
+            'translate(' + path.centroid(d) + ')'
+        )
+        .style('fill', '#047ab3')
 
     // Add/remove color
     // new Waypoint({

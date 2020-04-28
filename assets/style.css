@@ -34,6 +34,18 @@ main {
   padding-bottom: 5vh;
 }
 
+
+header, main, footer {
+  padding-left: 300px;
+}
+
+@media only screen and (max-width : 992px) {
+  header, main, footer {
+    padding-left: 0;
+  }
+}
+  
+
 .line {
     fill: none;
     stroke-width: 3;
@@ -48,10 +60,6 @@ text > a {
   height: 200px !important;
 }
 
-.chapter {
-  padding-top: 200px;
-}
-
 .navbar-fixed {
   height: 200px !important;
 }
@@ -59,8 +67,7 @@ text > a {
 .fixed-top {
   position: fixed;
   top: 10px;
-  right: 10px;
-  z-index: 1000;
+  left: 10px;
 }
 
 .share-button {
@@ -102,4 +109,14 @@ text {
 
 .material-tooltip {
   max-width: 35%;
+}
+
+.dayEntryMenu {
+  padding: 5%;
+}
+
+@media only screen and (max-width : 992px) {
+  .material-tooltip {
+    max-width: 92%;
+  }
 }
