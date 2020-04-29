@@ -11,7 +11,8 @@
 *READ THIS: 
 *Requirements: STATA 16. 	
 *Files needed: INS_D_M_Y.csv and Pruebas_D_M_Y.csv Camas_D_M_Y (the last update of Camas available)
-*Change dates in lines 39 and 41 to generate new csv for each day
+*Change dates in lines 41 and 43 to generate new csv for each day
+*Run only ONCE per day of interest otherwise eliminate duplicate observations. 
 	
 *************************************/
 
@@ -37,7 +38,7 @@ cd ${raw}
 *save codigo_dpto.dta, replace 
 
 *Local determining the day of update INS and Pruebas
-local i=28
+local i=25
 *Local determining the last update of Camas. 
 local j=24
 
@@ -225,9 +226,10 @@ save "$mod\nacional\nal_`i'_04_2020.dta", replace
 */
 
 *National dataset 
-use "$mod\nacional\data_nal.dta", replace
+use "$mod\nacional\data_nal.dta", clear
 append using "$mod\nacional\nal_`i'_04_2020"
 erase "$mod\nacional\nal_`i'_04_2020.dta"
+sort fecha
 save "$mod\nacional\data_nal.dta", replace 
 export delimited using "$mod\nacional\data_nal.csv", replace
 

@@ -1,13 +1,15 @@
 /*************************************
 *Created: 04/26/2020
-*Last Modified: 04/26/2020
+*Last Modified: 04/29/2020
 *Purpose: 		
 	- Create datasets ready to use on the website 
 *Author: Lina Ramirez 
 *Created files: 
-	-
+	-"$ideascol\data_dptos.csv"
+	-"$ideascol\data_dptos_trend.csv"
 
 *READ THIS: 
+-Daily line 51 has to be modified. 
 
 *Ideas:
 Department level
@@ -71,10 +73,9 @@ export delimited using "$ideascol\data_dptos_trend.csv", replace
 restore 
 
 
+
+
 /*
-
-
-use data_dpto.dta, clear
 
 sort departamento fecha
 gen nuevaspruebas=pruebas[_n]-pruebas[_n-1] if departamento[_n]==departamento[_n-1]
