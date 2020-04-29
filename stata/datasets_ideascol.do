@@ -32,6 +32,8 @@ gl dpto "$mod\departamentos"
 gl nal "$mod\nacional"
 gl ideascol "$git\data"
 
+
+
 /*
 							Departamento level 
 */
