@@ -43,10 +43,15 @@ cd ${dpto}
 
 use data_dpto.dta, clear
 
+sort departamento fecha
+gen nuevaspruebas=pruebas[_n]-pruebas[_n-1] if departamento[_n]==departamento[_n-1]
+gen nuevoscasos=casos_confirmados[_n]-casos_confirmados[_n-1] if departamento[_n]==departamento[_n-1]
+gen casos_pruebas=casos_confirmados/pruebas if departamento[_n]==departamento[_n-1]
+
 ** Politiko **
 preserve
 *Set day 
-local i=26
+local i=27
  
 keep if fecha=="`i'-04-2020"
 keep departamento codigo pruebas casos_confirmados casos_fallecido 

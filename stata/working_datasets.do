@@ -37,7 +37,7 @@ cd ${raw}
 *save codigo_dpto.dta, replace 
 
 *Local determining the day of update INS and Pruebas
-local i=26
+local i=22
 *Local determining the last update of Camas. 
 local j=24
 
@@ -83,8 +83,6 @@ drop _merge
 erase Camas.dta
 
 *merge with poblacion por departamento 
-
-
 
 
 *time variables
@@ -200,6 +198,7 @@ collapse `vars', by(codigo departamento)
 
 gen fecha="`i'-04-2020"
 order fecha, first
+sort fecha
 save "$mod\departamentos\data_dpto_`i'_04_2020.dta", replace
 *export delimited using "$mod\departamentos\data_dpto_`i'_04_2020.csv", replace
 
@@ -237,4 +236,5 @@ export delimited using "$mod\nacional\data_nal.csv", replace
 use "$mod\departamentos\data_dpto.dta", clear
 append using "$mod\departamentos\data_dpto_`i'_04_2020.dta"
 erase "$mod\departamentos\data_dpto_`i'_04_2020.dta"
+sort fecha
 save "$mod\departamentos\data_dpto.dta", replace
