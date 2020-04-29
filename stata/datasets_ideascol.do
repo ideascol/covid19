@@ -66,7 +66,7 @@ replace pruebas=0 if pruebas==.
 tostring codigo, replace 
 replace codigo="0"+codigo if codigo=="5" | codigo=="8"
 sort fecha codigo 
-export delimited using "$ideascol\data_dptos.csv", replace
+export delimited using "$ideascol\data_dptos_trend.csv", replace
 
 restore 
 
