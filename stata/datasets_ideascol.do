@@ -53,10 +53,22 @@ keep departamento codigo pruebas casos_confirmados casos_fallecido
 replace pruebas=0 if pruebas==. 
 tostring codigo, replace 
 replace codigo="0"+codigo if codigo=="5" | codigo=="8"
+sort codigo
 export delimited using "$ideascol\data_dptos.csv", replace
 
 restore 
 
+** Politiko - time series for departamento graph trends **
+
+preserve
+keep fecha departamento codigo pruebas casos_confirmados casos_fallecido 
+replace pruebas=0 if pruebas==. 
+tostring codigo, replace 
+replace codigo="0"+codigo if codigo=="5" | codigo=="8"
+sort fecha codigo 
+export delimited using "$ideascol\data_dptos.csv", replace
+
+restore 
 
 
 /*
