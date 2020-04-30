@@ -78,7 +78,7 @@ const COLS_POLITIKO = {
 
 // National data columns
 const COLS_DMNTOS = {
-    'date': 'Fecha Actualizacion Muestras',
+    'date': 'CODIGO DPTO',
 }
 
 const palette = [

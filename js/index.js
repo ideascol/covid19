@@ -1,4 +1,5 @@
 var vh = 0
+var windowWidth = 0
 var dataInt = []
 var dataCol = []
 var dataMilestones = []
@@ -15,28 +16,29 @@ async function initialize() {
 
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
-    let width = d3.select('#chapter_0').node().getBoundingClientRect().width
-    let height = width > 500 ? vh * 0.35 > width * 0.55 * 0.6 ? width * 0.55 * 0.6 : vh * 0.35 : width * 0.7
+    windowWidth = d3.select('#chapter_0').node().getBoundingClientRect().width
+    console.log(windowWidth)
+    let height = windowWidth > 500 ? vh * 0.35 > windowWidth * 0.55 * 0.6 ? windowWidth * 0.55 * 0.6 : vh * 0.35 : windowWidth * 0.7
 
     dataInt = await loadDataInt()
     dataCol = await loadDataCol()
     dataMilestones = await loadDataMilestones()
 
-    createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.95, height * 1.06)
-    createNationalChart(d3.select('#chartIntro2').node().getBoundingClientRect().width * 0.95, height * 1.06)
-    createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.95, height)
-    createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.95, height * 1.06)
-    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.95, height * 1.06)
+    createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.85, height * 1.06)
+    createNationalChart(d3.select('#chartIntro2').node().getBoundingClientRect().width * 0.85, height * 1.06)
+    createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.85, height)
+    createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
+    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
 
-    width = d3.select('#chart_italy').node().getBoundingClientRect().width * 0.95
+    let width = d3.select('#chart_italy').node().getBoundingClientRect().width * 0.85
     createIntCharts(width, height, 'southkorea')
     createIntCharts(width, height, 'germany')
     createIntCharts(width, height, 'italy')
     createIntCharts(width, height, 'us')
-    createIntCharts(d3.select('#chart_col').node().getBoundingClientRect().width * 0.95, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
+    createIntCharts(d3.select('#chart_col').node().getBoundingClientRect().width * 0.85, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
-    createFINDChart(d3.select('#dataFIND').node().getBoundingClientRect().width * 0.95, height)
-    // createMap(width, width)    
+    createFINDChart(d3.select('#dataFIND').node().getBoundingClientRect().width * 0.85, height)
+    createMap(width, width)
 }
 
 const loadDataInt = _ => {
@@ -251,13 +253,11 @@ const createNationalChart = async (w, h) => {
     svg.selectAll('.intcases').style('visibility', 'hidden')
 
     svg.select('.x-axis')
-        .transition().duration(1000)
         .call(xAxis).selectAll('text')
         .style('text-anchor', 'end')
         .attr('transform', 'rotate(320)')
 
     svg.select('.y-axis')
-        .transition().duration(1000)
         .call(yAxis)
 
     svg.selectAll('rect._offTests').remove()
@@ -266,14 +266,13 @@ const createNationalChart = async (w, h) => {
         .attr('class', '_offTests')
         .attr('x', d => x(d[COLS_NAL['date']]))
         .attr('y', height)
-        .attr('width', 5)
+        .attr('width', windowWidth>500?5:2)
         .attr('height', 0)
         .style('fill', ORANGE)
         .append('title')
         .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['offTests']])} pruebas`)
 
     svg.selectAll('rect._offTests')
-        .transition().duration(1000)
         .attr('y', d => y(d[COLS_NAL['offTests']]))
         .attr('height', d => height - y(d[COLS_NAL['offTests']]))
 
@@ -291,7 +290,6 @@ const createNationalChart = async (w, h) => {
                     .attr('y1', height)
                     .attr('x2', x(news[COLS_MS['date']]) + 4)
                     .attr('y2', height)
-                    .transition().duration(1000)
                     .attr('y2', height + margin.top + 30 + 20 * i)
 
                 svg.append('text')
@@ -336,7 +334,6 @@ const createNationalChart = async (w, h) => {
 
     const reDimension = col => {
         svg.selectAll(`rect._${col}`)
-            .transition().duration(1000)
             .attr('y', d => y(d[COLS_NAL[col]]))
             .attr('height', d => height - y(d[COLS_NAL[col]]))
     }
@@ -346,9 +343,9 @@ const createNationalChart = async (w, h) => {
             .data(dataCol)
             .enter().append('rect')
             .attr('class', '_cases')
-            .attr('x', d => x(d[COLS_NAL['date']]) + 5)
+            .attr('x', d => x(d[COLS_NAL['date']]) + 3)
             .attr('y', height)
-            .attr('width', 5)
+            .attr('width', windowWidth>500?5:2)
             .attr('height', 0)
             .style('fill', palette[0])
             .append('title')
@@ -360,7 +357,6 @@ const createNationalChart = async (w, h) => {
     const addDiscarded = async _ => {
         y.domain([0, d3.max(await dataCol.map(d => d[COLS_NAL['cases']] + d[COLS_NAL['discarded']])) + 100])
         svg.select('.y-axis')
-            .transition().duration(1000)
             .call(yAxis)
 
         reDimension('offTests')
@@ -372,15 +368,13 @@ const createNationalChart = async (w, h) => {
             .attr('class', '_discarded')
             .attr('x', d => x(d[COLS_NAL['date']]) + 5)
             .attr('y', d => y(d[COLS_NAL['cases']]))
-            .attr('width', 5)
+            .attr('width', windowWidth>500?5:2)
             .attr('height', 0)
             .style('fill', palette[1])
             .append('title')
             .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_NAL['discarded']])} casos descartados`)
 
         svg.selectAll('rect._discarded')
-            .transition()
-            .duration(1000)
             .attr('y', d => y(d[COLS_NAL['cases']] + d[COLS_NAL['discarded']]))
             .attr('height', d => height - y(d[COLS_NAL['discarded']]))
 
@@ -395,20 +389,23 @@ const createNationalChart = async (w, h) => {
 
     addDiscarded()
 
-    svg.selectAll('.tests-find')
-        .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
-        .enter().append('rect')
-        .attr('class', 'tests-find')
-        .attr('x', d => x(d[COLS_NAL['date']]))
-        .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
-        .attr('width', 10)
-        .attr('height', 3)
-        .attr('fill', palette[7])
-        .attr('stroke', 'white')
-        .append('title')
-        .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`)
-
     createMilestones()
+
+    setTimeout(_ =>
+        svg.selectAll('.tests-find')
+            .data(dataCol.filter(d => d[COLS_NAL['testsFIND']] > 0))
+            .enter().append('rect')
+            .attr('class', 'tests-find')
+            .attr('x', d => x(d[COLS_NAL['date']]))
+            .attr('y', d => y(d[COLS_NAL['testsFIND']]) - 1.5)
+            .attr('width', 5)
+            .attr('height', 3)
+            .attr('fill', palette[7])
+            .attr('stroke', 'white')
+            .append('title')
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`), 
+        1000)
+
 }
 
 const createIncreaseChart = async (w, h) => {
@@ -876,7 +873,7 @@ const createFINDChart = async (w, h) => {
         .attr('class', '_offTests')
         .attr('x', d => x(d[COLS_NAL['date']]))
         .attr('y', d => y(d[COLS_NAL['offTests']]))
-        .attr('width', 5)
+        .attr('width', windowWidth>500?5:2)
         .attr('height', d => height - y(d[COLS_NAL['offTests']]))
         .style('fill', ORANGE)
         .append('title')
@@ -888,7 +885,7 @@ const createFINDChart = async (w, h) => {
         .attr('class', '_find')
         .attr('x', d => x(d[COLS_NAL['date']]) + 6)
         .attr('y', d => y(d[COLS_NAL['testsFIND']]))
-        .attr('width', 5)
+        .attr('width', windowWidth>500?5:2)
         .attr('height', d => height - y(d[COLS_NAL['testsFIND']]))
         .style('fill', palette[7])
         .append('title')
@@ -1057,16 +1054,28 @@ const createMap = async (width, height) => {
     let path = d3.geoPath()
         .projection(projection)
 
+    let mapData = await d3.json(colombiaGeoJson)
+    let features = []
+
     let data = await d3.csv('data/data_departamentos.csv')
+    if (data.length > 0)
+        await Object.keys(data[0]).map(async key => {
+            if (key !== COLS_DMNTOS['date']) {
+                let feature = mapData.features.find(e => +e.properties.DPTO === +key)
+                if (feature && feature.properties)
+                    features.push({ ...feature, properties: { values: await data.map(d => ({ date: [new Date(d[COLS_DMNTOS['date']])], muestras: +d[key] })), ...feature.properties } })
+            }
+        })
+
+    let y = d3.scaleLinear()
+        .range([0, 20])
+        .domain([0, d3.max(Object.keys(data[0]), key => key === COLS_DMNTOS['date'] ? 0 : +data[data.length - 1][key])])
 
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
         .attr('height', height)
 
     let mapLayer = svg.append('g')
-
-    let mapData = await d3.json(colombiaGeoJson)
-    let features = mapData.features
 
     mapLayer.selectAll('path')
         .data(features)
@@ -1080,7 +1089,10 @@ const createMap = async (width, height) => {
         .data(features)
         .enter().append('circle')
         .attr('class', 'text_1')
-        .attr('r', 5)
+        .attr('r', d => {
+            console.log(y(d.properties.values[d.properties.values.length - 1].muestras), d.properties.values[d.properties.values.length - 1].muestras)
+            return y(d.properties.values[d.properties.values.length - 1].muestras)
+        })
         .attr('transform', d =>
             'translate(' + path.centroid(d) + ')'
         )

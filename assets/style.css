@@ -37,14 +37,26 @@ main {
 
 header, main, footer {
   padding-left: 300px;
-}
+} 
 
 @media only screen and (max-width : 992px) {
   header, main, footer {
     padding-left: 0;
   }
+
+  text {
+    font-size: 2.5vw !important;
+  }
+
+  .material-tooltip {
+    max-width: 92%;
+  }
 }
-  
+
+title {
+  background-color: #039be5 !important;
+  color: #039be5 !important;
+}
 
 .line {
     fill: none;
@@ -117,10 +129,4 @@ text {
 
 .sidenav-fixed {
   border-right: solid 1px #ffe0b2 !important;
-}
-
-@media only screen and (max-width : 992px) {
-  .material-tooltip {
-    max-width: 92%;
-  }
 }
