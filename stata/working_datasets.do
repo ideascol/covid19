@@ -37,6 +37,13 @@ cd ${raw}
 *import delimited codigo_dpto.csv, encoding(utf8) clear
 *save codigo_dpto.dta, replace 
 
+*import delimited poblacion_dptos.csv, encoding(utf8) clear  
+*rename depto departamento 
+*merge 1:1 departamento using codigo_dpto.dta 
+*rename pob_censo_2018 poblacion
+*drop _merge 
+*save poblacion_dptos.dta, replace
+
 *Local determining the day of update INS and Pruebas
 local i=29
 *Local determining the last update of Camas. 
@@ -70,6 +77,11 @@ replace departamento="MAGDALENA" if departamento=="SANTA MARTA D.T. Y C."
 merge m:1 departamento using codigo_dpto
 drop _merge 
 order codigo, after(departamento)
+
+*merge with poblacion
+merge m:1 codigo using poblacion_dptos
+order poblacion, after(codigo) 
+drop _merge 
 
 *merge with pruebas 
 merge m:1 codigo using Pruebas

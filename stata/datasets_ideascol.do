@@ -9,7 +9,7 @@
 	-"$ideascol\data_dptos_trend.csv"
 
 *READ THIS: 
--Daily line 51 has to be modified. 
+-Daily line 52 and 57 have to be modified. 
 
 *Ideas:
 Department level
@@ -59,6 +59,26 @@ sort codigo
 export delimited using "$ideascol\data_dptos.csv", replace
 
 restore 
+
+
+** Politiko - map - por cien mil habitantes **
+preserve
+*Set day 
+local i=29
+keep if fecha=="`i'-04-2020"
+keep departamento codigo poblacion pruebas casos_confirmados casos_fallecido 
+replace pruebas=0 if pruebas==. 
+foreach var in pruebas casos_confirmados casos_fallecido {
+gen `var'_c=round((`var'*100000)/poblacion, 1)
+drop `var'
+}
+tostring codigo, replace 
+replace codigo="0"+codigo if codigo=="5" | codigo=="8"
+sort codigo
+export delimited using "$ideascol\data_dptos_cienmil.csv", replace
+
+restore 
+
 
 ** Politiko - time series for departamento graph trends **
 
