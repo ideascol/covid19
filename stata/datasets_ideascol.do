@@ -49,7 +49,7 @@ use data_dpto.dta, clear
 ** Politiko - map **
 preserve
 *Set day 
-local i=28
+local i=29
 keep if fecha=="`i'-04-2020"
 keep departamento codigo pruebas casos_confirmados casos_fallecido 
 replace pruebas=0 if pruebas==. 

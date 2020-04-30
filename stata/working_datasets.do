@@ -38,7 +38,7 @@ cd ${raw}
 *save codigo_dpto.dta, replace 
 
 *Local determining the day of update INS and Pruebas
-local i=25
+local i=29
 *Local determining the last update of Camas. 
 local j=24
 
