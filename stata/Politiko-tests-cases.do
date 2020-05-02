@@ -288,7 +288,7 @@
 	preserve
 		clear
 		qui: set obs 1
-		qui: gen Day = "Day(200 total cases)"
+		qui: gen Day = "Day(200 confirmed cases)"
 		qui: gen germany = "Germany"
 		qui: gen italy = "Italy"
 		qui: gen us = "United States"
