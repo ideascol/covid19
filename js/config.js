@@ -86,6 +86,16 @@ const COLS_DMNTOS = {
     'deaths':'casos_fallecido_c'
 }
 
+// National data columns
+const COLS_DPTOS_TREND = {
+    'date': 'fecha',
+    'dpto': 'departamento',
+    'code': 'codigo',
+    'tests': 'pruebas',
+    'cases': 'casos_confirmados',
+    'deaths': 'casos_fallecido'
+}
+
 const palette = [
     '#f3a5a5',
     '#93abd7',
