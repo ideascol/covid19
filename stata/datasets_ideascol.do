@@ -44,13 +44,15 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
+*day
+local i=2
+*month
+local m=5
 
 
 ** Politiko - map **
 preserve
-*Set day 
-local i=29
-keep if fecha=="`i'-04-2020"
+keep if fecha=="`i'-0`m'-2020"
 keep departamento codigo pruebas casos_confirmados casos_fallecido 
 replace pruebas=0 if pruebas==. 
 tostring codigo, replace 
@@ -63,9 +65,7 @@ restore
 
 ** Politiko - map - por cien mil habitantes **
 preserve
-*Set day 
-local i=29
-keep if fecha=="`i'-04-2020"
+keep if fecha=="`i'-0`m'-2020"
 keep departamento codigo poblacion pruebas casos_confirmados casos_fallecido 
 replace pruebas=0 if pruebas==. 
 foreach var in pruebas casos_confirmados casos_fallecido {

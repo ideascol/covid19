@@ -45,18 +45,20 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS and Pruebas
-local i=29
+local i=2
 *Local determining the last update of Camas. 
-local j=24
+local j=1
+*Month 
+local m=5
 
-import delimited Pruebas_`i'_04_2020.csv, encoding(utf8) clear 
+import delimited Pruebas_`i'_0`m'_2020.csv, encoding(utf8) clear 
 save Pruebas.dta, replace 
 
-import delimited Camas_`j'_04_2020.csv, encoding(utf8) clear 
+import delimited Camas_`j'_0`m'_2020.csv, encoding(utf8) clear 
 drop departamento 
 save Camas.dta, replace
 
-import delimited INS_`i'_04_2020.csv, encoding(utf8) clear
+import delimited INS_`i'_0`m'_2020.csv, encoding(utf8) clear
 
 *fixing departamento
 rename departamentoodistrito departamento
@@ -209,10 +211,10 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 local vars "pruebas camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
 collapse `vars', by(codigo departamento) 
 
-gen fecha="`i'-04-2020"
+gen fecha="`i'-0`m'-2020"
 order fecha, first
 sort fecha
-save "$mod\departamentos\data_dpto_`i'_04_2020.dta", replace
+save "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta", replace
 *export delimited using "$mod\departamentos\data_dpto_`i'_04_2020.csv", replace
 
 *National datasets 
@@ -225,9 +227,9 @@ rename nal_`var' `var'
 
 collapse tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital pruebas camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos
 
-gen fecha="`i'-04-2020"
+gen fecha="`i'-0`m'-2020"
 order fecha, first 
-save "$mod\nacional\nal_`i'_04_2020.dta", replace
+save "$mod\nacional\nal_`i'_0`m'_2020.dta", replace
 
 
 
@@ -239,8 +241,8 @@ save "$mod\nacional\nal_`i'_04_2020.dta", replace
 
 *National dataset 
 use "$mod\nacional\data_nal.dta", clear
-append using "$mod\nacional\nal_`i'_04_2020"
-erase "$mod\nacional\nal_`i'_04_2020.dta"
+append using "$mod\nacional\nal_`i'_0`m'_2020"
+erase "$mod\nacional\nal_`i'_0`m'_2020.dta"
 sort fecha
 save "$mod\nacional\data_nal.dta", replace 
 export delimited using "$mod\nacional\data_nal.csv", replace
@@ -248,7 +250,7 @@ export delimited using "$mod\nacional\data_nal.csv", replace
 
 *Department dataset 
 use "$mod\departamentos\data_dpto.dta", clear
-append using "$mod\departamentos\data_dpto_`i'_04_2020.dta"
-erase "$mod\departamentos\data_dpto_`i'_04_2020.dta"
+append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
+erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 sort fecha
 save "$mod\departamentos\data_dpto.dta", replace
