@@ -93,6 +93,15 @@ export delimited using "$ideascol\data_dptos_trend.csv", replace
 restore 
 
 
+* Health system capacity *
+preserve
+keep fecha departamento codigo poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores casos_activo casos_casa  casos_hospital casos_hospitaluci
+
+sort departamento fecha
+
+restore
+
+
 
 
 /*

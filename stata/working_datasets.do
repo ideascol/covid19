@@ -49,7 +49,7 @@ local i=2
 *Local determining the last update of Camas. 
 local j=1
 *Month 
-local m=5
+local m=05
 
 import delimited Pruebas_`i'_0`m'_2020.csv, encoding(utf8) clear 
 save Pruebas.dta, replace 
@@ -208,7 +208,7 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 *In this section I generate a daily working dataset.
 
 *Department datasets
-local vars "pruebas camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
+local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
 collapse `vars', by(codigo departamento) 
 
 gen fecha="`i'-0`m'-2020"
