@@ -78,7 +78,12 @@ const COLS_POLITIKO = {
 
 // National data columns
 const COLS_DMNTOS = {
-    'date': 'CODIGO DPTO',
+    'dpto':'departamento',
+    'code':'codigo',
+    'population':'poblacion',
+    'tests':'pruebas_c',
+    'cases':'casos_confirmados_c',
+    'deaths':'casos_fallecido_c'
 }
 
 const palette = [

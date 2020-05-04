@@ -1057,19 +1057,21 @@ const createMap = async (width, height) => {
     let mapData = await d3.json(colombiaGeoJson)
     let features = []
 
-    let data = await d3.csv('data/data_departamentos.csv')
+    let data = await d3.csv('data/data_dptos_cienmil.csv')
     if (data.length > 0)
-        await Object.keys(data[0]).map(async key => {
-            if (key !== COLS_DMNTOS['date']) {
-                let feature = mapData.features.find(e => +e.properties.DPTO === +key)
-                if (feature && feature.properties)
-                    features.push({ ...feature, properties: { values: await data.map(d => ({ date: [new Date(d[COLS_DMNTOS['date']])], muestras: +d[key] })), ...feature.properties } })
-            }
+        await data.map(async row => {
+            let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
+            if (feature && feature.properties)
+                features.push({ ...feature, properties: { values: row, ...feature.properties } })
         })
 
-    let y = d3.scaleLinear()
-        .range([0, 20])
-        .domain([0, d3.max(Object.keys(data[0]), key => key === COLS_DMNTOS['date'] ? 0 : +data[data.length - 1][key])])
+    // let y = d3.scaleLinear()
+    //     .range([0, 3])
+    //     .domain([0, d3.max(data, d => d[COLS_DMNTOS['tests']])])
+
+    let y = d3.scaleLog()
+        .range([0, 10])
+        .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])        
 
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
@@ -1085,18 +1087,35 @@ const createMap = async (width, height) => {
         .style('fill', 'white')
         .style('stroke', 'gray')
 
-    mapLayer.selectAll('circle')
+    mapLayer.selectAll('circle.tests')
         .data(features)
         .enter().append('circle')
-        .attr('class', 'text_1')
-        .attr('r', d => {
-            console.log(y(d.properties.values[d.properties.values.length - 1].muestras), d.properties.values[d.properties.values.length - 1].muestras)
-            return y(d.properties.values[d.properties.values.length - 1].muestras)
-        })
+        .attr('class', 'tests')
+        .attr('r', d => y(d.properties.values[COLS_DMNTOS['tests']]))
         .attr('transform', d =>
             'translate(' + path.centroid(d) + ')'
         )
-        .style('fill', '#047ab3')
+        .style('fill', d3.color(palette[8]))
+
+    mapLayer.selectAll('circle.cases')
+        .data(features)
+        .enter().append('circle')
+        .attr('class', 'cases')
+        .attr('r', d => y(d.properties.values[COLS_DMNTOS['cases']]))
+        .attr('transform', d =>
+            'translate(' + path.centroid(d) + ')'
+        )
+        .style('fill', d3.color(palette[9]))       
+        
+    mapLayer.selectAll('circle.deaths')
+        .data(features)
+        .enter().append('circle')
+        .attr('class', 'deaths')
+        .attr('r', d => y(d.properties.values[COLS_DMNTOS['deaths']]))
+        .attr('transform', d =>
+            'translate(' + path.centroid(d) + ')'
+        )
+        .style('fill', d3.color(palette[10]))               
 
     // Add/remove color
     // new Waypoint({
