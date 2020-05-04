@@ -44,16 +44,15 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
-*day
-local i=2
-*month
-local m=5
+*date: may 3rd 2020
+local i=22038
+
 
 
 ** Politiko - map **
 preserve
-keep if fecha=="`i'-0`m'-2020"
-keep departamento codigo pruebas casos_confirmados casos_fallecido 
+keep if fecha==`i'
+keep fecha departamento codigo pruebas casos_confirmados casos_fallecido 
 replace pruebas=0 if pruebas==. 
 tostring codigo, replace 
 replace codigo="0"+codigo if codigo=="5" | codigo=="8"
@@ -65,7 +64,7 @@ restore
 
 ** Politiko - map - por cien mil habitantes **
 preserve
-keep if fecha=="`i'-0`m'-2020"
+keep if fecha==`i'
 keep departamento codigo poblacion pruebas casos_confirmados casos_fallecido 
 replace pruebas=0 if pruebas==. 
 foreach var in pruebas casos_confirmados casos_fallecido {
@@ -93,6 +92,7 @@ export delimited using "$ideascol\data_dptos_trend.csv", replace
 restore 
 
 
+/*
 * Health system capacity *
 preserve
 keep fecha departamento codigo poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores casos_activo casos_casa  casos_hospital casos_hospitaluci
@@ -100,7 +100,7 @@ keep fecha departamento codigo poblacion camashospitalizacion camascuidadosinter
 sort departamento fecha
 
 restore
-
+*/
 
 
 

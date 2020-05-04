@@ -1,6 +1,6 @@
 /*************************************
 *Created: 04/23/2020
-*Last Modified: 04/26/2020
+*Last Modified: 05/04/2020
 *Purpose: 		
 	- Create working datasets at national and department level. 
 *Author: Lina Ramirez 
@@ -45,11 +45,13 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS and Pruebas
-local i=2
+local i=3
 *Local determining the last update of Camas. 
 local j=1
 *Month 
-local m=05
+local m=5
+*Dataset imported to check false positives - May 2. 
+local f=2
 
 import delimited Pruebas_`i'_0`m'_2020.csv, encoding(utf8) clear 
 save Pruebas.dta, replace 
@@ -60,6 +62,17 @@ save Camas.dta, replace
 
 import delimited INS_`i'_0`m'_2020.csv, encoding(utf8) clear
 
+*fixing ciudad 
+rename ciudaddeubicación ciudad 
+
+replace ciudad=subinstr(ciudad, "á", "a",.)
+replace ciudad=subinstr(ciudad, "é", "e",.)
+replace ciudad=subinstr(ciudad, "í", "i",.)
+replace ciudad=subinstr(ciudad, "ó", "o",.)
+replace ciudad=subinstr(ciudad, "ú", "u",.)
+replace ciudad=ustrupper(ciudad)
+
+
 *fixing departamento
 rename departamentoodistrito departamento
 
@@ -68,15 +81,62 @@ replace departamento=subinstr(departamento, "é", "e",.)
 replace departamento=subinstr(departamento, "í", "i",.)
 replace departamento=subinstr(departamento, "ó", "o",.)
 replace departamento=subinstr(departamento, "ú", "u",.)
-replace departamento=ustrupper(departamento, es)
+replace departamento=ustrupper(departamento)
 
 replace departamento="ATLANTICO" if departamento=="BARRANQUILLA D.E."
 replace departamento="CHOCO" if departamento=="BUENAVENTURA D.E."
 replace departamento="BOLIVAR" if departamento=="CARTAGENA D.T. Y C."
 replace departamento="MAGDALENA" if departamento=="SANTA MARTA D.T. Y C." 
 
+*Falsos confirmados: 
+gen falso_positivo=1 if codigodivipola==-1
+replace falso_positivo=0 if falso_positivo==. 
+label define fp 1 "F POSITIVO" 0 "V POSITIVO"
+label values falso_positivo fp 
+egen fp=total(falso_positivo)
+local fp=fp
+
+display "*********************************NEW FALSE POSITIVES= `fp'**************************"
+
+preserve 
+keep if falso_positivo==1 
+keep iddecaso falso_positivo 
+save temp.dta, replace
+display "Importing INS_`f'_0`m'_2020.csv"
+import delimited INS_`f'_0`m'_2020.csv, encoding(utf8) clear
+merge m:1 iddecaso using temp.dta 
+keep if _merge==3 
+drop _merge 
+gen fecha="`i'-0`m'-2020"
+order fecha, first
+sort fecha
+gen fecha1 = date(fecha,"DMY")
+format fecha1 %tdNN/DD/CCYY
+order fecha1, after(fecha)
+drop fecha 
+rename fecha1 fecha 
+rename departamentoodistrito departamento
+replace departamento=subinstr(departamento, "á", "a",.)
+replace departamento=subinstr(departamento, "é", "e",.)
+replace departamento=subinstr(departamento, "í", "i",.)
+replace departamento=subinstr(departamento, "ó", "o",.)
+replace departamento=subinstr(departamento, "ú", "u",.)
+replace departamento=ustrupper(departamento)
+keep iddecaso departamento fecha 
+egen false_positive=count(iddecaso), by(departamento fecha)
+collapse fecha false_positive, by(departamento)
+save false_positives_dpto.dta, replace
+collapse (sum) false_positive, by(fecha)
+save false_positives_nal.dta, replace  
+erase temp.dta 
+restore 
+
+
+
 *merge with codigo 
 merge m:1 departamento using codigo_dpto
+*Eliminating false positives: 
+keep if _merge!=1 
 drop _merge 
 order codigo, after(departamento)
 
@@ -116,17 +176,10 @@ capture drop `var'1
 *cap letters 
 local vars "atención sexo tipo estado"
 foreach var in `vars'{
-replace `var'=ustrupper(`var', es)
+replace `var'=ustrupper(`var')
 }
 
-*encoding variables
-local vars "atención sexo tipo estado paísdeprocedencia"
-foreach var in `vars'{
-encode `var', gen(`var'1)
-order `var'1, after(`var')
-drop `var'
-rename `var'1 `var'
-}
+
 
 *tostring codigo 
 tostring codigo, gen(codigostr)
@@ -161,26 +214,39 @@ gen semana=week(fechadiagnostico)
 replace semana=semana-9
 label var semana "semana de diagnostico después de primer caso confirmado"
 
+
+*Dummies atención
+gen casa=1 if atención=="CASA" 
+replace casa=0 if casa==. 
+gen fallecido=1 if atención=="FALLECIDO" 
+replace fallecido=0 if fallecido==. 
+gen hospital=1 if atención=="HOSPITAL" 
+replace hospital=0 if hospital==. 
+gen hospitaluci=1 if atención=="HOSPITAL UCI" 
+replace hospitaluci=0 if hospitaluci==.
+gen recuperado=1 if atención=="RECUPERADO" 
+replace recuperado=0 if recuperado==. 
+gen atencion_na=1 if atención=="N/A"
+replace atencion_na=0 if atencion_na==. 
+
+
 *Variable de activo
-gen activo=1 if atención==1 | atención==3 | atención==4  
-replace activo=0 if atención==2 | atención==5 
+gen activo=1 if casa==1 | hospital==1 | hospitaluci==1  
+replace activo=0 if fallecido==1 | recuperado==1 
 label define activo 1 "ACTIVO" 0 "NO ACTIVO"
 label values activo activo 
 label var activo "Caso sigue activo"
 
-*Dummies atención
-tab atención, gen(atencion)
-rename atencion1 casa 
-rename atencion2 fallecido 
-rename atencion3 hospital 
-rename atencion4 hospitaluci 
-rename atencion5 recuperado
-
 *Dummies tipo 
-tab tipo, gen(tipo)
-rename tipo1 enestudio 
-rename tipo2 importado 
-rename tipo3 relacionado
+gen enestudio=1 if tipo=="EN ESTUDIO" 
+replace enestudio=0 if enestudio==. 
+gen importado=1 if tipo=="IMPORTADO" 
+replace importado=0 if importado==.
+gen relacionado=1 if tipo=="RELACIONADO" 
+replace relacionado=0 if relacionado==. 
+
+
+
 
 /*
 			Generating aggregated variables by departamento
@@ -214,6 +280,11 @@ collapse `vars', by(codigo departamento)
 gen fecha="`i'-0`m'-2020"
 order fecha, first
 sort fecha
+gen fecha1 = date(fecha,"DMY")
+format fecha1 %tdNN/DD/CCYY
+order fecha1, after(fecha)
+drop fecha 
+rename fecha1 fecha
 save "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta", replace
 *export delimited using "$mod\departamentos\data_dpto_`i'_04_2020.csv", replace
 
@@ -229,6 +300,11 @@ collapse tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital prue
 
 gen fecha="`i'-0`m'-2020"
 order fecha, first 
+gen fecha1 = date(fecha,"DMY")
+format fecha1 %tdNN/DD/CCYY
+order fecha1, after(fecha)
+drop fecha 
+rename fecha1 fecha
 save "$mod\nacional\nal_`i'_0`m'_2020.dta", replace
 
 
@@ -248,7 +324,7 @@ save "$mod\nacional\data_nal.dta", replace
 export delimited using "$mod\nacional\data_nal.csv", replace
 
 
-*Department dataset 
+*Department dataset
 use "$mod\departamentos\data_dpto.dta", clear
 append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
