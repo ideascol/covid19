@@ -1069,13 +1069,13 @@ const createMap = async (width, height) => {
             features.push({ ...feature, properties: { values: row, ...feature.properties } })
     })
 
-    // let y = d3.scaleLinear()
-    //     .range([0, 3])
-    //     .domain([0, d3.max(data, d => d[COLS_DMNTOS['tests']])])
+    let y = d3.scaleLinear()
+        .range([0, 3])
+        .domain([0, d3.max(data, d => d[COLS_DMNTOS['tests']])])
 
-    let y = d3.scaleLog()
-        .range([0, 10])
-        .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
+    // let y = d3.scaleLog()
+    //     .range([0, 10])
+    //     .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
 
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
