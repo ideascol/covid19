@@ -1096,6 +1096,8 @@ const createMap = async (width, height) => {
             'translate(' + path.centroid(d) + ')'
         )
         .style('fill', d3.color(palette[8]))
+        .append('title')
+        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
     mapLayer.selectAll('circle.cases')
         .data(features)
@@ -1106,7 +1108,9 @@ const createMap = async (width, height) => {
             'translate(' + path.centroid(d) + ')'
         )
         .style('fill', d3.color(palette[9]))       
-        
+        .append('title')
+        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+
     mapLayer.selectAll('circle.deaths')
         .data(features)
         .enter().append('circle')
@@ -1116,6 +1120,8 @@ const createMap = async (width, height) => {
             'translate(' + path.centroid(d) + ')'
         )
         .style('fill', d3.color(palette[10]))               
+        .append('title')
+        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
     // Add/remove color
     // new Waypoint({
