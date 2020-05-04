@@ -62,42 +62,19 @@ save Camas.dta, replace
 
 import delimited INS_`i'_0`m'_2020.csv, encoding(utf8) clear
 
-*fixing ciudad 
-rename ciudaddeubicación ciudad 
-
-replace ciudad=subinstr(ciudad, "á", "a",.)
-replace ciudad=subinstr(ciudad, "é", "e",.)
-replace ciudad=subinstr(ciudad, "í", "i",.)
-replace ciudad=subinstr(ciudad, "ó", "o",.)
-replace ciudad=subinstr(ciudad, "ú", "u",.)
-replace ciudad=ustrupper(ciudad)
-
-
-*fixing departamento
-rename departamentoodistrito departamento
-
-replace departamento=subinstr(departamento, "á", "a",.)
-replace departamento=subinstr(departamento, "é", "e",.)
-replace departamento=subinstr(departamento, "í", "i",.)
-replace departamento=subinstr(departamento, "ó", "o",.)
-replace departamento=subinstr(departamento, "ú", "u",.)
-replace departamento=ustrupper(departamento)
-
-replace departamento="ATLANTICO" if departamento=="BARRANQUILLA D.E."
-replace departamento="CHOCO" if departamento=="BUENAVENTURA D.E."
-replace departamento="BOLIVAR" if departamento=="CARTAGENA D.T. Y C."
-replace departamento="MAGDALENA" if departamento=="SANTA MARTA D.T. Y C." 
-
 *Falsos confirmados: 
 gen falso_positivo=1 if codigodivipola==-1
 replace falso_positivo=0 if falso_positivo==. 
 label define fp 1 "F POSITIVO" 0 "V POSITIVO"
 label values falso_positivo fp 
 egen fp=total(falso_positivo)
-local fp=fp
+*Previous false positives
+local fp_old=40
+local fp=fp-`fp_old'
 
 display "*********************************NEW FALSE POSITIVES= `fp'**************************"
 
+/*			RUN IF THERE ARE NEW FALSE POSITIVES 
 preserve 
 keep if falso_positivo==1 
 keep iddecaso falso_positivo 
@@ -130,11 +107,38 @@ collapse (sum) false_positive, by(fecha)
 save false_positives_nal.dta, replace  
 erase temp.dta 
 restore 
+*/
 
+*fixing ciudad 
+rename ciudaddeubicación ciudad 
+
+replace ciudad=subinstr(ciudad, "á", "a",.)
+replace ciudad=subinstr(ciudad, "é", "e",.)
+replace ciudad=subinstr(ciudad, "í", "i",.)
+replace ciudad=subinstr(ciudad, "ó", "o",.)
+replace ciudad=subinstr(ciudad, "ú", "u",.)
+replace ciudad=ustrupper(ciudad)
+
+
+*fixing departamento
+rename departamentoodistrito departamento
+
+replace departamento=subinstr(departamento, "á", "a",.)
+replace departamento=subinstr(departamento, "é", "e",.)
+replace departamento=subinstr(departamento, "í", "i",.)
+replace departamento=subinstr(departamento, "ó", "o",.)
+replace departamento=subinstr(departamento, "ú", "u",.)
+replace departamento=ustrupper(departamento)
+
+replace departamento="ATLANTICO" if departamento=="BARRANQUILLA D.E."
+replace departamento="CHOCO" if departamento=="BUENAVENTURA D.E."
+replace departamento="BOLIVAR" if departamento=="CARTAGENA D.T. Y C."
+replace departamento="MAGDALENA" if departamento=="SANTA MARTA D.T. Y C." 
 
 
 *merge with codigo 
 merge m:1 departamento using codigo_dpto
+
 *Eliminating false positives: 
 keep if _merge!=1 
 drop _merge 
