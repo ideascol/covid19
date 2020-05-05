@@ -130,3 +130,7 @@ text {
 .sidenav-fixed {
   border-right: solid 1px #ffe0b2 !important;
 }
+
+#dptos-politico * {
+  font-size: 10px !important;
+}

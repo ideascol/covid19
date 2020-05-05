@@ -17,7 +17,6 @@ async function initialize() {
     vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
     windowWidth = d3.select('#chapter_0').node().getBoundingClientRect().width
-    console.log(windowWidth)
     let height = windowWidth > 500 ? vh * 0.35 > windowWidth * 0.55 * 0.6 ? windowWidth * 0.55 * 0.6 : vh * 0.35 : windowWidth * 0.7
 
     dataInt = await loadDataInt()
@@ -39,6 +38,7 @@ async function initialize() {
 
     createFINDChart(width, height)
     createMap(width, width)
+    createPoliticoDptos(windowWidth > 500 ? width * 0.4 : width, windowWidth > 500 ? width * 0.3 : width)
 }
 
 const loadDataInt = _ => {
@@ -266,7 +266,7 @@ const createNationalChart = async (w, h) => {
         .attr('class', '_offTests')
         .attr('x', d => x(d[COLS_NAL['date']]))
         .attr('y', height)
-        .attr('width', windowWidth>500?5:2)
+        .attr('width', windowWidth > 500 ? 5 : 2)
         .attr('height', 0)
         .style('fill', ORANGE)
         .append('title')
@@ -345,7 +345,7 @@ const createNationalChart = async (w, h) => {
             .attr('class', '_cases')
             .attr('x', d => x(d[COLS_NAL['date']]) + (windowWidth > 500 ? 6 : 2.5))
             .attr('y', height)
-            .attr('width', windowWidth>500?5:2)
+            .attr('width', windowWidth > 500 ? 5 : 2)
             .attr('height', 0)
             .style('fill', palette[0])
             .append('title')
@@ -368,7 +368,7 @@ const createNationalChart = async (w, h) => {
             .attr('class', '_discarded')
             .attr('x', d => x(d[COLS_NAL['date']]) + (windowWidth > 500 ? 6 : 2.5))
             .attr('y', d => y(d[COLS_NAL['cases']]))
-            .attr('width', windowWidth>500?5:2)
+            .attr('width', windowWidth > 500 ? 5 : 2)
             .attr('height', 0)
             .style('fill', palette[1])
             .append('title')
@@ -403,7 +403,7 @@ const createNationalChart = async (w, h) => {
             .attr('fill', palette[7])
             .attr('stroke', 'white')
             .append('title')
-            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`), 
+            .html(d => `${d[COLS_NAL['date']].toLocaleDateString()}: ${d3.format('0,d')(d[COLS_NAL['testsFIND']])} pruebas procesadas reportadas por FIND`),
         1000)
 
 }
@@ -750,21 +750,27 @@ const createIntCharts = async (w, h, dataset, sources) => {
 
     let width = w
     let height = h - margin.top - margin.bottom
+    let data = []
+    if (dataset.data)
+        data = [...dataset.data]
+    else {
+        data = await d3.csv(`data/data_${dataset}.csv`)
+        data = await data.map(d => {
+            d[COLS_POLITIKO['day']] = new Date(d[COLS_POLITIKO['day']])
+            d[COLS_POLITIKO['cases']] = +d[COLS_POLITIKO['cases']]
+            d[COLS_POLITIKO['tests']] = +d[COLS_POLITIKO['tests']]
+            d[COLS_POLITIKO['deaths']] = +d[COLS_POLITIKO['deaths']]
+            return d
+        })
+    }
+
+    dataset = dataset.chart ? dataset.chart : dataset
 
     let svg = d3.select(`#chart_${dataset}`).select('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
-    let data = await d3.csv(`data/data_${dataset}.csv`)
-    data = await data.map(d => {
-        d[COLS_POLITIKO['day']] = new Date(d[COLS_POLITIKO['day']])
-        d[COLS_POLITIKO['cases']] = +d[COLS_POLITIKO['cases']]
-        d[COLS_POLITIKO['tests']] = +d[COLS_POLITIKO['tests']]
-        d[COLS_POLITIKO['deaths']] = +d[COLS_POLITIKO['deaths']]
-        return d
-    })
     data = data.sort((a, b) => a[COLS_POLITIKO['day']] - b[COLS_POLITIKO['day']])
-
     var x = d3.scaleTime().range([margin.left, width])
         .domain(d3.extent(data, d => d[COLS_POLITIKO['day']]))
     var y = d3.scaleLog().range([height, margin.top])
@@ -873,7 +879,7 @@ const createFINDChart = async (w, h) => {
         .attr('class', '_offTests')
         .attr('x', d => x(d[COLS_NAL['date']]))
         .attr('y', d => y(d[COLS_NAL['offTests']]))
-        .attr('width', windowWidth>500?5:2)
+        .attr('width', windowWidth > 500 ? 5 : 2)
         .attr('height', d => height - y(d[COLS_NAL['offTests']]))
         .style('fill', ORANGE)
         .append('title')
@@ -885,7 +891,7 @@ const createFINDChart = async (w, h) => {
         .attr('class', '_find')
         .attr('x', d => x(d[COLS_NAL['date']]) + (windowWidth > 500 ? 6 : 2.5))
         .attr('y', d => y(d[COLS_NAL['testsFIND']]))
-        .attr('width', windowWidth>500?5:2)
+        .attr('width', windowWidth > 500 ? 5 : 2)
         .attr('height', d => height - y(d[COLS_NAL['testsFIND']]))
         .style('fill', palette[7])
         .append('title')
@@ -1056,22 +1062,16 @@ const createMap = async (width, height) => {
 
     let mapData = await d3.json(colombiaGeoJson)
     let features = []
-
     let data = await d3.csv('data/data_dptos_cienmil.csv')
-    if (data.length > 0)
-        await data.map(async row => {
-            let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
-            if (feature && feature.properties)
-                features.push({ ...feature, properties: { values: row, ...feature.properties } })
-        })
-
-    // let y = d3.scaleLinear()
-    //     .range([0, 3])
-    //     .domain([0, d3.max(data, d => d[COLS_DMNTOS['tests']])])
+    await data.map(async row => {
+        let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
+        if (feature && feature.properties)
+            features.push({ ...feature, properties: { values: row, ...feature.properties } })
+    })
 
     let y = d3.scaleLog()
         .range([0, 10])
-        .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])        
+        .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
 
     let svg = d3.select('#map').select('svg')
         .attr('width', width)
@@ -1107,7 +1107,7 @@ const createMap = async (width, height) => {
         .attr('transform', d =>
             'translate(' + path.centroid(d) + ')'
         )
-        .style('fill', d3.color(palette[9]))       
+        .style('fill', d3.color(palette[9]))
         .append('title')
         .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
@@ -1119,36 +1119,54 @@ const createMap = async (width, height) => {
         .attr('transform', d =>
             'translate(' + path.centroid(d) + ')'
         )
-        .style('fill', d3.color(palette[10]))               
+        .style('fill', d3.color(palette[10]))
         .append('title')
         .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+}
 
-    // Add/remove color
-    // new Waypoint({
-    //     element: document.getElementById('text_2'),
-    //     handler: direction => {
-    //         if (direction === DOWN) {
-    //             mapLayer.selectAll('path')
-    //                 .style('fill', d => palette[Math.round(Math.random() * 19)])
+const createPoliticoDptos = async (w, h) => {
+    let data = await d3.csv('data/data_dptos_trend.csv')
 
-    //             mapLayer.selectAll('.text_1')
-    //                 .remove()
-    //         }
-    //         else if (direction === UP) {
-    //             mapLayer.selectAll('path')
-    //                 .style('fill', 'white')
+    let dptos = [...new Set(await data.map(d => `${d[COLS_DPTOS_TREND['code']]}###${d[COLS_DPTOS_TREND['dpto']]}`))]
 
-    //             mapLayer.selectAll('circle')
-    //                 .data(features)
-    //                 .enter().append('circle')
-    //                 .attr('class', 'text_1')
-    //                 .attr('r', 5)
-    //                 .attr('transform', d => `translate(${path.centroid(d)})`)
-    //                 .style('fill', '#047ab3')
-    //         }
-    //     },
-    //     offset: '40%'
-    // })
+    let divAll = d3.select('#dptos-politico')
+
+    await dptos.map(async d => {
+
+        let dpto = d.split('###')[0]
+
+        let div = divAll.append('div')
+            .attr('id', `chart_politico_${dpto}`)
+            .attr('class', 'col m4 s12')
+
+        let span = div.append('div')
+            .attr('class', 'row no-margin left-align')
+            .append('span')
+            .attr('id', `explanation_chart_politico_${dpto}`)
+            .attr('class', 'tooltipped')
+            .attr('data-position', 'left')
+            .attr('data-tooltip', '')
+
+        span.append('i')
+            .attr('class', 'material-icons orange-text darken-3')
+            .html('help')
+
+        span.append('span')
+            .text(d.split('###')[1].length > 38 ? `${d.split('###')[1].slice(0, 38)} (...)` : d.split('###')[1])
+
+        div.append('svg')
+
+        let dataDpto = []
+        await (data.filter(d => d[COLS_DPTOS_TREND['code']] === dpto)).map(d => {
+            d[COLS_POLITIKO['day']] = new Date(d[COLS_DPTOS_TREND['date']])
+            d[COLS_POLITIKO['tests']] = +d[COLS_DPTOS_TREND['tests']]
+            d[COLS_POLITIKO['cases']] = +d[COLS_DPTOS_TREND['cases']]
+            d[COLS_POLITIKO['deaths']] = +d[COLS_DPTOS_TREND['deaths']]
+            dataDpto.push(d)
+        })
+
+        createIntCharts(w, h, { data: dataDpto, chart: `politico_${dpto}` })
+    })
 }
 
 initialize()
