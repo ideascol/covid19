@@ -38,7 +38,10 @@ async function initialize() {
 
     createFINDChart(width, height)
     createMap(width, width)
-    createPoliticoDptos(windowWidth > 500 ? width * 0.4 : width, windowWidth > 500 ? width * 0.3 : width)
+    createPoliticoDptos(
+        windowWidth > 500 ? width * 0.37 : width, 
+        windowWidth > 500 ? width * 0.3 : width
+    )
 }
 
 const loadDataInt = _ => {
@@ -746,7 +749,7 @@ const createSummaryChart2 = async (w, h) => {
 }
 
 const createIntCharts = async (w, h, dataset, sources) => {
-    let margin = { top: 20, right: 5, bottom: 15, left: 60 }
+    let margin = { top: 20, right: 5, bottom: 15, left: 35 }
 
     let width = w
     let height = h - margin.top - margin.bottom
@@ -814,18 +817,18 @@ const createIntCharts = async (w, h, dataset, sources) => {
         .attr('data-tooltip', createExplaination('intExamples'))
 
     svg.append('text')
-        .attr('x', 10)
+        .attr('x', 5)
         .attr('y', 10)
         .html(`<tspan fill="${palette[8]}">Pruebas procesadas</tspan>, <tspan fill="${palette[9]}">casos confirmados</tspan> y <tspan fill="${palette[10]}">muertes</tspan>`)
 
     svg.append('text')
-        .attr('x', 10)
+        .attr('x', 5)
         .attr('y', h + margin.bottom - 2)
         .attr('class', 'sources')
         .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', ') : '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
 
     svg.append('text')
-        .attr('x', 10)
+        .attr('x', 5)
         .attr('y', h + margin.bottom + 10)
         .attr('class', 'sources')
         .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
@@ -1122,6 +1125,10 @@ const createMap = async (width, height) => {
         .style('fill', d3.color(palette[10]))
         .append('title')
         .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#013;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+
+    d3.select('#explanation_chart_map')
+        .attr('data-tooltip', createExplaination('map'))
+
 }
 
 const createPoliticoDptos = async (w, h) => {
@@ -1131,6 +1138,9 @@ const createPoliticoDptos = async (w, h) => {
 
     let divAll = d3.select('#dptos-politico')
 
+    d3.select('#explanation_chart_dptos')
+        .attr('data-tooltip', createExplaination('intExamples'))
+
     await dptos.map(async d => {
 
         let dpto = d.split('###')[0]
@@ -1139,19 +1149,9 @@ const createPoliticoDptos = async (w, h) => {
             .attr('id', `chart_politico_${dpto}`)
             .attr('class', 'col m4 s12')
 
-        let span = div.append('div')
+        div.append('div')
             .attr('class', 'row no-margin left-align')
             .append('span')
-            .attr('id', `explanation_chart_politico_${dpto}`)
-            .attr('class', 'tooltipped')
-            .attr('data-position', 'left')
-            .attr('data-tooltip', '')
-
-        span.append('i')
-            .attr('class', 'material-icons orange-text darken-3')
-            .html('help')
-
-        span.append('span')
             .text(d.split('###')[1].length > 38 ? `${d.split('###')[1].slice(0, 38)} (...)` : d.split('###')[1])
 
         div.append('svg')
@@ -1165,7 +1165,7 @@ const createPoliticoDptos = async (w, h) => {
             dataDpto.push(d)
         })
 
-        createIntCharts(w, h, { data: dataDpto, chart: `politico_${dpto}` })
+        createIntCharts(w, h, { data: dataDpto, chart: `politico_${dpto}` }, [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
     })
 }
 
