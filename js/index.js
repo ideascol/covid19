@@ -1088,44 +1088,44 @@ const createMap = async (width, height) => {
         .style('fill', 'white')
         .style('stroke', 'gray')
 
-    mapLayer.selectAll('circle.tests')
-        .data(features)
-        .enter().append('circle')
-        .attr('class', 'tests')
-        .attr('r', d => y(d.properties.values[COLS_DMNTOS['tests']]))
-        .attr('transform', d =>
-            'translate(' + path.centroid(d) + ')'
-        )
-        .style('fill', d3.color(palette[8]))
-        .append('title')
-        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // mapLayer.selectAll('circle.tests')
+    //     .data(features)
+    //     .enter().append('circle')
+    //     .attr('class', 'tests')
+    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['tests']]))
+    //     .attr('transform', d =>
+    //         'translate(' + path.centroid(d) + ')'
+    //     )
+    //     .style('fill', d3.color(palette[8]))
+    //     .append('title')
+    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    mapLayer.selectAll('circle.cases')
-        .data(features)
-        .enter().append('circle')
-        .attr('class', 'cases')
-        .attr('r', d => y(d.properties.values[COLS_DMNTOS['cases']]))
-        .attr('transform', d =>
-            'translate(' + path.centroid(d) + ')'
-        )
-        .style('fill', d3.color(palette[9]))
-        .append('title')
-        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // mapLayer.selectAll('circle.cases')
+    //     .data(features)
+    //     .enter().append('circle')
+    //     .attr('class', 'cases')
+    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['cases']]))
+    //     .attr('transform', d =>
+    //         'translate(' + path.centroid(d) + ')'
+    //     )
+    //     .style('fill', d3.color(palette[9]))
+    //     .append('title')
+    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    mapLayer.selectAll('circle.deaths')
-        .data(features)
-        .enter().append('circle')
-        .attr('class', 'deaths')
-        .attr('r', d => y(d.properties.values[COLS_DMNTOS['deaths']]))
-        .attr('transform', d =>
-            'translate(' + path.centroid(d) + ')'
-        )
-        .style('fill', d3.color(palette[10]))
-        .append('title')
-        .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // mapLayer.selectAll('circle.deaths')
+    //     .data(features)
+    //     .enter().append('circle')
+    //     .attr('class', 'deaths')
+    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['deaths']]))
+    //     .attr('transform', d =>
+    //         'translate(' + path.centroid(d) + ')'
+    //     )
+    //     .style('fill', d3.color(palette[10]))
+    //     .append('title')
+    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    d3.select('#explanation_chart_map')
-        .attr('data-tooltip', createExplaination('map'))
+    // d3.select('#explanation_chart_map')
+    //     .attr('data-tooltip', createExplaination('map'))
 
 }
 
