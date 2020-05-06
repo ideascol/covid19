@@ -749,7 +749,7 @@ const createSummaryChart2 = async (w, h) => {
 }
 
 const createIntCharts = async (w, h, dataset, sources) => {
-    let margin = { top: 20, right: 5, bottom: 15, left: 35 }
+    let margin = { top: 20, right: 5, bottom: 15, left: 45 }
 
     let width = w
     let height = h - margin.top - margin.bottom
