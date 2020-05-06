@@ -1085,7 +1085,7 @@ const createMap = async (width, height) => {
     console.log(mapData.features)
 
     mapLayer.append('path')
-        .data(mapData.features)
+        .data([mapData.features])
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
         .style('fill', 'white')
@@ -1153,7 +1153,7 @@ const createPoliticoDptos = async (w, h) => {
         div.append('div')
             .attr('class', 'row no-margin left-align')
             .append('span')
-            .text(d.split('###')[1].length > 38 ? `${d.split('###')[1].slice(0, 38)} (...)` : d.split('###')[1])
+            .text(d.split('###')[1].length > 33 ? `${d.split('###')[1].slice(0, 33)} (...)` : d.split('###')[1])
 
         div.append('svg')
 
