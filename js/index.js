@@ -1066,11 +1066,11 @@ const createMap = async (width, height) => {
     let mapData = await d3.json(colombiaGeoJson)
     let features = []
     let data = await d3.csv('data/data_dptos_cienmil.csv')
-    // // await data.map(async row => {
-    // //     let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
-    // //     if (feature && feature.properties)
-    // //         features.push({ ...feature, properties: { values: row, ...feature.properties } })
-    // // })
+    await data.map(async row => {
+        let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
+        if (feature && feature.properties)
+            features.push({ ...feature, properties: { values: row, ...feature.properties } })
+    })
 
     // // let y = d3.scaleLog()
     // //     .range([0, 10])
