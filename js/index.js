@@ -1063,7 +1063,7 @@ const createMap = async (width, height) => {
     let path = d3.geoPath()
         .projection(projection)
 
-    // let mapData = await d3.json(colombiaGeoJson)
+    let mapData = await d3.json(colombiaGeoJson)
     // // let features = []
     // // let data = await d3.csv('data/data_dptos_cienmil.csv')
     // // await data.map(async row => {
