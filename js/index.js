@@ -1060,8 +1060,8 @@ const createMap = async (width, height) => {
         .center([-74, 4.5])
         .translate([width / 2, height / 1.9])
 
-    // let path = d3.geoPath()
-    //     .projection(projection)
+    let path = d3.geoPath()
+        .projection(projection)
 
     // let mapData = await d3.json(colombiaGeoJson)
     // // let features = []
