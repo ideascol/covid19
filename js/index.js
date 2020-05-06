@@ -1083,7 +1083,7 @@ const createMap = async (width, height) => {
     let mapLayer = svg.append('g')
 
     mapLayer.append('path')
-        .attr('d', path({features: features, ...mapData}))
+        .attr('d', path(mapData))
         .attr('vector-effect', 'non-scaling-stroke')
         .style('fill', 'white')
         .style('stroke', 'gray')
