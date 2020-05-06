@@ -1056,7 +1056,8 @@ const createFINDChart = async (w, h) => {
 
 const createMap = async (width, height) => {
     let projection = d3.geoMercator()
-        .scale(windowWidth > 500 ? 1600 : 1000)
+        .scale(1000)
+        // .scale(windowWidth > 500 ? 1600 : 1000)
         .center([-74, 4.5])
         .translate([width / 2, height / 1.9])
 
