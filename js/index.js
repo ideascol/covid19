@@ -1086,10 +1086,10 @@ const createMap = async (width, height) => {
 
     mapLayer.append('path')
         .data(mapData.features)
-        // .attr('d', path)
-        // // .attr('vector-effect', 'non-scaling-stroke')
-        // .style('fill', 'white')
-        // .style('stroke', 'gray')
+        .attr('d', path)
+        .attr('vector-effect', 'non-scaling-stroke')
+        .style('fill', 'white')
+        .style('stroke', 'gray')
 
     // // mapLayer.selectAll('circle.tests')
     // //     .data(features)
