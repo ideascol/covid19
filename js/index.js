@@ -1055,79 +1055,79 @@ const createFINDChart = async (w, h) => {
 }
 
 const createMap = async (width, height) => {
-    let projection = d3.geoEqualEarth()
-        // .scale(windowWidth > 500 ? 1600 : 1000)
-        // .center([-74, 4.5])
-        // .translate([width / 2, height / 1.9])
+    // let projection = d3.geoEqualEarth()
+    //     // .scale(windowWidth > 500 ? 1600 : 1000)
+    //     // .center([-74, 4.5])
+    //     // .translate([width / 2, height / 1.9])
 
-    let path = d3.geoPath()
-        .projection(projection)
+    // let path = d3.geoPath()
+    //     .projection(projection)
 
-    let mapData = await d3.json(colombiaGeoJson)
-    // let features = []
-    // let data = await d3.csv('data/data_dptos_cienmil.csv')
-    // await data.map(async row => {
-    //     let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
-    //     if (feature && feature.properties)
-    //         features.push({ ...feature, properties: { values: row, ...feature.properties } })
-    // })
+    // let mapData = await d3.json(colombiaGeoJson)
+    // // let features = []
+    // // let data = await d3.csv('data/data_dptos_cienmil.csv')
+    // // await data.map(async row => {
+    // //     let feature = mapData.features.find(e => +e.properties.DPTO === +row[COLS_DMNTOS['code']])
+    // //     if (feature && feature.properties)
+    // //         features.push({ ...feature, properties: { values: row, ...feature.properties } })
+    // // })
 
-    // let y = d3.scaleLog()
-    //     .range([0, 10])
-    //     .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
+    // // let y = d3.scaleLog()
+    // //     .range([0, 10])
+    // //     .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
 
-    let svg = d3.select('#map').select('svg')
-        .attr('width', width)
-        .attr('height', height)
+    // let svg = d3.select('#map').select('svg')
+    //     .attr('width', width)
+    //     .attr('height', height)
 
-    let mapLayer = svg.append('g')
+    // let mapLayer = svg.append('g')
 
-    mapLayer.selectAll('path')
-        .data(mapData.features)
-        .enter().append('path')
-        .attr('d', path)
-        // .attr('vector-effect', 'non-scaling-stroke')
-        .style('fill', 'white')
-        .style('stroke', 'gray')
+    // mapLayer.selectAll('path')
+    //     .data(mapData.features)
+    //     .enter().append('path')
+    //     .attr('d', path)
+    //     // .attr('vector-effect', 'non-scaling-stroke')
+    //     .style('fill', 'white')
+    //     .style('stroke', 'gray')
 
-    // mapLayer.selectAll('circle.tests')
-    //     .data(features)
-    //     .enter().append('circle')
-    //     .attr('class', 'tests')
-    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['tests']]))
-    //     .attr('transform', d =>
-    //         'translate(' + path.centroid(d) + ')'
-    //     )
-    //     .style('fill', d3.color(palette[8]))
-    //     .append('title')
-    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // // mapLayer.selectAll('circle.tests')
+    // //     .data(features)
+    // //     .enter().append('circle')
+    // //     .attr('class', 'tests')
+    // //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['tests']]))
+    // //     .attr('transform', d =>
+    // //         'translate(' + path.centroid(d) + ')'
+    // //     )
+    // //     .style('fill', d3.color(palette[8]))
+    // //     .append('title')
+    // //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    // mapLayer.selectAll('circle.cases')
-    //     .data(features)
-    //     .enter().append('circle')
-    //     .attr('class', 'cases')
-    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['cases']]))
-    //     .attr('transform', d =>
-    //         'translate(' + path.centroid(d) + ')'
-    //     )
-    //     .style('fill', d3.color(palette[9]))
-    //     .append('title')
-    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // // mapLayer.selectAll('circle.cases')
+    // //     .data(features)
+    // //     .enter().append('circle')
+    // //     .attr('class', 'cases')
+    // //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['cases']]))
+    // //     .attr('transform', d =>
+    // //         'translate(' + path.centroid(d) + ')'
+    // //     )
+    // //     .style('fill', d3.color(palette[9]))
+    // //     .append('title')
+    // //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    // mapLayer.selectAll('circle.deaths')
-    //     .data(features)
-    //     .enter().append('circle')
-    //     .attr('class', 'deaths')
-    //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['deaths']]))
-    //     .attr('transform', d =>
-    //         'translate(' + path.centroid(d) + ')'
-    //     )
-    //     .style('fill', d3.color(palette[10]))
-    //     .append('title')
-    //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
+    // // mapLayer.selectAll('circle.deaths')
+    // //     .data(features)
+    // //     .enter().append('circle')
+    // //     .attr('class', 'deaths')
+    // //     .attr('r', d => y(d.properties.values[COLS_DMNTOS['deaths']]))
+    // //     .attr('transform', d =>
+    // //         'translate(' + path.centroid(d) + ')'
+    // //     )
+    // //     .style('fill', d3.color(palette[10]))
+    // //     .append('title')
+    // //     .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]} ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados ${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
-    // d3.select('#explanation_chart_map')
-    //     .attr('data-tooltip', createExplaination('map'))
+    // // d3.select('#explanation_chart_map')
+    // //     .attr('data-tooltip', createExplaination('map'))
 
 }
 
