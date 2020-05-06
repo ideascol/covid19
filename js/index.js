@@ -1084,13 +1084,13 @@ const createMap = async (width, height) => {
 
     console.log(mapData.features)
 
-    // mapLayer.selectAll('path')
-    //     .data(mapData.features)
-    //     .enter().append('path')
-    //     .attr('d', path)
-    //     // .attr('vector-effect', 'non-scaling-stroke')
-    //     .style('fill', 'white')
-    //     .style('stroke', 'gray')
+    mapLayer.selectAll('path')
+        .data(mapData.features)
+        .enter().append('path')
+        .attr('d', path)
+        // .attr('vector-effect', 'non-scaling-stroke')
+        .style('fill', 'white')
+        .style('stroke', 'gray')
 
     // // mapLayer.selectAll('circle.tests')
     // //     .data(features)
