@@ -1087,7 +1087,7 @@ const createMap = async (width, height) => {
         .data(mapData.features)
         .enter().append('path')
         .attr('d', path)
-        .attr('vector-effect', 'non-scaling-stroke')
+        // .attr('vector-effect', 'non-scaling-stroke')
         .style('fill', 'white')
         .style('stroke', 'gray')
 
