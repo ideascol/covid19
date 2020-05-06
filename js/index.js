@@ -1085,7 +1085,7 @@ const createMap = async (width, height) => {
     console.log(mapData.features)
 
     mapLayer.append('path')
-        .data([mapData.features])
+        .datum(mapData.features)
         .attr('d', path)
         .attr('vector-effect', 'non-scaling-stroke')
         .style('fill', 'white')
