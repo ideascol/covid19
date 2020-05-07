@@ -45,7 +45,7 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS and Pruebas
-local i=3
+local i=5
 *Local determining the last update of Camas. 
 local j=1
 *Month 
@@ -70,7 +70,7 @@ label values falso_positivo fp
 egen fp=total(falso_positivo)
 *Previous false positives
 local fp_old=40
-local fp=fp-`fp_old'
+local fp=fp
 
 display "*********************************NEW FALSE POSITIVES= `fp'**************************"
 
