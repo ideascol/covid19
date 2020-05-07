@@ -40,7 +40,7 @@
             <h6 class="dayEntryMenu"><a class="orange-text darken-1" href="#inicio"><img style="width:12px"
                         src="./assets/favicon.png"> INICIO</a></h6>
         </li>
-        <h6 class="dayEntryMenu orange-text darken-1">8 mayo 2020:</h6>
+        <h6 class="dayEntryMenu orange-text darken-1">7 mayo 2020:</h6>
         <li><a class="grey-text" href="#abril29_ch1">Análisis por departamentos</a></li>
         <h6 class="dayEntryMenu orange-text darken-1">16 abril 2020:</h6>
         <li><a class="grey-text" href="#chapter_1">Administración de pruebas</a></li>
@@ -79,8 +79,7 @@
                 oportuna y efectiva a la pandemia. El virus tiene un período medio de incubación de alrededor de 5 días,
                 en el cual es
                 muy transmisible <a href="#ref1"><cite>(1)</cite></a>, y en el que cerca del 50% de los infectados
-                pueden ser <a href="#ref1"><cite>(1)</cite></a> y en el que cerca del 50% de los infectados pueden ser
-                <a class="tooltipped" data-position="bottom" data-tooltip="<div class='left-align'>Un caso confirmado asintomático se refiere a una persona infectada con COVID-19 que no desarrolla síntomas. Estas personas son capaces de transmitir el virus a pesar de no mostrar signos de enfermedad.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref5'><cite>(5)</cite></a></b></blockquote>
+                pueden ser <a class="tooltipped" data-position="bottom" data-tooltip="<div class='left-align'>Un caso confirmado asintomático se refiere a una persona infectada con COVID-19 que no desarrolla síntomas. Estas personas son capaces de transmitir el virus a pesar de no mostrar signos de enfermedad.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref5'><cite>(5)</cite></a></b></blockquote>
                     </div>">asintomáticos</a> <a href="#ref2"><cite>(2,3)</cite></a>. Esta combinación de
                 características hace que el Covid19 sea particularmente peligroso porque los portadores de la enfermedad
                 pueden infectar
@@ -97,24 +96,72 @@
                 un peligro potencial.
             </p>
             <p>
-                Este proyecto surge con el propósito de dar una imagen más completa sobre la información de pruebas de
-                Covid-19 en
-                Colombia ya que creemos que además de una vacuna, más pruebas, ventiladores y camas, la <b>información
+                Este proyecto surge con el propósito de dar una imagen más completa sobre la evolución del Covid-19 en
+                Colombia, en
+                particular sobre la información de pruebas ya que creemos que además de una vacuna, más pruebas,
+                ventiladores y camas,
+                la <b>información
                     actualizada y de
                     calidad es nuestra mejor herramienta</b> para afrontar la pandemia. Queremos <b>contar las
-                    historias</b> que se esconden detrás de
-                los datos que podemos encontrar diariamente en los medios con ayuda de <b>visualizaciones
-                    interactivas</b>.
+                    historias</b> que se esconden detrás de los datos que podemos encontrar diariamente en los medios
+                con ayudas <b>visuales</b>.
             </p>
             <p>
-                Algunas gráficas se encuentran en escala logarítmica. Si quieres entender un poco más sobre por qué
-                hacemos
-                esto, <a class="modal-trigger" href="#logScale">mira aquí</a>.
+                A la izquierda encontrarás una barra de navegación. Como todo está cambiando tan rápido decidimos
+                separar nuestro
+                contenido por fecha en que lo realizamos. Todas las gráficas que observarás en todas nuestras entradas
+                se están
+                actualizando constantemente con la <b>última información disponible</b>. Algunas gráficas se encuentran
+                en
+                escala logarítmica.
+                Si quieres entender un poco más sobre por qué hacemos esto, <a class="modal-trigger"
+                    href="#logScale">mira aquí</a>.
             </p>
         </div>
+        <h5 class="orange-text darken-3 center-align">¿Cómo está Colombia?</h5>
+        <p>Esta es la evolución de pruebas procesadas, casos confirmados, y muertes en Colombia. Si lo comparamos con
+            los países
+            que mencionamos en nuestra sección de experiencias internacionales en nuestra entrada del 16 de abril,
+            pareciera que
+            Colombia está logrando contener un crecimiento exponencial de la epidemia. Hay que tener en cuenta que esto
+            es bajo una
+            cuarentena nacional y con cierre de fronteras. Sin embargo, estas medidas son temporales y solo están
+            "comprando tiempo"
+            para fortalecer el sistema médico, y para diseñar políticas que nos permitan retornar a la normalidad sin
+            provocar un
+            crecimiento desbordado de casos positivos y muertes. Ahora bien, Colombia tiene una alta desigualdad
+            regional entonces
+            la pregunta es ¿qué regiones están más preparadas para "retornar a la normalidad"?
+        </p>
+        <div class="row">
+            <div id="chart_col" class="right-chart">
+                <div class="row no-margin"><span id="explanation_chart_col" class="tooltipped  orange-text darken-3"
+                        data-position="left"
+                        data-tooltip="<div class='left-align'>¿Cómo leer esta gráfica?</br>Esta gráfica...</div>"><i
+                            class="material-icons">
+                            help
+                        </i> ¿Cómo leer esta gráfica?</span>
+                </div>
+                <div class="row center-align"><svg></svg>
+                </div>
+            </div>
+        </div>
         <hr>
-        <h4 id="abril29_ch1" class="orange-text darken-3 left-align">8 mayo 2020</h4>
+        <h4 id="abril29_ch1" class="orange-text darken-3 left-align">7 mayo 2020</h4>
         <h5 class="orange-text darken-3 center-align">Análisis por departamentos</h5>
+        <p>
+            Este mapa muestra las diferencias entre departamentos y lo construimos con base a la información oficial que
+            publica
+            diariamente el Instituto Nacional de Salud (INS). En él puedes observar cómo está la relación entre pruebas
+            procesadas,
+            casos confirmados y número de muertos en cada uno de los departamentos a la fecha. Por ejemplo, Amazonas es
+            un caso
+            preocupante porque relativo al tamaño de su población es el que más número de muertos tiene. También Huila
+            es un caso
+            que puede preocupar pues el número de casos confirmados es muy alto relativo al número de pruebas
+            procesadas, lo que
+            puede significar que hay muchas más personas contagiadas que las que se reportan.
+        </p>
         <div id="map" class="row center-align">
             <div class="row no-margin left-align"><span id="explanation_chart_map" class="tooltipped"
                     data-position="left"
@@ -126,17 +173,25 @@
             <svg></svg>
         </div>
         <p>
-            La capacidad del país para detectar el virus es crucial (ahora que se encuentra en casi todos los
-            departamentos del
-            país) para determinar cómo se está extendiendo. Sobre todo ahora que la economía ha venido reactivándose
-            y, con ello, el
-            transporte entre departamentos empezará a crecer. Tener un panorama claro sobre cómo está la situación
-            en cada
-            departamento es clave para formular políticas públicas que prevengan la expansión del virus desde
-            departamentos con
-            muchos contagios hacia aquellos que no, así como para focalizar recursos médicos hacia los más afectados
-            o aumentar la
-            capacidad de detección en lugares con pocas pruebas.
+            Este mapa nos da una idea del panorama actual, pero, ¿cómo es la tendencia de cada uno de estos
+            departamentos en el
+            tiempo? Solo desde el 21 de Abril, el INS empezó a publicar oficialmente el número de pruebas procesadas por
+            departamento, es por esto que en las gráficas a continuación verás la evolución de pruebas, casos
+            confirmados y
+            fallecimientos desde el 22 de abril.
+        </p>
+        <p>
+            En las gráficas de esta sección verás el número de pruebas realizadas, casos confirmados y muertes por
+            departamento.
+            Entre más
+            área sombreada veas entre la línea del número de <span style='color:rgba(249, 208, 87, 0.7)'>pruebas
+                realizadas</span> y la línea de número de <span style='color:#69B3A2'>casos confirmados</span>
+            significa
+            que el número de pruebas que se están realizando es muy superior al número de casos que se están
+            confirmado
+            diariamente. <a class="tooltipped" data-position="bottom"
+                data-tooltip="<div class='row left-align'><p>Nos gustaría ver: </p><p><i class='orange-text darken-3 material-icons tiny'>play_arrow</i> Que la línea de <span style='color:rgba(249, 208, 87, 0.7)'>pruebas realizadas</span> esté muy por encima de la de <span style='color:#69B3A2'>casos confirmados</span> porque eso significa que se están realizando pruebas de manera masiva.</p><p><i class='orange-text darken-3 material-icons tiny'>play_arrow</i> Que la línea de <span style='color:#69B3A2'>casos confirmados</span> esté muy por encima de la de <span style='color:#994636'>muertes</span> pues esto implica que la tasa de mortalidad es baja y puede significar o bien que no sólo están testeando casos severos o que el sistema de salud está respondiendo adecuadamente.</p><p>No nos gustaría ver:</p><p><i class='orange-text darken-3 material-icons tiny'>play_arrow</i> Que todas las líneas estén muy cerca pues esto podría significar que están testeando solo casos severos o que el sistema de salud colapsó.</p></div>">¿Qué
+                nos gustaría ver?</a>
         </p>
         <div class="row no-margin left-align"><span id="explanation_chart_dptos" class="tooltipped" data-position="left"
                 data-tooltip="<div class='left-align'>¿Cómo leer esta gráfica?</br>Esta gráfica...</div>"><i
@@ -146,6 +201,17 @@
         </div>
         <div id="dptos-politico" class="row center-align">
         </div>
+        <p>
+            La capacidad del país para detectar el virus es crucial para determinar cómo se está extendiendo. Sobre todo
+            ahora que
+            la economía ha venido reactivándose y, con ello, el transporte entre departamentos empezará a crecer. Tener
+            un panorama
+            claro sobre cómo está la situación en cada departamento es clave para formular políticas públicas que
+            prevengan la
+            expansión del virus desde departamentos con muchos contagios hacia aquellos que no, así como para focalizar
+            recursos
+            médicos hacia los más afectados o aumentar la capacidad de detección en lugares con pocas pruebas.
+        </p>
         <hr>
         <h4 id="chapter_1" class="orange-text darken-3 left-align">16 abril 2020</h4>
         <h5 class="orange-text darken-3 center-align">¿Cómo estamos en la administración de
@@ -154,6 +220,23 @@
             Colombia?
         </h5>
         <div class="row">
+            <p id="text_0">El 6 de marzo se reportó el primer caso de Coronavirus en Colombia. A pesar de que el
+                crecimiento de <a class="tooltipped" data-position="bottom" data-tooltip="<div class='left-align'>Se refiere a una persona con confirmación de infección de COVID-19 por parte de un laboratorio, independientemente de si
+                        muestra signos clínicos o síntomas.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref7'><cite>(7)</cite></a></b></blockquote>
+                        </div>">casos
+                    confirmados</a> en Colombia <i>parece</i> ser tan rápido como el de otros países que han sido
+                golpeados por la pandemia como Italia o Estados Unidos, no podemos
+                concluir que estamos <a class="tooltipped" data-position="bottom"
+                    data-tooltip="<div class='left-align'>El objetivo ideal en la lucha contra una epidemia o pandemia es detener completamente la propagación. Pero simplemente
+                        ralentizarla es fundamental. Esto reduce el número de casos confirmados en un momento dado, lo que a su vez da tiempo a los médicos, hospitales, policía, escuelas , científicos y fabricantes de vacunas para prepararse y responder, sin
+                        abrumarse.</br></br><img src='https://ichef.bbci.co.uk/news/624/cpsprodpb/73A2/production/_111220692_controlled_uncontrolled_transmission_640-nc.png' width='100%'><blockquote>Fuente: New York Times<b class='right'><a href='#ref8'><cite>(8)</cite></a></b></blockquote></div>">aplanando
+                    la curva</a> si no tenemos un panorama claro de cómo vamos en la aplicación de pruebas. Si bien
+                el gobierno está haciendo esfuerzos
+                para aumentar el número de pruebas realizadas diariamente, aún estamos lejos de un testeo masivo. El
+                número de casos
+                confirmados probablemente es menor al número verdadero de enfermos si no se hacen pruebas
+                suficientes.
+            </p>
             <div id="chapter_1_text">
                 <div id="chapter_1_chart">
                     <div id="chartIntro" class="right-chart">
@@ -161,30 +244,12 @@
                                 class="valign-wrapper tooltipped orange-text darken-3" data-position="left"
                                 data-tooltip=""><i class="material-icons">
                                     help
-                                </i> ¿Cómo
-                                leer esta gráfica?</span>
+                                </i></span>
                         </div>
                         <div class="row"><svg></svg>
                         </div>
                     </div>
                 </div>
-                <p id="text_0">El 6 de marzo se reportó el primer caso de Coronavirus en Colombia. A pesar de que el
-                    crecimiento de <a class="tooltipped" data-position="bottom" data-tooltip="<div class='left-align'>Se refiere a una persona con confirmación de infección de COVID-19 por parte de un laboratorio, independientemente de si
-                        muestra signos clínicos o síntomas.<blockquote>Fuente: Organización Mundial de la Salud (OMS)<b class='right'><a href='#ref7'><cite>(7)</cite></a></b></blockquote>
-                        </div>">casos
-                        confirmados</a> en Colombia <i>parece</i>ser tan rápido como el de otros países que han sido
-                    golpeados por la pandemia como Italia o Estados Unidos, no podemos
-                    concluir que estamos <a class="tooltipped" data-position="bottom"
-                        data-tooltip="<div class='left-align'>El objetivo ideal en la lucha contra una epidemia o pandemia es detener completamente la propagación. Pero simplemente
-                        ralentizarla es fundamental. Esto reduce el número de casos confirmados en un momento dado, lo que a su vez da tiempo a los médicos, hospitales, policía, escuelas , científicos y fabricantes de vacunas para prepararse y responder, sin
-                        abrumarse.</br></br><img src='https://ichef.bbci.co.uk/news/624/cpsprodpb/73A2/production/_111220692_controlled_uncontrolled_transmission_640-nc.png' width='100%'><blockquote>Fuente: New York Times<b class='right'><a href='#ref8'><cite>(8)</cite></a></b></blockquote></div>">aplanando
-                        la curva</a> si no tenemos un panorama claro de cómo vamos en la aplicación de pruebas. Si bien
-                    el gobierno está haciendo esfuerzos
-                    para aumentar el número de pruebas realizadas diariamente, aún estamos lejos de un testeo masivo. El
-                    número de casos
-                    confirmados probablemente es menor al número verdadero de enfermos si no se hacen pruebas
-                    suficientes.
-                </p>
             </div>
         </div>
         <div class="row">
@@ -219,7 +284,7 @@
         </div>
         <div class="row">
             <div>
-                <p>Primero veamos cuántas <b>nuevas pruebas</b>se están procesando al día y si realmente se está
+                <p>Primero veamos cuántas <b>nuevas pruebas</b> se están procesando al día y si realmente se está
                     aumentando su uso. A pesar de las noticias sobre la llegada de nuevos
                     kits de pruebas al país, el procesamiento no está aumentando como esperaríamos. La gráfica de la
                     derecha muestra que ha
@@ -432,33 +497,6 @@
                     </div>
                     <div class="row"><svg></svg>
                     </div>
-                </div>
-            </div>
-        </div>
-        <h5 class="orange-text darken-3 center-align">¿Y Colombia?</h5>
-        <p>Esta es la evolución de pruebas procesadas, casos confirmados, y muertes en Colombia. Si lo comparamos
-            con
-            los países
-            mencionados anteriormente, pareciera que Colombia está logrando contener un crecimiento exponencial de
-            la
-            epidemia. Hay
-            que tener en cuenta que esto es bajo una cuarentena nacional y con cierre de fronteras. Sin embargo,
-            estas
-            medidas son
-            temporales y solo están “comprando tiempo” para fortalecer el sistema médico, y para diseñar políticas
-            que
-            nos permitan
-            retornar a la normalidad sin provocar un crecimiento desbordado de casos positivos y muertes.
-        </p>
-        <div class="row" style="margin:0 5%">
-            <div id="chart_col" class="right-chart">
-                <div class="row no-margin"><span id="explanation_chart_us" class="tooltipped" data-position="left"
-                        data-tooltip="<div class='left-align'>¿Cómo leer esta gráfica?</br>Esta gráfica...</div>"><i
-                            class="material-icons orange-text darken-3">
-                            help
-                        </i></span>
-                </div>
-                <div class="row center-align"><svg></svg>
                 </div>
             </div>
         </div>

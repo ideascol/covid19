@@ -1124,6 +1124,16 @@ const createMap = async (width, height) => {
         .append('title')
         .html(d => `${d.properties.values[COLS_DMNTOS['dpto']]}&#10;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['tests']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} pruebas procesadas&#10;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['cases']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} casos confirmados&#10;${d3.format('0,d')(d.properties.values[COLS_DMNTOS['deaths']] * d.properties.values[COLS_DMNTOS['population']] / 100000)} muertes`)
 
+    svg.append('text')
+        .attr('x', 0)
+        .attr('y', 11)
+        .html(`<tspan style="fill: ${palette[8]}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[9]}">casos confirmados</tspan> y `)  
+
+    svg.append('text')
+        .attr('x', 0)
+        .attr('y', 25)
+        .html(`<tspan style="fill: ${palette[10]}">muertes</tspan> por cada cien mil habitantes`)                
+
     d3.select('#explanation_chart_map')
         .attr('data-tooltip', createExplaination('map'))
 
