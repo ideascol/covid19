@@ -78,12 +78,12 @@ const COLS_POLITIKO = {
 
 // National data columns
 const COLS_DMNTOS = {
-    'dpto':'departamento',
-    'code':'codigo',
-    'population':'poblacion',
-    'tests':'pruebas_c',
-    'cases':'casos_confirmados_c',
-    'deaths':'casos_fallecido_c'
+    'dpto': 'departamento',
+    'code': 'codigo',
+    'population': 'poblacion',
+    'tests': 'pruebas_c',
+    'cases': 'casos_confirmados_c',
+    'deaths': 'casos_fallecido_c'
 }
 
 // National data columns
@@ -119,5 +119,6 @@ const explainations = {
     'million_tests_countries': { 'title': 'Pruebas procesadas por millón de habitantes a partir del día con 200 casos confirmados en Italia, EE.UU, Alemania, Corea del Sur y Colombia', 'text': 'En esta gráfica encuentras el total de pruebas procesadas por millón de habitantes desde el día que cada país confirmó sus primeros 200 casos. Esto lo hacemos para poder hacer comparaciones, porque no es lo mismo hacer mil pruebas en un país pequeño que en un país grande. Este es el mejor gráfico para compararnos en número de pruebas con respecto a los demás países.' },
     'intExamples': { 'title': 'Pruebas procesadas, casos confirmados y muertes', 'text': 'En esta gráfica encuentras el total de pruebas procesadas en amarillo, el total de casos confirmados en verde y el total de muertes en rojo.' },
     'testsNcasesNdiscardedNfindCol': { 'title': 'Pruebas procesadas, casos confirmados, casos descartados y pruebas procesadas reportadas por FIND acumuladas', 'text': 'En esta gráfica ahora también encontrarás, encima de las barras, unos cuadros morados con la información de pruebas totales reportada por FIND (hasta el 19 de Abril fecha en que dejaron de publicar el total de pruebas procesadas). Pusimos este dato para contrastar los datos de cada una de las fuentes. También puedes ver unas fechas relevantes en la evolución de la administración de las pruebas en la parte inferior derecha.' },
-    'testsIncrease': { 'title': 'Pruebas procesadas diarias, diferencia con respecto al día anterior, días con diferencia negativa', 'text': 'En esta gráfica encontrarás las pruebas que se procesan cada día en morado. Los días que tienen un punto rojo en la base son días en los que hubo menos pruebas realizadas que el día anterior. En esos días también puedes ver una barra rosada sobre la morada que indica la diferencia (negativa) entre las pruebas de ese día y las del día anterior. Lo que queremos es que no haya puntos rojos ni barras rosadas, es decir, que cada día haya más pruebas que el día anterior.' }
+    'testsIncrease': { 'title': 'Pruebas procesadas diarias, diferencia con respecto al día anterior, días con diferencia negativa', 'text': 'En esta gráfica encontrarás las pruebas que se procesan cada día en morado. Los días que tienen un punto rojo en la base son días en los que hubo menos pruebas realizadas que el día anterior. En esos días también puedes ver una barra rosada sobre la morada que indica la diferencia (negativa) entre las pruebas de ese día y las del día anterior. Lo que queremos es que no haya puntos rojos ni barras rosadas, es decir, que cada día haya más pruebas que el día anterior.' },
+    'map': { 'title': 'Pruebas procesadas, casos confirmados y muertes por cada cien mil habitantes', 'text': 'En esta gráfica, el tamaño de las burbujas representa las pruebas procesadas, los casos confirmados y las muertes por cada cien mil habitantes para cada departamento. La información reportada es la más actualizada. Si estás viendo la página desde un computador, si pones el cursor sobre las burbujas que están sobre cada departamento, podrás observar el dato real.' }
 }

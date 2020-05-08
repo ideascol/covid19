@@ -41,15 +41,15 @@ header, main, footer {
 
 @media only screen and (max-width : 992px) {
   header, main, footer {
-    padding-left: 0;
+    padding-left: 0 !important;
   }
 
   text {
-    font-size: 2.5vw !important;
+    font-size: 10.5px !important;
   }
 
   .material-tooltip {
-    max-width: 92%;
+    max-width: 92% !important;
   }
 }
 
