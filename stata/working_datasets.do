@@ -1,6 +1,6 @@
 /*************************************
 *Created: 04/23/2020
-*Last Modified: 05/04/2020
+*Last Modified: 05/06/2020
 *Purpose: 		
 	- Create working datasets at national and department level. 
 *Author: Lina Ramirez 
@@ -45,7 +45,7 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS and Pruebas
-local i=5
+local i=6
 *Local determining the last update of Camas. 
 local j=1
 *Month 
