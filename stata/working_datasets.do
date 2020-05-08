@@ -44,8 +44,10 @@ cd ${raw}
 *drop _merge 
 *save poblacion_dptos.dta, replace
 
-*Local determining the day of update INS and Pruebas
-local i=6
+*Local determining the day of update INS 
+local i=7
+*Local determining the day of update Pruebas
+local p=6
 *Local determining the last update of Camas. 
 local j=1
 *Month 
@@ -53,7 +55,7 @@ local m=5
 *Dataset imported to check false positives - May 2. 
 local f=2
 
-import delimited Pruebas_`i'_0`m'_2020.csv, encoding(utf8) clear 
+import delimited Pruebas_`p'_0`m'_2020.csv, encoding(utf8) clear 
 save Pruebas.dta, replace 
 
 import delimited Camas_`j'_0`m'_2020.csv, encoding(utf8) clear 
