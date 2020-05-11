@@ -569,16 +569,18 @@ const createSummaryChart = async (w, h) => {
             let circles = svg.selectAll(`circle.tests.${col}`)
                 .data(dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
 
-            circles.enter().append('circle')
+            let circlesEnt = circles.enter()
+                .append('circle')
                 .attr('class', `tests ${col}`)
-                .merge(circles)
+                
+            circlesEnt.merge(circles)
                 .transition().duration(1000)
                 .attr('cx', d => x(d[COLS_TESTS['day']]))
                 .attr('cy', d => y(d[COLS_TESTS[col]]))
                 .attr('r', 3)
                 .style('fill', palette[i + 2])
-
-            circles.append('title')
+                
+            circlesEnt.append('title')
                 .attr('class', `tests title ${col}`)
                 .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
         })
@@ -678,16 +680,18 @@ const createSummaryChart2 = async (w, h) => {
             let circles = svg.selectAll(`circle.tests.${col}`)
                 .data(dataset.filter(d => d[COLS_TESTS[col]] && d[COLS_TESTS[col]] > 0))
 
-            circles.enter().append('circle')
+            let circlesEnt = circles.enter().append('circle')
                 .attr('class', `tests ${col}`)
-                .merge(circles)
+
+
+            circlesEnt.merge(circles)
                 .transition().duration(1000)
                 .attr('cx', d => x(d[COLS_TESTS['day']]))
                 .attr('cy', d => y(d[COLS_TESTS[col]]))
                 .attr('r', 3)
                 .style('fill', palette[i + 2])
 
-            circles.append('title')
+            circlesEnt.append('title')
                 .attr('class', `tests title ${col}`)
                 .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
         })
