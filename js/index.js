@@ -34,6 +34,7 @@ async function initialize() {
     createIntCharts(width, height, 'germany')
     createIntCharts(width, height, 'italy')
     createIntCharts(width, height, 'us')
+    createIntCharts(width, height, 'sweden')
     createIntCharts(width, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width, height)
