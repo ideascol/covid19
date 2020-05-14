@@ -125,12 +125,12 @@ const createChart = async (w, h) => {
     svg.append('text')
         .attr('x', 10)
         .attr('y', 12)
-        .html(`Casos confirmados por millón de habitantes a partir del día con 200`)
+        .html(`Casos confirmados por millón de habitantes a partir del día con 200 casos`)
 
     svg.append('text')
         .attr('x', 10)
         .attr('y', 32)
-        .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
         .attr('x', 10)
@@ -594,7 +594,7 @@ const createSummaryChart = async (w, h) => {
     svg.append('text')
         .attr('x', 10)
         .attr('y', 30)
-        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
         .attr('x', 10)
@@ -707,7 +707,7 @@ const createSummaryChart2 = async (w, h) => {
         .attr('id', 'chart3Title_b')
         .attr('x', 10)
         .attr('y', 30)
-        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
         .attr('id', 'chart3xAxis')
@@ -742,10 +742,10 @@ const createSummaryChart2 = async (w, h) => {
         .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
 
     d3.select('#chart3Title_a')
-        .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200`)
+        .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos`)
 
     d3.select('#chart3Title_b')
-        .html(`casos confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     d3.select('#explanation_chart3b')
         .attr('data-tooltip', createExplaination('million_tests_countries'))
