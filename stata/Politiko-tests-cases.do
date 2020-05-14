@@ -8,6 +8,19 @@
 	cd "$ruta"
 	
 	import delimited "covid-tests-cases-deaths.csv", clear
+	qui: replace cumulativetests = . if entity == "Italy"
+	
+	preserve
+		qui: keep if entity == "Italy, tests performed"
+		qui: replace entity = "Italy"
+		keep entity date cumulativetests
+		save "$ruta\base_temp.dta", replace
+	restore
+	
+	merge 1:1 entity date using "$ruta\base_temp.dta", update
+	cap erase "$ruta\base_temp.dta"
+	drop _merge
+	
 	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" 
 
 	qui: replace entity = lower(entity)
@@ -33,6 +46,8 @@
 	qui: format date1 %tdNN/DD/CCYY
 	qui: drop date
 	qui: ren date1 Date
+	
+	sort entity Date
 	
 	drop code
 	
