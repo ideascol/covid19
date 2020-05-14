@@ -14,7 +14,8 @@ const COUNTRIES = [
     'EE.UU',
     'Colombia',
     'Alemania',
-    'Corea del Sur'
+    'Corea del Sur',
+    'Suecia'
 ]
 
 const POLITIKO_LABELS = [
@@ -48,6 +49,7 @@ const COLS_INTNAL = {
     'col': 'Colombia',
     'germany': 'Germany',
     'southkorea': 'South Korea',
+    'sweden': 'Sweden',
 }
 
 // Milestones data columns
@@ -66,6 +68,7 @@ const COLS_TESTS = {
     'col': 'Colombia',
     'germany': 'Germany',
     'southkorea': 'South Korea',
+    'sweden': 'Sweden',
 }
 
 // Politiko data columns

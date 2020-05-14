@@ -24,7 +24,6 @@ async function initialize() {
     dataMilestones = await loadDataMilestones()
 
     createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.85, height * 1.06)
-    createNationalChart(d3.select('#chartIntro2').node().getBoundingClientRect().width * 0.85, height * 1.06)
     createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.85, height)
     createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
     createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
