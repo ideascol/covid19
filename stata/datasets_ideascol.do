@@ -44,8 +44,8 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
-*date: may 12th 2020
-local i=22047
+*date: may 13th 2020
+local i=22048
 
 
 

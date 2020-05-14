@@ -45,7 +45,7 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=12
+local i=13
 *Local determining the day of update Pruebas
 local p=10
 *Local determining the last update of Camas. 
