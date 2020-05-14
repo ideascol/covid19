@@ -8,7 +8,20 @@
 	cd "$ruta"
 	
 	import delimited "covid-tests-cases-deaths.csv", clear
-	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" 
+	qui: replace cumulativetests = . if entity == "Italy"
+	
+	preserve
+		qui: keep if entity == "Italy, tests performed"
+		qui: replace entity = "Italy"
+		keep entity date cumulativetests
+		save "$ruta\base_temp.dta", replace
+	restore
+	
+	qui: merge 1:1 entity date using "$ruta\base_temp.dta", update
+	cap erase "$ruta\base_temp.dta"
+	drop _merge
+	
+	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" | entity == "Sweden"
 
 	qui: replace entity = lower(entity)
 	qui: replace entity = "southkorea" if entity == "south korea"
@@ -34,10 +47,12 @@
 	qui: drop date
 	qui: ren date1 Date
 	
+	sort entity Date
+	
 	drop code
 	
 	global vars "tests cases deaths"
-	global countries "germany italy southkorea us"
+	global countries "germany italy southkorea us sweden"
 	
 	qui: drop if tests == . & cases == . & deaths == .
 	
@@ -158,7 +173,7 @@
 
 	
 	foreach x of global countries {
-		*local x = "germany"
+		*local x = "sweden"
 		use "base_inicial.dta", replace
 		keep if entity == "`x'"
 		drop if cases < 200
@@ -215,6 +230,7 @@
 		qui: gen italy = "Italy"
 		qui: gen us = "United States"
 		qui: gen southkorea = "South Korea"
+		qui: gen sweden = "Sweden"
 		qui: gen Colombia = "Colombia"
 		save "headers_cases.dta", replace
 	restore	
@@ -228,7 +244,7 @@
 		cap erase "$ruta/200cases_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea Colombia
+	order Day germany italy us southkorea sweden Colombia
 	tostring _all, replace
 	save "$ruta/200cases_countries", replace
 	cap erase "$ruta/200cases_col.dta"
@@ -293,6 +309,7 @@
 		qui: gen italy = "Italy"
 		qui: gen us = "United States"
 		qui: gen southkorea = "South Korea"
+		qui: gen sweden = "Sweden"
 		qui: gen Colombia = "Colombia"
 		save "headers_tests.dta", replace
 	restore	
@@ -306,7 +323,7 @@
 		cap erase "$ruta/200tests_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea Colombia
+	order Day germany italy us southkorea sweden Colombia
 	tostring _all, replace
 	save "$ruta/200tests_countries", replace
 	cap erase "$ruta/200tests_col.dta"
@@ -333,7 +350,7 @@
 		cap erase "$ruta/million200tests_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea Colombia
+	order Day germany italy us southkorea sweden Colombia
 	
 	tostring Day, replace
 	
