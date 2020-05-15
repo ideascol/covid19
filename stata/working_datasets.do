@@ -1,6 +1,6 @@
 /*************************************
 *Created: 04/23/2020
-*Last Modified: 05/06/2020
+*Last Modified: 05/14/2020
 *Purpose: 		
 	- Create working datasets at national and department level. 
 *Author: Lina Ramirez 
@@ -283,6 +283,7 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
 collapse `vars', by(codigo departamento) 
 
+replace pruebas=. if `i'!=`p'
 gen fecha="`i'-0`m'-2020"
 order fecha, first
 sort fecha
