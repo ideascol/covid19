@@ -9,7 +9,7 @@
 	-"$ideascol\data_dptos_trend.csv"
 
 *READ THIS: 
--Daily line 52 and 57 have to be modified. 
+-Daily line 48 has to be modified. 
 
 *Ideas:
 Department level
@@ -44,8 +44,8 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
-*date: may 13th 2020
-local i=22048
+*date: may 14th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22049
 
 
 
