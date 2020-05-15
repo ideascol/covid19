@@ -1,3 +1,4 @@
+
 /*************************************
 *Created: 04/26/2020
 *Last Modified: 05/14/2020
@@ -46,7 +47,6 @@ cd ${dpto}
 use data_dpto.dta, clear
 *date: may 14th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
 local i=22049
-
 
 
 ** Politiko - map **
