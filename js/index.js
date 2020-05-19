@@ -38,10 +38,7 @@ async function initialize() {
 
     createFINDChart(width, height)
     createMap(width, width)
-    createPoliticoDptos(
-        windowWidth > 500 ? width * 0.37 : width, 
-        windowWidth > 500 ? width * 0.3 : width
-    )
+    createPoliticoDptos(width, height*1.5)
 }
 
 const loadDataInt = _ => {
@@ -1148,37 +1145,119 @@ const createPoliticoDptos = async (w, h) => {
 
     let dptos = [...new Set(await data.map(d => `${d[COLS_DPTOS_TREND['code']]}###${d[COLS_DPTOS_TREND['dpto']]}`))]
 
-    let divAll = d3.select('#dptos-politico')
+    let margin = { top: 20, right: 5, bottom: 15, left: 45 }
 
-    d3.select('#explanation_chart_dptos')
-        .attr('data-tooltip', createExplaination('intExamples'))
+    let width = w
+    let height = h - margin.top - margin.bottom
 
-    await dptos.map(async d => {
+    let svg = d3.select('#dptos-politico').select(`svg`)
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
 
-        let dpto = d.split('###')[0]
+    var x = d3.scaleTime().range([margin.left, width])
+        .domain(d3.extent(data, d => new Date(d[COLS_DPTOS_TREND['date']])))
+    var y = d3.scaleLog().range([height, margin.top])
+        .domain([1, d3.max(data.map(d => d[COLS_POLITIKO['tests']])) + 10])
 
-        let div = divAll.append('div')
-            .attr('id', `chart_politico_${dpto}`)
-            .attr('class', 'col m4 s12')
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
-        div.append('div')
-            .attr('class', 'row no-margin left-align')
-            .append('span')
-            .text(d.split('###')[1].length > 33 ? `${d.split('###')[1].slice(0, 33)} (...)` : d.split('###')[1])
+    svg.append('g')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', 'rotate(320)')
 
-        div.append('svg')
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)      
 
-        let dataDpto = []
-        await (data.filter(d => d[COLS_DPTOS_TREND['code']] === dpto)).map(d => {
-            d[COLS_POLITIKO['day']] = new Date(d[COLS_DPTOS_TREND['date']])
-            d[COLS_POLITIKO['tests']] = +d[COLS_DPTOS_TREND['tests']]
-            d[COLS_POLITIKO['cases']] = +d[COLS_DPTOS_TREND['cases']]
-            d[COLS_POLITIKO['deaths']] = +d[COLS_DPTOS_TREND['deaths']]
-            dataDpto.push(d)
+    const updateLines = async (col, scale) => {
+        y.domain([1, d3.max(data.map(d => d[COLS_DPTOS_TREND[col]])) + 10])
+
+        svg.select('.y-axis')
+            .transition().duration(1000)
+            .call(yAxis)
+
+        await dptos.map(async (dptoInfo, i) => {
+            let dpto = dptoInfo.split('###')[0]
+            let dataDpto = []
+            await (data.filter(d => d[COLS_DPTOS_TREND['code']] === dpto)).map(d => {
+                d[COLS_POLITIKO['day']] = new Date(d[COLS_DPTOS_TREND['date']])
+                d[COLS_POLITIKO['tests']] = +d[COLS_DPTOS_TREND['tests']]
+                d[COLS_POLITIKO['cases']] = +d[COLS_DPTOS_TREND['cases']]
+                d[COLS_POLITIKO['deaths']] = +d[COLS_DPTOS_TREND['deaths']]
+                dataDpto.push(d)
+            })
+
+            let line = d3.line()
+                .x(d => x(d[COLS_POLITIKO['day']]))
+                .y(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+
+            let paths = svg.selectAll(`.line.dpto_${dpto}`)
+                .data([dataDpto])
+
+            paths
+                .enter().append('path')
+                .on('mouseover', function() {
+                    d3.select(this).style('stroke', 'green').style('opacity', '1').style('stroke-width', '2')
+                })
+                .on('mouseout', function () {
+                    d3.select(this).style('stroke', 'grey').style('opacity', '0.3').style('stroke-width', '1')
+                })
+                .attr('class', `line dpto_${dpto}`)
+                .merge(paths)
+                .transition().duration(1000)
+                .attr('d', line)
+                .style('stroke', 'grey')
+                .style('stroke-width', '1')
+                .style('opacity', '0.3')
+
+            // let circles = svg.selectAll(`circle.dpto_${dpto}`)
+            //     .data(dataDpto)
+
+            // let circlesEnt = circles.enter()
+            //     .append('circle')
+            //     .attr('class', `dpto_${dpto}`)
+
+            // circlesEnt.merge(circles)
+            //     .transition().duration(1000)
+            //     .attr('cx', d => x(d[COLS_POLITIKO['day']]))
+            //     .attr('cy', d => y(d[COLS_POLITIKO[col]]))
+            //     .attr('r', 3)
+            //     .style('fill', 'grey')
+
+            // circlesEnt.append('title')
+            //     .attr('class', `title dpto_${dpto}`)
+            //     .html(d => `${dptoInfo.split('###')[1]}, día ${d[COLS_POLITIKO['day']]}: ${d3.format(',d')(d[COLS_POLITIKO[col]])} pruebas procesadas`)
+
         })
+    }
 
-        createIntCharts(w, h, { data: dataDpto, chart: `politico_${dpto}` }, [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
-    })
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', 15)
+        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)    
+
+    updateLines('deaths')
+
+    svg.append('text')
+        .attr('x', 10)
+        .attr('y', h + margin.bottom)
+        .attr('class', 'sources')
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+
+    
+    d3.select(`#explanation_chart_dptos`)
+        .attr('data-tooltip', createExplaination('intExamples'))   
+
+    // svg.selectAll('.y-axis').selectAll('.tick').selectAll('text')
+    //     .each(function () {
+    //         let char = `${d3.select(this).html()}`.substring(0, 1)
+    //         if (char !== '1' && char !== '5')
+    //             d3.select(this).remove()
+    //     })
 }
 
 initialize()
