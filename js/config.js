@@ -18,6 +18,12 @@ const COUNTRIES = [
     'Suecia'
 ]
 
+const VAR_LABELS = {
+    'tests': 'Pruebas procesadas',
+    'confirmed_cases': 'Casos confirmados',
+    'deaths': 'Muertes',
+}
+
 const POLITIKO_LABELS = [
     'pruebas procesadas',
     'casos confirmados',
