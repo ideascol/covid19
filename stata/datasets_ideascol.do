@@ -45,8 +45,8 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
-*date: may 18th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22053
+*date: may 19th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22054
 
 
 ** Politiko - map **
