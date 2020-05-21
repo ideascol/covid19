@@ -49,7 +49,7 @@ const COLS_NAL = {
 
 // International data columns
 const COLS_INTNAL = {
-    'day': 'Day (200 total cases)',
+    'day': 'Day(200 confirmed cases)',
     'italy': 'Italy',
     'us': 'United States',
     'col': 'Colombia',
