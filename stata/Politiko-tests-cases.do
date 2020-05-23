@@ -22,7 +22,7 @@
 	cap erase "$ruta\base_temp.dta"
 	drop _merge
 	*/
-	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" | entity == "Sweden"
+	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" | entity == "Sweden" | entity == "Brazil"
 
 	qui: replace entity = lower(entity)
 	qui: replace entity = "southkorea" if entity == "south korea"
@@ -53,7 +53,7 @@
 	drop code
 	
 	global vars "tests cases deaths"
-	global countries "germany italy southkorea us sweden"
+	global countries "germany italy southkorea us sweden brazil"
 	
 	qui: drop if tests == . & cases == . & deaths == .
 	
@@ -251,6 +251,7 @@
 		qui: gen us = "United States"
 		qui: gen southkorea = "South Korea"
 		qui: gen sweden = "Sweden"
+		qui: gen brazil = "Brazil"
 		qui: gen Colombia = "Colombia"
 		save "headers_cases.dta", replace
 	restore	
@@ -264,7 +265,7 @@
 		cap erase "$ruta/200cases_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	tostring _all, replace
 	save "$ruta/200cases_countries", replace
 	cap erase "$ruta/200cases_col.dta"
@@ -287,7 +288,7 @@
 		cap erase "$ruta/million200cases_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	
 	tostring Day, replace
 	
@@ -324,7 +325,7 @@
 		cap erase "$ruta/200deaths_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	tostring _all, replace
 	save "$ruta/200deaths_countries", replace
 	cap erase "$ruta/200deaths_col.dta"
@@ -347,7 +348,7 @@
 		cap erase "$ruta/million200deaths_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	
 	tostring Day, replace
 	
@@ -384,7 +385,7 @@
 		cap erase "$ruta/200tests_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	tostring _all, replace
 	save "$ruta/200tests_countries", replace
 	cap erase "$ruta/200tests_col.dta"
@@ -407,7 +408,7 @@
 		cap erase "$ruta/million200tests_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea sweden Colombia
+	order Day germany italy us southkorea sweden brazil Colombia
 	
 	tostring Day, replace
 	
