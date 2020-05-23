@@ -26,7 +26,7 @@ gl do "C:\Users/linar\Desktop\GitHub\covid19\stata"
 
 gl data "$path\data"
 gl raw "$data\ins_raw"
-gl mod "data\ins_mod"
+gl mod "$data\ins_mod"
 gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
 
 cd ${raw}
@@ -46,9 +46,9 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=21
+local i=22
 *Local determining the day of update Pruebas
-local p=21
+local p=22
 *Local determining the last update of Camas. 
 local j=15
 *Month 
@@ -65,52 +65,6 @@ save "$raw\beds\Camas.dta", replace
 
 import delimited "$raw\cases\INS_`i'_0`m'_2020.csv", encoding(utf8) clear
 
-*Falsos confirmados: 
-gen falso_positivo=1 if codigodivipola==-1
-replace falso_positivo=0 if falso_positivo==. 
-label define fp 1 "F POSITIVO" 0 "V POSITIVO"
-label values falso_positivo fp 
-egen fp=total(falso_positivo)
-*Previous false positives
-local fp_old=40
-local fp=fp
-
-display "*********************************NEW FALSE POSITIVES= `fp'**************************"
-
-/*			RUN IF THERE ARE NEW FALSE POSITIVES 
-preserve 
-keep if falso_positivo==1 
-keep iddecaso falso_positivo 
-save temp.dta, replace
-display "Importing INS_`f'_0`m'_2020.csv"
-import delimited INS_`f'_0`m'_2020.csv, encoding(utf8) clear
-merge m:1 iddecaso using temp.dta 
-keep if _merge==3 
-drop _merge 
-gen fecha="`i'-0`m'-2020"
-order fecha, first
-sort fecha
-gen fecha1 = date(fecha,"DMY")
-format fecha1 %tdNN/DD/CCYY
-order fecha1, after(fecha)
-drop fecha 
-rename fecha1 fecha 
-rename departamentoodistrito departamento
-replace departamento=subinstr(departamento, "á", "a",.)
-replace departamento=subinstr(departamento, "é", "e",.)
-replace departamento=subinstr(departamento, "í", "i",.)
-replace departamento=subinstr(departamento, "ó", "o",.)
-replace departamento=subinstr(departamento, "ú", "u",.)
-replace departamento=ustrupper(departamento)
-keep iddecaso departamento fecha 
-egen false_positive=count(iddecaso), by(departamento fecha)
-collapse fecha false_positive, by(departamento)
-save false_positives_dpto.dta, replace
-collapse (sum) false_positive, by(fecha)
-save false_positives_nal.dta, replace  
-erase temp.dta 
-restore 
-*/
 
 *fixing ciudad 
 rename ciudaddeubicación ciudad 
@@ -148,19 +102,18 @@ drop _merge
 order codigo, after(departamento)
 
 *merge with poblacion
-merge m:1 codigo using poblacion_dptos
+merge m:1 codigo using poblacion_dptos, nogen
 order poblacion, after(codigo) 
-drop _merge 
+
 
 *merge with pruebas 
-merge m:1 codigo using "$raw\tests\Pruebas.dta"
-drop _merge 
+merge m:1 codigo using "$raw\tests\Pruebas.dta", nogen
+
 
 erase"$raw\tests\Pruebas.dta"
 
 *merge with camas 
-merge m:1 codigo using "$raw\beds\Camas.dta"
-drop _merge 
+merge m:1 codigo using "$raw\beds\Camas.dta", nogen
 
 erase "$raw\beds\Camas.dta"
 
