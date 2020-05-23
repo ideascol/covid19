@@ -23,7 +23,7 @@ async function initialize() {
     dataCol = await loadDataCol()
     dataMilestones = await loadDataMilestones()
 
-    createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.85, height * 1.06)
+    createChart(d3.select('#map').node().getBoundingClientRect().width * 0.85, height * 1.06)
     createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.85, height)
     createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
     createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06, 'tests')
@@ -1065,7 +1065,7 @@ const createMap = async (width, height) => {
     })
 
     let y = d3.scaleLog()
-        .range([0, 5])
+        .range([0, 10])
         .domain([1, d3.max(data, d => d[COLS_DMNTOS['tests']])])
 
     let svg = d3.select('#map').select('svg')
