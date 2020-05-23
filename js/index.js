@@ -1162,7 +1162,7 @@ const createPoliticoDptos = async (w, h) => {
     svg.append('g')
         .attr('class', 'y-axis')
         .attr('transform', `translate(${margin.left},0)`)
-        .call(yAxis)      
+        .call(yAxis)
 
     const updateLines = async (col, scale) => {
         y.domain([1, d3.max(data.map(d => d[COLS_DPTOS_TREND[col]])) + 10])
@@ -1184,14 +1184,14 @@ const createPoliticoDptos = async (w, h) => {
 
             let line = d3.line()
                 .x(d => x(d[COLS_POLITIKO['day']]))
-                .y(d => !d[COLS_POLITIKO[col]] || d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+                .y(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
 
             let paths = svg.selectAll(`.line.dpto_${dpto}`)
                 .data([dataDpto])
 
             paths
                 .enter().append('path')
-                .on('mouseover', function() {
+                .on('mouseover', function () {
                     d3.select(this).style('stroke', 'green').style('opacity', '1').style('stroke-width', '2')
                 })
                 .on('mouseout', function () {
@@ -1229,7 +1229,7 @@ const createPoliticoDptos = async (w, h) => {
     svg.append('text')
         .attr('x', 10)
         .attr('y', 15)
-        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)    
+        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
 
     updateLines('deaths')
 
@@ -1239,9 +1239,9 @@ const createPoliticoDptos = async (w, h) => {
         .attr('class', 'sources')
         .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
 
-    
+
     d3.select(`#explanation_chart_dptos`)
-        .attr('data-tooltip', createExplaination('intExamples'))   
+        .attr('data-tooltip', createExplaination('intExamples'))
 
     // svg.selectAll('.y-axis').selectAll('.tick').selectAll('text')
     //     .each(function () {
