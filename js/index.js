@@ -1193,7 +1193,7 @@ const createPoliticoDptos = async (w, h) => {
 
             let line = d3.line()
                 .x(d => x(d[COLS_POLITIKO['day']]))
-                .y(d => d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
+                .y(d => !d[COLS_POLITIKO[col]] || d[COLS_POLITIKO[col]] === 0 ? 1 : y(d[COLS_POLITIKO[col]]))
 
             let paths = svg.selectAll(`.line.dpto_${dpto}`)
                 .data([dataDpto])
