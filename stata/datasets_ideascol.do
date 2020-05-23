@@ -34,7 +34,7 @@ gl mod "$data\ins_mod"
 gl dpto "$mod\departamentos"
 gl nal "$mod\nacional"
 gl ideascol "$git\data"
-
+gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
 
 
 /*
@@ -42,11 +42,11 @@ gl ideascol "$git\data"
 */
 
 
-cd ${dpto}
+cd ${migpat}
 
-use data_dpto.dta, clear
-*date: may 21th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22056
+use covid_dptos.dta, clear
+*date: may 22th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22057
 
 
 ** Politiko - map **
@@ -90,24 +90,3 @@ export delimited using "$ideascol\data_dptos_trend.csv", replace
 
 restore 
 
-
-/*
-* Health system capacity *
-preserve
-keep fecha departamento codigo poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores casos_activo casos_casa  casos_hospital casos_hospitaluci
-
-sort departamento fecha
-
-restore
-*/
-
-
-
-/*
-
-sort departamento fecha
-gen nuevaspruebas=pruebas[_n]-pruebas[_n-1] if departamento[_n]==departamento[_n-1]
-gen nuevoscasos=casos_confirmados[_n]-casos_confirmados[_n-1] if departamento[_n]==departamento[_n-1]
-gen casos_pruebas=casos_confirmados/pruebas if departamento[_n]==departamento[_n-1]
-
-*/
