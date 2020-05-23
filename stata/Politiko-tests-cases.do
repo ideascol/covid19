@@ -373,7 +373,22 @@
 
 	export delimited "$ideas\data_million_deaths_countries.csv", delimiter(",") replace novarnames
 	
-	* Tests	
+	
+	* Tests
+	
+	preserve
+		clear
+		qui: set obs 1
+		qui: gen Day = "Day(200 confirmed cases)"
+		qui: gen germany = "Germany"
+		qui: gen italy = "Italy"
+		qui: gen us = "United States"
+		qui: gen southkorea = "South Korea"
+		qui: gen sweden = "Sweden"
+		qui: gen Colombia = "Colombia"
+		save "headers_tests.dta", replace
+	restore	
+	
 	
 	use "$ruta/200tests_col.dta", replace
 	destring Colombia, replace
@@ -388,7 +403,7 @@
 	save "$ruta/200tests_countries", replace
 	cap erase "$ruta/200tests_col.dta"
 	
-	use "headers_cases.dta", replace
+	use "headers_tests.dta", replace
 	append using "$ruta/200tests_countries"
 	
 	foreach x of var _all {
@@ -397,6 +412,9 @@
 
 	export delimited "$ideas\data_200day_tests_countries.csv", delimiter(",") replace novarnames
 
+	
+	
+	
 	
 	
 	use "$ruta/million200tests_col.dta", replace
@@ -424,7 +442,7 @@
 	save "$ruta/million200tests_countries", replace
 	cap erase "$ruta/million200tests_col.dta"
 	
-	use "headers_cases.dta", replace
+	use "headers_tests.dta", replace
 	append using "$ruta/million200tests_countries"
 	
 	foreach x of var _all {
@@ -435,6 +453,7 @@
 
 	cap erase million200tests_countries.dta
 	cap erase million200cases_countries.dta
+	cap erase headers_tests.dta
 	cap erase headers_pol.dta
 	cap erase headers_cases.dta
 	cap erase data_col.dta
@@ -442,5 +461,5 @@
 	cap erase 200cases_countries.dta
 	cap erase base_inicial.dta
 	cap erase million200deaths_countries.dta
-	cap erase 200deaths_countries
+	cap erase 200deaths_countries.dta
 	
