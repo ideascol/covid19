@@ -1,6 +1,7 @@
+
 /*************************************
 *Created: 04/26/2020
-*Last Modified: 04/29/2020
+*Last Modified: 05/14/2020
 *Purpose: 		
 	- Create datasets ready to use on the website 
 *Author: Lina Ramirez 
@@ -9,7 +10,7 @@
 	-"$ideascol\data_dptos_trend.csv"
 
 *READ THIS: 
--Daily line 52 and 57 have to be modified. 
+-Daily line 48 has to be modified. 
 
 *Ideas:
 Department level
@@ -44,9 +45,8 @@ gl ideascol "$git\data"
 cd ${dpto}
 
 use data_dpto.dta, clear
-*date: may 12th 2020
-local i=22047
-
+*date: may 21th 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22056
 
 
 ** Politiko - map **
@@ -83,7 +83,6 @@ restore
 
 preserve
 keep fecha departamento codigo pruebas casos_confirmados casos_fallecido 
-replace pruebas=0 if pruebas==. 
 tostring codigo, replace 
 replace codigo="0"+codigo if codigo=="5" | codigo=="8"
 sort fecha codigo 

@@ -8,6 +8,7 @@
 	cd "$ruta"
 	
 	import delimited "covid-tests-cases-deaths.csv", clear
+	/*
 	qui: replace cumulativetests = . if entity == "Italy"
 	
 	preserve
@@ -20,7 +21,7 @@
 	qui: merge 1:1 entity date using "$ruta\base_temp.dta", update
 	cap erase "$ruta\base_temp.dta"
 	drop _merge
-	
+	*/
 	qui: keep if entity == "Germany" | entity == "Italy" | entity == "South Korea" | entity == "United States" | entity == "Sweden"
 
 	qui: replace entity = lower(entity)
@@ -138,7 +139,6 @@
 		restore
 	}
 	
-	cap erase "$ruta/200deaths_col.dta"
 	preserve
 		import delimited "population.csv", delimiter(",") varn(1) clear charset("UTF-8")
 		qui: keep if entity == "Colombia"
@@ -150,19 +150,28 @@
 	qui: destring _all, replace
 	qui: gen pob = $col_pob
 	
-	qui: replace cases = cases/pob*1000000
-	qui: replace tests = tests/pob*1000000
+	qui: replace cases  = cases/pob*1000000
+	qui: replace tests  = tests/pob*1000000
+	qui: replace deaths = deaths/pob*1000000
 
-	format cases %10.2f
-	format tests %10.2f
+	format cases  %10.2f
+	format tests  %10.2f
+	format deaths %10.2f
 	
-	qui: drop deaths pob
+	qui: drop pob
 	
 	preserve
 		qui: keep cases
 		qui: gen Day = _n
 		qui: ren cases Colombia
 		save "million200cases_col.dta", replace
+	restore
+	
+	preserve
+		qui: keep deaths
+		qui: gen Day = _n
+		qui: ren deaths Colombia
+		save "million200deaths_col.dta", replace
 	restore
 	
 	qui: keep tests
@@ -188,8 +197,6 @@
 			restore
 		}
 		
-		cap erase "$ruta/200deaths_`x'.dta"
-		
 		preserve
 			import delimited "population.csv", delimiter(",") varn(1) clear charset("UTF-8")
 			qui: keep if entity == "`x'"
@@ -201,13 +208,16 @@
 		qui: destring _all, replace
 		qui: gen pob = $col_pob
 		
-		qui: replace cases = cases/pob*1000000
-		qui: replace tests = tests/pob*1000000
-
-		format cases %10.2f
-		format tests %10.2f
+		qui: replace cases  = cases/pob*1000000
+		qui: replace tests  = tests/pob*1000000
+		qui: replace deaths = deaths/pob*1000000
 		
-		qui: drop deaths pob
+
+		format cases  %10.2f
+		format tests  %10.2f
+		format deaths %10.2f
+		
+		qui: drop pob
 	
 		preserve
 			qui: keep cases
@@ -216,11 +226,21 @@
 			save "million200cases_`x'.dta", replace
 		restore
 		
+		preserve
+			qui: keep deaths
+			qui: gen Day = _n
+			qui: ren deaths `x'
+			save "million200deaths_`x'.dta", replace
+		restore
+		
 		qui: keep tests
 		qui: gen Day = _n
 		qui: ren tests `x'
 		save "million200tests_`x'.dta", replace
 	}
+
+	
+	* Cases
 	
 	preserve
 		clear
@@ -259,10 +279,6 @@
 	export delimited "$ideas\data_200day_confirmed_cases_countries.csv", delimiter(",") replace novarnames
 
 	
-	
-	
-	
-	
 	use "$ruta/million200cases_col.dta", replace
 	destring Colombia, replace
 	foreach x of global countries {
@@ -271,7 +287,7 @@
 		cap erase "$ruta/million200cases_`x'.dta"
 	}
 	
-	order Day germany italy us southkorea Colombia
+	order Day germany italy us southkorea sweden Colombia
 	
 	tostring Day, replace
 	
@@ -298,8 +314,83 @@
 	export delimited "$ideas\data_million_confirmed_cases_countries.csv", delimiter(",") replace novarnames
 
 	
+	* Deaths
+
+	use "$ruta/200deaths_col.dta", replace
+	destring Colombia, replace
+	foreach x of global countries {
+		merge 1:1 Day using "$ruta/200deaths_`x'.dta"
+		qui: drop _merge
+		cap erase "$ruta/200deaths_`x'.dta"
+	}
+	
+	order Day germany italy us southkorea sweden Colombia
+	tostring _all, replace
+	save "$ruta/200deaths_countries", replace
+	cap erase "$ruta/200deaths_col.dta"
+	
+	use "headers_cases.dta", replace
+	append using "$ruta/200deaths_countries"
+	
+	foreach x of var _all {
+		replace `x' = "" if `x' == "."
+	}
+
+	*export delimited "$ideas\data_200day_deaths_countries.csv", delimiter(",") replace novarnames
+
+	
+	use "$ruta/million200deaths_col.dta", replace
+	destring Colombia, replace
+	foreach x of global countries {
+		merge 1:1 Day using "$ruta/million200deaths_`x'.dta"
+		qui: drop _merge
+		cap erase "$ruta/million200deaths_`x'.dta"
+	}
+	
+	order Day germany italy us southkorea sweden Colombia
+	
+	tostring Day, replace
+	
+	qui: generate text  = string(Colombia, "%10.2f")
+	qui: drop Colombia 
+	ren text Colombia
+	
+	foreach x of global countries {
+		qui: generate text  = string(`x', "%10.2f")
+		qui: drop `x' 
+		ren text `x'
+	}
+	
+	save "$ruta/million200deaths_countries", replace
+	cap erase "$ruta/million200deaths_col.dta"
+	
+	use "headers_cases.dta", replace
+	append using "$ruta/million200deaths_countries"
+	
+	foreach x of var _all {
+		replace `x' = "" if `x' == "."
+	}
+
+	export delimited "$ideas\data_million_deaths_countries.csv", delimiter(",") replace novarnames
+
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	* Tests
 	
 	preserve
 		clear

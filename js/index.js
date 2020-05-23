@@ -26,7 +26,11 @@ async function initialize() {
     createChart(d3.select('#chartIntro').node().getBoundingClientRect().width * 0.85, height * 1.06)
     createIncreaseChart(d3.select('#chartIncrease').node().getBoundingClientRect().width * 0.85, height)
     createSummaryChart(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
-    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06)
+    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06, 'tests')
+
+    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06, 'confirmed_cases')
+
+    createSummaryChart2(d3.select('#summaryChart').node().getBoundingClientRect().width * 0.85, height * 1.06, 'deaths')
 
     let width = d3.select('#chart_italy').node().getBoundingClientRect().width * 0.85
     createIntCharts(width, height, 'southkorea')
@@ -621,17 +625,17 @@ const createSummaryChart = async (w, h) => {
         .attr('data-tooltip', createExplaination('200day_tests_countries'))
 }
 
-const createSummaryChart2 = async (w, h) => {
+const createSummaryChart2 = async (w, h, dataset) => {
     let margin = { top: 40, right: 5, bottom: 10, left: 80 }
 
     let width = w
     let height = h - margin.top - margin.bottom
 
-    let svg = d3.select('#summaryChartb').select('svg')
+    let svg = d3.select(`#${dataset}_countries`).select('svg')
         .attr('width', w + margin.left + margin.right)
         .attr('height', h + margin.top + margin.bottom)
 
-    let dataRate = await d3.csv('data/data_million_tests_countries.csv')
+    let dataRate = await d3.csv(`data/data_million_${dataset}_countries.csv`)
     dataRate = await dataRate.map(d => {
         d[COLS_TESTS['day']] = +d[COLS_TESTS['day']]
         d[COLS_TESTS['italy']] = +d[COLS_TESTS['italy']]
@@ -652,7 +656,7 @@ const createSummaryChart2 = async (w, h) => {
     let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
 
     const updateLines = dataset => {
-        y.domain([200, d3.max(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
+        y.domain([d3.min(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))), d3.max(dataset.map(d => Math.max(d[COLS_TESTS['italy']], d[COLS_TESTS['germany']], d[COLS_TESTS['southkorea']], d[COLS_TESTS['us']], d[COLS_TESTS['col']]))) + 10])
 
         svg.select('.y-axis')
             .transition().duration(1000)
@@ -680,7 +684,6 @@ const createSummaryChart2 = async (w, h) => {
             let circlesEnt = circles.enter().append('circle')
                 .attr('class', `tests ${col}`)
 
-
             circlesEnt.merge(circles)
                 .transition().duration(1000)
                 .attr('cx', d => x(d[COLS_TESTS['day']]))
@@ -690,7 +693,7 @@ const createSummaryChart2 = async (w, h) => {
 
             circlesEnt.append('title')
                 .attr('class', `tests title ${col}`)
-                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
+                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} ${VAR_LABELS[dataset] ? VAR_LABELS[dataset].toLowerCase(): ''}`)
         })
     }
 
@@ -698,13 +701,13 @@ const createSummaryChart2 = async (w, h) => {
         .attr('id', 'chart3Title_a')
         .attr('x', 10)
         .attr('y', 15)
-        .html(`Pruebas procesadas a partir del día con 200 casos confirmados en `)
+        .html(`${VAR_LABELS[dataset]} <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos`)
 
     svg.append('text')
         .attr('id', 'chart3Title_b')
         .attr('x', 10)
         .attr('y', 30)
-        .html(`<tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
+        .html(`confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
 
     svg.append('text')
         .attr('id', 'chart3xAxis')
@@ -719,7 +722,7 @@ const createSummaryChart2 = async (w, h) => {
         .attr('x', 10)
         .attr('y', h + margin.bottom)
         .attr('class', 'sources')
-        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>`)
+        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
 
     svg.append('g')
         .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
@@ -730,22 +733,10 @@ const createSummaryChart2 = async (w, h) => {
         .attr('transform', `translate(${margin.left},0)`)
         .call(yAxis)
 
-    d3.select('#explanation_chart3')
-        .attr('data-tooltip', createExplaination('200day_tests_countries'))
+    d3.select(`explanation_chart_${dataset}`)
+        .attr('data-tooltip', createExplaination('million_tests_countries'))
 
     updateLines(dataRate)
-
-    d3.select('#sources_3')
-        .html(`Fuentes: <a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>, <a href="https://www.ins.gov.co/Paginas/Inicio.aspx" target="_blank">INS</a>, <a href="https://www.bancomundial.org/" target="_blank">Banco Mundial</a>, <a href="https://www.dane.gov.co/index.php/en/" target="_blank">Dane</a>`)
-
-    d3.select('#chart3Title_a')
-        .html(`Pruebas procesadas <tspan font-weight="bold">por millón de habitantes</tspan> a partir del día con 200 casos`)
-
-    d3.select('#chart3Title_b')
-        .html(`confirmados en <tspan style="fill: ${palette[2]}">Italia</tspan>, <tspan style="fill: ${palette[3]}">EE.UU</tspan>, <tspan style="fill: ${palette[5]}">Alemania</tspan>, <tspan style="fill: ${palette[6]}">Corea del Sur</tspan>, <tspan style="fill: ${palette[7]}">Suecia</tspan> y <tspan style="fill: ${palette[4]}">Colombia</tspan>`)
-
-    d3.select('#explanation_chart3b')
-        .attr('data-tooltip', createExplaination('million_tests_countries'))
 
 }
 

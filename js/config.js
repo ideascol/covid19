@@ -18,6 +18,12 @@ const COUNTRIES = [
     'Suecia'
 ]
 
+const VAR_LABELS = {
+    'tests': 'Pruebas procesadas',
+    'confirmed_cases': 'Casos confirmados',
+    'deaths': 'Muertes',
+}
+
 const POLITIKO_LABELS = [
     'pruebas procesadas',
     'casos confirmados',
@@ -43,7 +49,7 @@ const COLS_NAL = {
 
 // International data columns
 const COLS_INTNAL = {
-    'day': 'Day (200 total cases)',
+    'day': 'Day(200 confirmed cases)',
     'italy': 'Italy',
     'us': 'United States',
     'col': 'Colombia',
