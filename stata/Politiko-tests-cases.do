@@ -245,7 +245,7 @@
 	preserve
 		clear
 		qui: set obs 1
-		qui: gen Day = "Day (200 confirmed cases)"
+		qui: gen Day = "Day(200 confirmed cases)"
 		qui: gen germany = "Germany"
 		qui: gen italy = "Italy"
 		qui: gen us = "United States"
@@ -376,20 +376,6 @@
 	
 	* Tests
 	
-	preserve
-		clear
-		qui: set obs 1
-		qui: gen Day = "Day(200 confirmed cases)"
-		qui: gen germany = "Germany"
-		qui: gen italy = "Italy"
-		qui: gen us = "United States"
-		qui: gen southkorea = "South Korea"
-		qui: gen sweden = "Sweden"
-		qui: gen Colombia = "Colombia"
-		save "headers_tests.dta", replace
-	restore	
-	
-	
 	use "$ruta/200tests_col.dta", replace
 	destring Colombia, replace
 	foreach x of global countries {
@@ -403,7 +389,7 @@
 	save "$ruta/200tests_countries", replace
 	cap erase "$ruta/200tests_col.dta"
 	
-	use "headers_tests.dta", replace
+	use "headers_cases.dta", replace
 	append using "$ruta/200tests_countries"
 	
 	foreach x of var _all {
@@ -411,10 +397,6 @@
 	}
 
 	export delimited "$ideas\data_200day_tests_countries.csv", delimiter(",") replace novarnames
-
-	
-	
-	
 	
 	
 	use "$ruta/million200tests_col.dta", replace
@@ -442,7 +424,7 @@
 	save "$ruta/million200tests_countries", replace
 	cap erase "$ruta/million200tests_col.dta"
 	
-	use "headers_tests.dta", replace
+	use "headers_cases.dta", replace
 	append using "$ruta/million200tests_countries"
 	
 	foreach x of var _all {
