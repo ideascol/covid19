@@ -26,7 +26,8 @@ gl do "C:\Users/linar\Desktop\GitHub\covid19\stata"
 
 gl data "$path\data"
 gl raw "$data\ins_raw"
-gl mod "$data\ins_mod"
+gl mod "data\ins_mod"
+gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
 
 cd ${raw}
 
@@ -45,9 +46,9 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=20
+local i=21
 *Local determining the day of update Pruebas
-local p=20
+local p=21
 *Local determining the last update of Camas. 
 local j=15
 *Month 
@@ -252,6 +253,20 @@ gen relacionado=1 if tipo=="RELACIONADO"
 replace relacionado=0 if relacionado==. 
 
 
+*Gender 
+gen mujeres=1 if sexo=="F" 
+gen hombres=1 if sexo=="M"
+
+*Age
+capture destring edad, replace 
+gen edad_0_19=1 if edad<=19 
+gen edad_20_39=1 if edad>19 & edad<=39 
+gen edad_40_59=1 if edad>39 & edad<=59
+gen edad_60_79=1 if edad>59 & edad<=79  
+gen edad_80_mas=1 if edad>79 & edad<=120
+
+
+
 
 
 /*
@@ -261,7 +276,7 @@ replace relacionado=0 if relacionado==.
 *Casos por departamento
 egen casos_confirmados=count(iddecaso), by(departamento)
 
-local vars "activo casa fallecido hospital hospitaluci recuperado enestudio importado relacionado"
+local vars "activo casa fallecido hospital hospitaluci recuperado enestudio importado relacionado mujeres hombres edad_0_19 edad_20_39 edad_40_59 edad_60_79 edad_80_mas"
 foreach var in `vars'{
 egen casos_`var'=sum(`var'), by(departamento)
 }
@@ -273,6 +288,8 @@ gen casos_total_hospital=casos_hospital+casos_hospitaluci
 egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 
 
+
+
 /*
 	Generating working datasets 	
 */
@@ -280,7 +297,7 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 *In this section I generate a daily working dataset.
 
 *Department datasets
-local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
+local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos casos_mujeres casos_hombres casos_edad_0_19 casos_edad_20_39 casos_edad_40_59 casos_edad_60_79 casos_edad_80_mas"
 collapse `vars', by(codigo departamento) 
 
 replace pruebas=. if `i'!=`p'
@@ -332,8 +349,8 @@ export delimited using "$mod\nacional\data_nal.csv", replace
 
 
 *Department dataset
-use "$mod\departamentos\data_dpto.dta", clear
+use "$migpat\covid_dptos.dta", clear
 append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 sort fecha
-save "$mod\departamentos\data_dpto.dta", replace
+save "$migpat\covid_dptos.dta", replace
