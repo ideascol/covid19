@@ -46,11 +46,11 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=22
+local i=23
 *Local determining the day of update Pruebas
-local p=22
+local p=23
 *Local determining the last update of Camas. 
-local j=15
+local j=23
 *Month 
 local m=5
 *Dataset imported to check false positives - May 2. 
