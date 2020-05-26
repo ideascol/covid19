@@ -46,15 +46,14 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=24
+local i=25
 *Local determining the day of update Pruebas
-local p=24
+local p=25
 *Local determining the last update of Camas. 
 local j=23
 *Month 
 local m=5
-*Dataset imported to check false positives - May 2. 
-local f=2
+
 
 import delimited "$raw\tests\Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
 save "$raw\tests\Pruebas.dta", replace 
@@ -307,3 +306,4 @@ append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 sort fecha
 save "$migpat\covid_dptos.dta", replace
+
