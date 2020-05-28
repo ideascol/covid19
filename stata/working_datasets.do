@@ -46,9 +46,9 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=25
+local i=27
 *Local determining the day of update Pruebas
-local p=25
+local p=27
 *Local determining the last update of Camas. 
 local j=23
 *Month 
@@ -306,4 +306,4 @@ append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
 sort fecha
 save "$migpat\covid_dptos.dta", replace
-
+export delimited using "$migpat\covid_dptos.csv", replace
