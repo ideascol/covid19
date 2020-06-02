@@ -46,19 +46,21 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=30
+local i=1
 *Local determining the day of update Pruebas
-local p=30
+local p=1
 *Local determining the last update of Camas. 
 local j=29
-*Month 
-local m=5
+*Month  INS-Pruebas
+local m=6
+*Month Beds
+local n=5
 
 
 import delimited "$raw\tests\Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
 save "$raw\tests\Pruebas.dta", replace 
 
-import delimited "$raw\beds\Camas_`j'_0`m'_2020.csv", encoding(utf8) clear 
+import delimited "$raw\beds\Camas_`j'_0`n'_2020.csv", encoding(utf8) clear 
 drop departamento 
 save "$raw\beds\Camas.dta", replace
 
