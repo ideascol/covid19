@@ -90,3 +90,16 @@ export delimited using "$ideascol\data_dptos_trend.csv", replace
 
 restore 
 
+
+** Active cases / cases in hospitals / beds **
+use "$nal/data_nal.dta", clear
+
+preserve 
+keep fecha camashospitalizacion camascuidadosintensivos casos_activo casos_hospital casos_hospitaluci casos_recuperado
+export delimited using "$ideascol\cases_beds.csv", replace 
+
+restore 
+
+
+
+
