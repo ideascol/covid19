@@ -46,9 +46,9 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=3
+local i=4
 *Local determining the day of update Pruebas
-local p=3
+local p=4
 *Month  INS-Pruebas
 local m=6
 *Local determining the last update of Camas. 
@@ -175,6 +175,10 @@ gen semana=week(fechadiagnostico)
 replace semana=semana-9
 label var semana "semana de diagnostico después de primer caso confirmado"
 
+*Tipo de recuperación
+gen recuperacion_PCR=1 if tiporecuperación=="PCR" 
+gen recuperacion_clinico=1 if tiporecuperación=="Tiempo" 
+
 
 *Dummies atención
 gen casa=1 if atención=="CASA" 
@@ -230,7 +234,7 @@ gen edad_80_mas=1 if edad>79 & edad<=120
 *Casos por departamento
 egen casos_confirmados=count(iddecaso), by(departamento)
 
-local vars "activo casa fallecido hospital hospitaluci recuperado enestudio importado relacionado mujeres hombres edad_0_19 edad_20_39 edad_40_59 edad_60_79 edad_80_mas"
+local vars "activo casa fallecido hospital hospitaluci recuperado enestudio importado relacionado mujeres hombres edad_0_19 edad_20_39 edad_40_59 edad_60_79 edad_80_mas recuperacion_PCR recuperacion_clinico"
 foreach var in `vars'{
 egen casos_`var'=sum(`var'), by(departamento)
 }
@@ -251,7 +255,7 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 *In this section I generate a daily working dataset.
 
 *Department datasets
-local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos casos_mujeres casos_hombres casos_edad_0_19 casos_edad_20_39 casos_edad_40_59 casos_edad_60_79 casos_edad_80_mas"
+local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos casos_mujeres casos_hombres casos_edad_0_19 casos_edad_20_39 casos_edad_40_59 casos_edad_60_79 casos_edad_80_mas casos_recuperacion_PCR casos_recuperacion_clinico"
 collapse `vars', by(codigo departamento) 
 
 replace pruebas=. if `i'!=`p'
