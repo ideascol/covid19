@@ -45,8 +45,8 @@ gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\
 cd ${migpat}
 
 use covid_dptos.dta, clear
-*date: june 5 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22071
+*date: june 7 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22073
 
 
 ** Politiko - map **
