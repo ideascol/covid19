@@ -446,3 +446,4 @@
 	cap erase million200deaths_countries.dta
 	cap erase 200deaths_countries.dta
 	
+	clear
