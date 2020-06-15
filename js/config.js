@@ -30,6 +30,16 @@ const POLITIKO_LABELS = [
     'muertes'
 ]
 
+// Cases beds
+const BEDS_LABELS = [
+    'Camas hospitalizacion',
+    'Camas cuidados intensivos',
+    'Casos activos',
+    'Casos hospital',
+    'Casos hospital UCI',
+    'Casos recuperados'
+]
+
 // Tests data columns
 const INT_EXAMPLES = [
     'southkorea',
@@ -105,6 +115,17 @@ const COLS_DPTOS_TREND = {
     'deaths': 'casos_fallecido'
 }
 
+// Cases beds
+const COLS_BEDS = {
+    'day': 'fecha',
+    'beds': 'camashospitalizacion',
+    'beds_uci': 'camascuidadosintensivos',
+    'active_cases': 'casos_activo',
+    'hospital_cases': 'casos_hospital',
+    'uci_cases': 'casos_hospitaluci',
+    'recovered_cases': 'casos_recuperado',
+}
+
 const palette = [
     '#f3a5a5',
     '#93abd7',
@@ -117,6 +138,16 @@ const palette = [
     'rgba(249, 208, 87, 0.7)',
     '#69B3A2',
     '#994636'
+]
+
+const palette6 = [
+    '#b6eb7a',
+    '#ea907a',
+    '#17706e',
+    '#a6dcef',
+    '#a0c1b8',
+    '#e36387',
+
 ]
 
 const explainations = {

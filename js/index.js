@@ -39,11 +39,12 @@ async function initialize() {
     createIntCharts(width, height, 'us')
     createIntCharts(width, height, 'sweden')
     createIntCharts(width, height, 'col', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
+    createBedsChart(width, height*1.2, 'cases_beds', [{ 'label': 'INS', 'source': 'https://www.ins.gov.co/Paginas/Inicio.aspx' }])
 
     createFINDChart(width, height)
     createMap(width, width)
     createPoliticoDptos(
-        windowWidth > 500 ? width * 0.37 : width, 
+        windowWidth > 500 ? width * 0.37 : width,
         windowWidth > 500 ? width * 0.3 : width
     )
 }
@@ -576,14 +577,14 @@ const createSummaryChart = async (w, h) => {
             let circlesEnt = circles.enter()
                 .append('circle')
                 .attr('class', `tests ${col}`)
-                
+
             circlesEnt.merge(circles)
                 .transition().duration(1000)
                 .attr('cx', d => x(d[COLS_TESTS['day']]))
                 .attr('cy', d => y(d[COLS_TESTS[col]]))
                 .attr('r', 3)
                 .style('fill', palette[i + 2])
-                
+
             circlesEnt.append('title')
                 .attr('class', `tests title ${col}`)
                 .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} pruebas procesadas`)
@@ -696,7 +697,7 @@ const createSummaryChart2 = async (w, h, dataset) => {
 
             circlesEnt.append('title')
                 .attr('class', `tests title ${col}`)
-                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} ${VAR_LABELS[dataset] ? VAR_LABELS[dataset].toLowerCase(): ''}`)
+                .html(d => `${COUNTRIES[i]}, día ${d[COLS_TESTS['day']]}: ${d3.format(',d')(d[COLS_TESTS[col]])} ${VAR_LABELS[dataset] ? VAR_LABELS[dataset].toLowerCase() : ''}`)
         })
     }
 
@@ -815,6 +816,118 @@ const createIntCharts = async (w, h, dataset, sources) => {
         .attr('x', 5)
         .attr('y', 10)
         .html(`<tspan fill="${palette[8]}">Pruebas procesadas</tspan>, <tspan fill="${palette[9]}">casos confirmados</tspan> y <tspan fill="${palette[10]}">muertes</tspan>`)
+
+    svg.append('text')
+        .attr('x', 5)
+        .attr('y', h + margin.bottom - 2)
+        .attr('class', 'sources')
+        .html(`Fuentes: ${sources ? sources.map(d => `<a href="${d.source}" target="_blank">${d.label}</a>`).join(', ') : '<a href="https://ourworldindata.org/coronavirus" target="_blank">Our World in Data</a>'}`)
+
+    svg.append('text')
+        .attr('x', 5)
+        .attr('y', h + margin.bottom + 10)
+        .attr('class', 'sources')
+        .html(`Nota: Esta gráfica se muestra en escala logarítmica.`)
+
+    svg.append('g')
+        .attr('transform', `translate(0,${h - margin.bottom - margin.top})`)
+        .call(xAxis).selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', 'rotate(320)')
+
+    svg.append('g')
+        .attr('class', 'y-axis')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(yAxis)
+
+    svg.selectAll('.y-axis').selectAll('.tick').selectAll('text')
+        .each(function () {
+            let char = `${d3.select(this).html()}`.substring(0, 1)
+            if (char !== '1' && char !== '5')
+                d3.select(this).remove()
+        })
+
+}
+
+const createBedsChart = async (w, h, dataset, sources) => {
+    let margin = { top: 40, right: 5, bottom: 15, left: 45 }
+
+    let width = w
+    let height = h - margin.top - margin.bottom
+    let data = []
+    if (dataset.data)
+        data = [...dataset.data]
+    else {
+        data = await d3.csv(`data/data_${dataset}.csv`)
+        data = await data.map(d => {
+            d[COLS_BEDS['day']] = new Date(d[COLS_BEDS['day']])
+            d[COLS_BEDS['beds']] = +d[COLS_BEDS['beds']]
+            d[COLS_BEDS['beds_uci']] = +d[COLS_BEDS['beds_uci']]
+            d[COLS_BEDS['active_cases']] = +d[COLS_BEDS['active_cases']]
+            d[COLS_BEDS['hospital_cases']] = +d[COLS_BEDS['hospital_cases']]
+            d[COLS_BEDS['uci_cases']] = +d[COLS_BEDS['uci_cases']]
+            d[COLS_BEDS['recovered_cases']] = +d[COLS_BEDS['recovered_cases']]
+            return d
+        })
+    }
+
+    dataset = dataset.chart ? dataset.chart : dataset
+
+    let svg = d3.select(`#chart_${dataset}`).select('svg')
+        .attr('width', w + margin.left + margin.right)
+        .attr('height', h + margin.top + margin.bottom)
+
+    data = data.sort((a, b) => a[COLS_BEDS['day']] - b[COLS_BEDS['day']])
+    var x = d3.scaleTime().range([margin.left, width])
+        .domain(d3.extent(data, d => d[COLS_BEDS['day']]))
+    var y = d3.scaleLog().range([height, margin.top])
+        .domain([1, d3.max(data.map(d => d3.max([d[COLS_BEDS['beds']], d[COLS_BEDS['beds_uci']], d[COLS_BEDS['active_cases']], d[COLS_BEDS['hospital_cases']], d[COLS_BEDS['uci_cases']], d[COLS_BEDS['recovered_cases']]]))) + 10])
+
+    let xAxis = d3.axisBottom(x).tickFormat(d => d3.timeFormat('%d %b')(d))
+    let yAxis = d3.axisLeft(y).tickFormat(d => d3.format(',d')(d))
+
+    Object.keys(COLS_BEDS).filter(d => d !== 'day').map((col, i) => {
+        let area = d3.line()
+            .x(d => x(d[COLS_BEDS['day']]))
+            .y(d => d[COLS_BEDS[col]] === 0 ? 1 : y(d[COLS_BEDS[col]]))
+
+        let paths = svg.selectAll(`.line.politiko.${col}`)
+            .data([data.filter(d => d[COLS_BEDS[col]] && d[COLS_BEDS[col]] > 0)])
+
+        paths
+            .enter().append('path')
+            .merge(paths)
+            .transition().duration(1000)
+            .attr('class', `politiko ${col} line`)
+            .attr('d', area)
+            .attr('stroke', palette6[i])
+
+        let circles = svg.selectAll(`circle.politiko.${col}`)
+            .data(data.filter(d => d[COLS_BEDS[col]] && d[COLS_BEDS[col]] > 0))
+
+        circles.enter().append('circle')
+            .attr('class', `politiko ${col}`)
+            .attr('cx', d => x(d[COLS_BEDS['day']]))
+            .attr('cy', d => y(d[COLS_BEDS[col]]))
+            .attr('r', 3)
+            .style('fill', d3.color(palette6[i]))
+            .append('title')
+            .attr('class', `politiko title ${col}`)
+            .html(d => `${d[COLS_BEDS['day']].toLocaleDateString()}: ${d3.format(',d')(d[COLS_BEDS[col]])} ${BEDS_LABELS[i]}`)
+    })
+
+    d3.select(`#explanation_chart_${dataset}`)
+        .attr('data-tooltip', createExplaination('intExamples'))
+
+    svg.append('text')
+        .attr('x', 5)
+        .attr('y', 15)
+        .html([...BEDS_LABELS].splice(0,3).map((d, i) => `<tspan fill="${palette6[i]}">${d}</tspan>`).join(', '))
+
+    svg.append('text')
+        .attr('x', 5)
+        .attr('y', 30)
+        .html([...BEDS_LABELS].splice(3).map((d, i) => `<tspan fill="${palette6[i+3]}">${d}</tspan>`).join(', '))
 
     svg.append('text')
         .attr('x', 5)
@@ -1122,12 +1235,12 @@ const createMap = async (width, height) => {
     svg.append('text')
         .attr('x', 0)
         .attr('y', 11)
-        .html(`<tspan style="fill: ${palette[8]}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[9]}">casos confirmados</tspan> y `)  
+        .html(`<tspan style="fill: ${palette[8]}">Pruebas procesadas</tspan>, <tspan style="fill: ${palette[9]}">casos confirmados</tspan> y `)
 
     svg.append('text')
         .attr('x', 0)
         .attr('y', 25)
-        .html(`<tspan style="fill: ${palette[10]}">muertes</tspan> por cada cien mil habitantes`)                
+        .html(`<tspan style="fill: ${palette[10]}">muertes</tspan> por cada cien mil habitantes`)
 
     d3.select('#explanation_chart_map')
         .attr('data-tooltip', createExplaination('map'))
