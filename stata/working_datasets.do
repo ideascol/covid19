@@ -46,9 +46,9 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=14
+local i=15
 *Local determining the day of update Pruebas
-local p=14
+local p=15
 *Month  INS-Pruebas
 local m=6
 *Local determining the last update of Beds. 
@@ -57,7 +57,69 @@ local j=12
 local n=6
 
 
-import delimited "$raw\tests\Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
+import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
+
+split fecha, p(T)
+drop fecha2 
+ order fecha1, after(fecha)
+drop fecha
+gen fecha=date(fecha1, "YMD")
+format fecha %td 
+order fecha, after(fecha1)
+drop fecha1 
+
+egen date=max(fecha)
+keep if fecha==date 
+drop date 
+drop acumuladas procedenciadesconocida fecha
+
+tostring amazonas antioquia arauca atlantico bogota bolivar boyaca caldas caqueta casanare cauca cesar choco cordoba cundinamarca guainia guajira guaviare huila magdalena meta narino nortedesantander putumayo quindio risaralda sanandres santander sucre tolima valledelcauca vaupes vichada barranquilla cartagena santamarta, replace
+
+*ssc install sxpose 
+
+preserve 
+
+xpose, clear varname
+
+putmata varlabels=_varname, replace 
+
+mata
+   varlabels = varlabels
+end
+
+* varlabels=varlabels' transposes the matrix. 
+
+restore
+
+sxpose, clear
+rename _var1 var
+tostring v*, force usedisplayformat replace
+getmata(departamento)=varlabels
+replace departamento=ustrupper(departamento)
+
+
+replace departamento="ATLANTICO" if departamento=="BARRANQUILLA"
+replace departamento="BOLIVAR" if departamento=="CARTAGENA"
+replace departamento="MAGDALENA" if departamento=="SANTAMARTA" 
+replace var=subinstr(var, ",", "",.)
+destring var, replace
+egen pruebas=sum(var), by(departamento)
+drop var 
+collapse pruebas, by(departamento)
+replace  departamento="BOGOTA D.C." if departamento=="BOGOTA"
+replace  departamento="LA GUAJIRA" if departamento=="GUAJIRA"
+replace  departamento="NARIÑO" if departamento=="NARINO"
+replace  departamento="NORTE DE SANTANDER" if departamento=="NORTEDESANTANDER"
+replace  departamento="ARCHIPIELAGO DE SAN ANDRES PROVIDENCIA Y SANTA CATALINA" if departamento=="SANANDRES"
+replace  departamento="VALLE DEL CAUCA" if  departamento=="VALLEDELCAUCA"
+merge 1:1 departamento using codigo_dpto, nogen
+drop departamento 
+order codigo, first 
+
+
+export delimited using "$raw\tests\Pruebas_`p'_0`m'_2020.csv", replace
+
+*import delimited "$raw\tests\Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
 save "$raw\tests\Pruebas.dta", replace 
 
 import delimited "$raw\beds\Camas_`j'_0`n'_2020.csv", encoding(utf8) clear 
