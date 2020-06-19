@@ -46,13 +46,13 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=17
+local i=18
 *Local determining the day of update Pruebas
-local p=17
+local p=18
 *Month  INS-Pruebas
 local m=6
 *Local determining the last update of Beds. 
-local j=17
+local j=18
 *Month Beds
 local n=6
 
@@ -71,7 +71,7 @@ drop fecha1
 egen date=max(fecha)
 keep if fecha==date 
 drop date 
-drop acumuladas procedenciadesconocida fecha
+drop acumuladas procedenciadesconocida fecha positivasacumuladas negativasacumuladas positividadacumulada indeterminadas
 
 tostring amazonas antioquia arauca atlantico bogota bolivar boyaca caldas caqueta casanare cauca cesar choco cordoba cundinamarca guainia guajira guaviare huila magdalena meta narino nortedesantander putumayo quindio risaralda sanandres santander sucre tolima valledelcauca vaupes vichada barranquilla cartagena santamarta, replace
 
