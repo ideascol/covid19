@@ -46,15 +46,15 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=30
+local i=2
 *Local determining the day of update Pruebas
-local p=30
+local p=2
 *Month  INS-Pruebas
-local m=6
+local m=7
 *Local determining the last update of Beds. 
-local j=28
+local j=1
 *Month Beds
-local n=6
+local n=7
 
 
 import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
