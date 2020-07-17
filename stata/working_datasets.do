@@ -29,6 +29,7 @@ gl raw "$data\ins_raw"
 gl mod "$data\ins_mod"
 gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
 
+
 cd ${raw}
 
 /*
@@ -46,9 +47,52 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=12
+local i=13
 *Local determining the day of update Pruebas
-local p=12
+local p=13
+*Month  INS-Pruebas
+local m=7
+*Local determining the last update of Beds. 
+local j=12
+*Month Beds
+local n=7
+
+
+import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
+
+*Setting paths 
+clear all
+
+*gl path "C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombia"
+gl path "/Users/bfiuser/Dropbox/Personal-Projects/Covid-Colombia"
+*gl do "C:\Users/linar\Desktop\GitHub\covid19\stata"
+	
+
+gl data "$path\data"
+gl raw "$data\ins_raw"
+gl mod "$data\ins_mod"
+gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
+
+cd ${raw}
+
+/*
+		Cleaning dataset 	
+*/
+
+*import delimited codigo_dpto.csv, encoding(utf8) clear
+*save codigo_dpto.dta, replace 
+
+*import delimited poblacion_dptos.csv, encoding(utf8) clear  
+*rename depto departamento 
+*merge 1:1 departamento using codigo_dpto.dta 
+*rename pob_censo_2018 poblacion
+*drop _merge 
+*save poblacion_dptos.dta, replace
+
+*Local determining the day of update INS 
+local i=13
+*Local determining the day of update Pruebas
+local p=13
 *Month  INS-Pruebas
 local m=7
 *Local determining the last update of Beds. 
