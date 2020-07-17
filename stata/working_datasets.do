@@ -47,58 +47,16 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=13
+local i=16
 *Local determining the day of update Pruebas
-local p=13
+local p=16
 *Month  INS-Pruebas
 local m=7
 *Local determining the last update of Beds. 
-local j=12
+local j=16
 *Month Beds
 local n=7
 
-
-import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
-
-*Setting paths 
-clear all
-
-*gl path "C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombia"
-gl path "/Users/bfiuser/Dropbox/Personal-Projects/Covid-Colombia"
-*gl do "C:\Users/linar\Desktop\GitHub\covid19\stata"
-	
-
-gl data "$path\data"
-gl raw "$data\ins_raw"
-gl mod "$data\ins_mod"
-gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
-
-cd ${raw}
-
-/*
-		Cleaning dataset 	
-*/
-
-*import delimited codigo_dpto.csv, encoding(utf8) clear
-*save codigo_dpto.dta, replace 
-
-*import delimited poblacion_dptos.csv, encoding(utf8) clear  
-*rename depto departamento 
-*merge 1:1 departamento using codigo_dpto.dta 
-*rename pob_censo_2018 poblacion
-*drop _merge 
-*save poblacion_dptos.dta, replace
-
-*Local determining the day of update INS 
-local i=13
-*Local determining the day of update Pruebas
-local p=13
-*Month  INS-Pruebas
-local m=7
-*Local determining the last update of Beds. 
-local j=12
-*Month Beds
-local n=7
 
 
 import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
@@ -360,7 +318,9 @@ egen casos_asintomaticos=sum(tipo_sintomas), by(departamento)
 
 *In this section I generate a daily working dataset.
 
-*Department datasets
+capture destring camascuidadosintermedios, replace  force 
+
+*Department datasets 
 local vars "pruebas poblacion camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores tiempo_prueba tiempo_recuperacion tiempo_muerte tiempo_ir_hospital casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos casos_mujeres casos_hombres casos_edad_0_19 casos_edad_20_39 casos_edad_40_59 casos_edad_60_79 casos_edad_80_mas casos_recuperacion_PCR casos_recuperacion_clinico"
 collapse `vars', by(codigo departamento) 
 
