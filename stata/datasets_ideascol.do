@@ -46,7 +46,7 @@ cd ${migpat}
 
 use covid_dptos.dta, clear
 *date: july 22 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22118
+local i=22123
 
 
 ** Politiko - map **
