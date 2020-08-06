@@ -28,12 +28,21 @@ clear
 							Departamento level 
 */
 
+clear 
+gl git "/Users/bfiuser/Documents/GitHub/covid19"
+
+gl dpto "$mod/departamentos"
+gl nal "$mod/nacional"
+gl ideascol "$git/data"
+
+
+
 
 cd ${migpat}
 
 use covid_dptos.dta, clear
-*date: july 22 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22123
+*date: aug 4 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22131
 
 
 ** Politiko - map **

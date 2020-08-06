@@ -41,19 +41,19 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=27
+local i=4
 *Local determining the day of update Pruebas
-local p=27
+local p=4
 *Month  INS-Pruebas
-local m=7
+local m=8
 *Local determining the last update of Beds. 
-local j=26
+local j=1
 *Month Beds
-local n=7
+local n=8
 
 
 
-import delimited "$raw/cases/Muestras_procesadas.csv", encoding(utf8) clear
+import delimited "$raw/cases/Muestras_procesadas.csv", varnames(1) encoding(utf8) clear
 
 split fecha, p(T)
 drop fecha2 
