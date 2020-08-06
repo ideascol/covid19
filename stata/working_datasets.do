@@ -1,4 +1,4 @@
-/*************************************
+/* -----------------------------------------------------------------------------
 *Created: 04/23/2020
 *Last Modified: 05/14/2020
 *Purpose: 		
@@ -9,25 +9,19 @@
 	-"C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombiadata\ins_mod\nacional\data_nal.dta"
 
 *READ THIS: 
+*Run the master do before
 *Requirements: STATA 16. 	
 *Files needed: INS_D_M_Y.csv and Pruebas_D_M_Y.csv Camas_D_M_Y (the last update of Camas available)
 *Change dates in lines 41 and 43 to generate new csv for each day
 *Run only ONCE per day of interest otherwise eliminate duplicate observations. 
 	
-*************************************/
+------------------------------------------------------------------------------*/
+
 
 
 *Setting paths 
-clear all
+clear 
 
-gl path "C:\Users/linar\Dropbox\Personal-Projects\Covid-Colombia"
-gl do "C:\Users/linar\Desktop\GitHub\covid19\stata"
-	
-
-gl data "$path\data"
-gl raw "$data\ins_raw"
-gl mod "$data\ins_mod"
-gl migpat "C:\Users\linar\Dropbox\Personal-Projects\Migration-patterns-covid-19\data"
 
 
 cd ${raw}
@@ -59,7 +53,7 @@ local n=7
 
 
 
-import delimited "$raw\cases\Muestras_procesadas.csv", encoding(utf8) clear
+import delimited "$raw/cases/Muestras_procesadas.csv", encoding(utf8) clear
 
 split fecha, p(T)
 drop fecha2 
@@ -119,16 +113,16 @@ drop departamento
 order codigo, first 
 
 
-export delimited using "$raw\tests\Pruebas_`p'_0`m'_2020.csv", replace
+export delimited using "$raw/tests/Pruebas_`p'_0`m'_2020.csv", replace
 
-*import delimited "$raw\tests\Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
-save "$raw\tests\Pruebas.dta", replace 
+*import delimited "$raw/tests/Pruebas_`p'_0`m'_2020.csv", encoding(utf8) clear 
+save "$raw/tests/Pruebas.dta", replace 
 
-import delimited "$raw\beds\Camas_`j'_0`n'_2020.csv", encoding(utf8) clear 
+import delimited "$raw/beds/Camas_`j'_0`n'_2020.csv", encoding(utf8) clear 
 drop departamento 
-save "$raw\beds\Camas.dta", replace
+save "$raw/beds/Camas.dta", replace
 
-import delimited "$raw\cases\INS_`i'_0`m'_2020.csv", encoding(utf8) clear
+import delimited "$raw/cases/INS_`i'_0`m'_2020.csv", encoding(utf8) clear
 
 
 *fixing ciudad 
@@ -172,15 +166,15 @@ order poblacion, after(codigo)
 
 
 *merge with pruebas 
-merge m:1 codigo using "$raw\tests\Pruebas.dta", nogen
+merge m:1 codigo using "$raw/tests/Pruebas.dta", nogen
 
 
-erase"$raw\tests\Pruebas.dta"
+erase"$raw/tests/Pruebas.dta"
 
 *merge with camas 
-merge m:1 codigo using "$raw\beds\Camas.dta", nogen
+merge m:1 codigo using "$raw/beds/Camas.dta", nogen
 
-erase "$raw\beds\Camas.dta"
+erase "$raw/beds/Camas.dta"
 
 *merge with poblacion por departamento 
 
@@ -333,8 +327,8 @@ format fecha1 %tdNN/DD/CCYY
 order fecha1, after(fecha)
 drop fecha 
 rename fecha1 fecha
-save "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta", replace
-*export delimited using "$mod\departamentos\data_dpto_`i'_04_2020.csv", replace
+save "$mod/departamentos/data_dpto_`i'_0`m'_2020.dta", replace
+*export delimited using "$mod/departamentos/data_dpto_`i'_04_2020.csv", replace
 
 *National datasets 
 local vars "pruebas camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores casos_confirmados casos_activo casos_casa casos_fallecido casos_hospital casos_hospitaluci casos_recuperado casos_enestudio casos_importado casos_relacionado casos_total_hospital casos_asintomaticos"
@@ -353,7 +347,7 @@ format fecha1 %tdNN/DD/CCYY
 order fecha1, after(fecha)
 drop fecha 
 rename fecha1 fecha
-save "$mod\nacional\nal_`i'_0`m'_2020.dta", replace
+save "$mod/nacional/nal_`i'_0`m'_2020.dta", replace
 
 
 
@@ -364,18 +358,18 @@ save "$mod\nacional\nal_`i'_0`m'_2020.dta", replace
 */
 
 *National dataset 
-use "$mod\nacional\data_nal.dta", clear
-append using "$mod\nacional\nal_`i'_0`m'_2020"
-erase "$mod\nacional\nal_`i'_0`m'_2020.dta"
+use "$mod/nacional/data_nal.dta", clear
+append using "$mod/nacional/nal_`i'_0`m'_2020"
+erase "$mod/nacional/nal_`i'_0`m'_2020.dta"
 sort fecha
-save "$mod\nacional\data_nal.dta", replace 
-export delimited using "$mod\nacional\data_nal.csv", replace
+save "$mod/nacional/data_nal.dta", replace 
+export delimited using "$mod/nacional/data_nal.csv", replace
 
 
 *Department dataset
-use "$migpat\covid_dptos.dta", clear
-append using "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
-erase "$mod\departamentos\data_dpto_`i'_0`m'_2020.dta"
+use "$migpat/covid_dptos.dta", clear
+append using "$mod/departamentos/data_dpto_`i'_0`m'_2020.dta"
+erase "$mod/departamentos/data_dpto_`i'_0`m'_2020.dta"
 sort fecha
-save "$migpat\covid_dptos.dta", replace
-export delimited using "$migpat\covid_dptos.csv", replace
+save "$migpat/covid_dptos.dta", replace
+export delimited using "$migpat/covid_dptos.csv", replace
