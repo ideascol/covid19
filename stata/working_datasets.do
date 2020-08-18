@@ -41,13 +41,13 @@ cd ${raw}
 *save poblacion_dptos.dta, replace
 
 *Local determining the day of update INS 
-local i=8
+local i=16
 *Local determining the day of update Pruebas
-local p=8
+local p=16
 *Month  INS-Pruebas
 local m=8
 *Local determining the last update of Beds. 
-local j=1
+local j=11
 *Month Beds
 local n=8
 
