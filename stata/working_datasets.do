@@ -40,16 +40,32 @@ cd ${raw}
 *drop _merge 
 *save poblacion_dptos.dta, replace
 
+
+
+
+*-------------------------------------------------------------------------------
+*						Setting locals
+*
+*------------------------------------------------------------------------------- 
+
+
+
 *Local determining the day of update INS 
-local i=16
+local i=26
 *Local determining the day of update Pruebas
-local p=16
+local p=26
 *Month  INS-Pruebas
 local m=8
-*Local determining the last update of Beds. 
+*Local determining the last update of Beds at department level
 local j=11
 *Month Beds
 local n=8
+
+*local for only national bed update (not at department level)
+local bedsnal 1
+
+
+
 
 
 
@@ -351,6 +367,45 @@ save "$mod/nacional/nal_`i'_0`m'_2020.dta", replace
 
 
 
+*--------------------------------------------------------------------------------------------
+*Run the following section if beds are only udpating at national level but not at department level. 
+*
+*----------------------------------------------------------------------------------------------
+
+
+
+if `bedsnal' {
+
+
+
+import delimited "$raw/beds/camas_nal.csv", varnames(1) encoding(utf8) clear
+
+gen fecha1 = date(fecha,"MDY")
+format fecha1 %tdNN/DD/CCYY
+order fecha1, after(fecha)
+drop fecha 
+rename fecha1 fecha
+
+rename (camashospitalizacion camascuidadosintermedios camascuidadosintensivos numerodeprestadores) (camashospitalizacion1 camascuidadosintermedios1 camascuidadosintensivos1 numerodeprestadores1)
+
+save "$raw/beds/camas_nal.dta", replace 
+
+
+use "$mod/nacional/nal_`i'_0`m'_2020.dta", replace
+
+
+merge 1:1 fecha using "$raw/beds/camas_nal.dta", keep(match) nogen 
+replace camashospitalizacion=camashospitalizacion1
+replace camascuidadosintermedios=camascuidadosintermedios1
+replace camascuidadosintensivos=camascuidadosintensivos1
+replace numerodeprestadores=numerodeprestadores1
+
+drop camashospitalizacion1 camascuidadosintermedios1 camascuidadosintensivos1 numerodeprestadores1
+
+save "$mod/nacional/nal_`i'_0`m'_2020.dta", replace
+
+
+}
 
 
 /*
