@@ -51,9 +51,9 @@ cd ${raw}
 
 
 *Local determining the day of update INS 
-local i=26
+local i=30
 *Local determining the day of update Pruebas
-local p=26
+local p=30
 *Month  INS-Pruebas
 local m=8
 *Local determining the last update of Beds at department level

@@ -41,8 +41,8 @@ gl ideascol "$git/data"
 cd ${migpat}
 
 use covid_dptos.dta, clear
-*date: aug 26 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
-local i=22153
+*date: aug 30 2020 --> set this day with the last day when both the number of tests and confirmed cases are updated. 
+local i=22157
 
 
 ** Politiko - map **
